@@ -10,6 +10,9 @@ export class Level1 extends Scene {
     phaserLogo: PhaserLogo;
     fpsText: FpsText;
 
+    private plate!: Phaser.GameObjects.Image;
+
+
     constructor() {
         super("Level1");
     }
@@ -23,6 +26,12 @@ export class Level1 extends Scene {
 
         this.phaserLogo = new PhaserLogo(this, this.cameras.main.width / 2, 0);
         this.fpsText = new FpsText(this);
+
+        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        this.plate = this.add.image(screenCenterX, screenCenterY, 'plate');
+        console.log(this.plate);
 
         EventBus.emit("current-scene-ready", this);
     }
