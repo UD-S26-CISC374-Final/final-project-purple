@@ -34,6 +34,9 @@ export class Level1 extends Scene {
     private screenCenterX!: number;
     private screenCenterY!: number;
     
+    // Current number of items on the plate
+    private stackCount: number = 0;
+
     private plate!: Phaser.GameObjects.Image;
     private patty!: Phaser.GameObjects.Image;
 
@@ -41,6 +44,26 @@ export class Level1 extends Scene {
     constructor() {
         super("Level1");
     }
+
+    private snapToPlate(ingredient: Ingredient): void {
+        // Disable dragging once it's "committed" to the struct (optional)
+        ingredient.disableInteractive();
+
+        // Snap to plate X, but offset Y based on how many items are already there
+        ingredient.x = this.plate.x;
+        ingredient.y = this.plate.y - ((this.stackCount + 1) * 12);
+
+        // Set depth so the new item is always rendered on top
+        ingredient.setDepth(this.stackCount + 1);
+
+        this.stackCount++;
+        
+        // Trigger "Success" visual on the plate
+        this.plate.setTint(0x00ff00);
+        this.time.delayedCall(200, () => this.plate.clearTint());
+    }
+
+
 
     create() {
         this.camera = this.cameras.main;
@@ -58,11 +81,33 @@ export class Level1 extends Scene {
         this.plate = this.add.image(this.screenCenterX, this.screenCenterY, 'plate');
         this.plate.setScale(0.2);
 
+        // Add patty to (0, 0) and enable it to be draggable
         this.patty = new Ingredient(this, 0, 0, 'patty', 'meat');
         console.log(this.patty);
+
+        // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on('drag', (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.Image, dragX: number, dragY: number) => {
             gameObject.x = dragX;
             gameObject.y = dragY;
+            console.log(pointer);
+        });
+
+        this.input.on('dragend', (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
+            // Calculate the distance between the ingredient and the plate
+            const distance = Phaser.Math.Distance.Between(
+                gameObject.x, gameObject.y, 
+                this.plate.x, this.plate.y
+            );
+
+            // If ingredient was dropped close to plate, add it to stack
+            if (distance < 60) {
+                this.snapToPlate(gameObject);
+            } else {
+                // Return to the ingredient bin if they missed
+                gameObject.x = gameObject.input!.dragStartX;
+                gameObject.y = gameObject.input!.dragStartY;
+            }
+
             console.log(pointer);
         });
 
