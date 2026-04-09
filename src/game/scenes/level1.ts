@@ -4,23 +4,31 @@ import { Scene } from "phaser";
 import PhaserLogo from "../objects/phaser-logo";
 import FpsText from "../objects/fps-text";
 
+// Need to make bin locations (x and y) for each ingredient
+
 // An ingredient class to represent every ingredient object on the screen
 export class Ingredient extends Phaser.GameObjects.Image {
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string, type: string) {
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        texture: string,
+        type: string,
+    ) {
         super(scene, x, y, texture);
-        
+
         // Add ingredient to scene
         scene.add.existing(this);
         this.setScale(0.2);
-        
+
         // Enable Input & Hand Cursor
         this.setInteractive({ useHandCursor: true });
-        
+
         // Enable dragging object
         scene.input.setDraggable(this);
-        
+
         // Store the type of ingredient (patty, cheese)
-        this.setData('type', type);
+        this.setData("type", type);
     }
 }
 
@@ -33,37 +41,46 @@ export class Level1 extends Scene {
     // Save coordinates for center of screen
     private screenCenterX!: number;
     private screenCenterY!: number;
-    
+
     // Current number of items on the plate
     private stackCount: number = 0;
 
+    // Current items on the plate
+    private burgerStack: Ingredient[] = [];
+
     private plate!: Phaser.GameObjects.Image;
     private patty!: Phaser.GameObjects.Image;
-
 
     constructor() {
         super("Level1");
     }
 
     private snapToPlate(ingredient: Ingredient): void {
-        // Disable dragging once it's "committed" to the struct (optional)
-        ingredient.disableInteractive();
+        // Disable the previous top item so you can't grab from the middle
+        if (this.burgerStack.length > 0) {
+            const previousTop = this.burgerStack[this.burgerStack.length - 1];
+            previousTop.disableInteractive();
+        }
 
-        // Snap to plate X, but offset Y based on how many items are already there
+        // Snap the new ingredient and add to array
         ingredient.x = this.plate.x;
-        ingredient.y = this.plate.y - ((this.stackCount + 1) * 12);
+        ingredient.y = this.plate.y - (this.burgerStack.length + 1) * 12;
+        ingredient.setDepth(this.burgerStack.length + 1);
+
+        this.burgerStack.push(ingredient);
+
+        // Make the new top item IS interactive
+        ingredient.setInteractive({ useHandCursor: true });
 
         // Set depth so the new item is always rendered on top
         ingredient.setDepth(this.stackCount + 1);
 
         this.stackCount++;
-        
+
         // Trigger "Success" visual on the plate
         this.plate.setTint(0x00ff00);
         this.time.delayedCall(200, () => this.plate.clearTint());
     }
-
-
 
     create() {
         this.camera = this.cameras.main;
@@ -74,42 +91,61 @@ export class Level1 extends Scene {
 
         this.fpsText = new FpsText(this);
 
-        this.screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
+        this.screenCenterX =
+            this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.screenCenterY =
+            this.cameras.main.worldView.y + this.cameras.main.height / 2;
 
         // Add plate to the middle of the screen
-        this.plate = this.add.image(this.screenCenterX, this.screenCenterY, 'plate');
+        this.plate = this.add.image(
+            this.screenCenterX,
+            this.screenCenterY,
+            "plate",
+        );
         this.plate.setScale(0.2);
 
         // Add patty to (0, 0) and enable it to be draggable
-        this.patty = new Ingredient(this, 0, 0, 'patty', 'meat');
+        this.patty = new Ingredient(this, 0, 0, "patty", "meat");
         console.log(this.patty);
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
-        this.input.on('drag', (pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.Image, dragX: number, dragY: number) => {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
-            console.log(pointer);
-        });
+        this.input.on(
+            "drag",
+            (
+                pointer: Phaser.Input.Pointer,
+                gameObject: Phaser.GameObjects.Image,
+                dragX: number,
+                dragY: number,
+            ) => {
+                gameObject.x = dragX;
+                gameObject.y = dragY;
+                console.log(pointer);
+            },
+        );
 
-        this.input.on('dragend', (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
-            // Calculate the distance between the ingredient and the plate
-            const distance = Phaser.Math.Distance.Between(
-                gameObject.x, gameObject.y, 
-                this.plate.x, this.plate.y
-            );
+        this.input.on(
+            "dragend",
+            (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
+                // Calculate the distance between the ingredient and the plate
+                const distance = Phaser.Math.Distance.Between(
+                    gameObject.x,
+                    gameObject.y,
+                    this.plate.x,
+                    this.plate.y,
+                );
 
-            // If ingredient was dropped close to plate, add it to stack
-            if (distance < 60) {
-                this.snapToPlate(gameObject);
-            } else {
-                // Return to the ingredient bin if they missed
-                gameObject.x = gameObject.input!.dragStartX;
-                gameObject.y = gameObject.input!.dragStartY;
-            }
+                // If ingredient was dropped close to plate, add it to stack
+                if (distance < 60) {
+                    this.snapToPlate(gameObject);
+                } else {
+                    // Return to the ingredient bin with the corresponding coordinates if they missed
+                    gameObject.x = 0;
+                    gameObject.y = 0;
+                }
 
-            console.log(pointer);
-        });
+                console.log(pointer);
+            },
+        );
 
         EventBus.emit("current-scene-ready", this);
     }
