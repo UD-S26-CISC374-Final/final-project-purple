@@ -32,6 +32,7 @@ export class Preloader extends Scene {
 
         // Load assets for the plate
         this.load.image("plate", "temp_plate.png");
+        this.load.image("patty", "temp_patty.png");
     }
 
     create() {
