@@ -42,9 +42,6 @@ export class Level1 extends Scene {
     private screenCenterX!: number;
     private screenCenterY!: number;
 
-    // Current number of items on the plate
-    private stackCount: number = 0;
-
     // Current items on the plate
     private burgerStack: Ingredient[] = [];
 
@@ -73,9 +70,7 @@ export class Level1 extends Scene {
         ingredient.setInteractive({ useHandCursor: true });
 
         // Set depth so the new item is always rendered on top
-        ingredient.setDepth(this.stackCount + 1);
-
-        this.stackCount++;
+        ingredient.setDepth(this.burgerStack.length + 1);
 
         // Trigger "Success" visual on the plate
         this.plate.setTint(0x00ff00);
@@ -123,6 +118,34 @@ export class Level1 extends Scene {
             },
         );
 
+        // Set up event listener to watch for when dragging begins, if item is on top of plate, remove it
+        this.input.on(
+            "dragstart",
+            (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
+                // Find where item is on plate
+                const index = this.burgerStack.indexOf(gameObject);
+                const isTopItem = index === this.burgerStack.length - 1;
+
+                // If the item being dragged is coming from the top of the plate, remove it
+                if (isTopItem) {
+                    // Remove the item from the array
+                    this.burgerStack.pop();
+
+                    // Visual cue that it's no longer part of the "Struct"
+                    gameObject.setDepth(100);
+
+                    // Re-enable the new top item so it's draggable
+                    if (this.burgerStack.length > 0) {
+                        this.burgerStack[
+                            this.burgerStack.length - 1
+                        ].setInteractive();
+                    }
+                }
+                console.log(pointer);
+            },
+        );
+
+        // Set up event listener for when object is done being dragged. If on top of plate, add item to plate.
         this.input.on(
             "dragend",
             (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
