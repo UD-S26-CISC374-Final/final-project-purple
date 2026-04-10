@@ -1,7 +1,6 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 
-import PhaserLogo from "../objects/phaser-logo";
 import FpsText from "../objects/fps-text";
 
 // Need to make bin locations (x and y) for each ingredient
@@ -12,10 +11,9 @@ export class Ingredient extends Phaser.GameObjects.Image {
         scene: Phaser.Scene,
         x: number,
         y: number,
-        texture: string,
-        type: string,
+        ingredientType: string,
     ) {
-        super(scene, x, y, texture);
+        super(scene, x, y, ingredientType);
 
         // Add ingredient to scene
         scene.add.existing(this);
@@ -26,16 +24,12 @@ export class Ingredient extends Phaser.GameObjects.Image {
 
         // Enable dragging object
         scene.input.setDraggable(this);
-
-        // Store the type of ingredient (patty, cheese)
-        this.setData("type", type);
     }
 }
 
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
-    phaserLogo: PhaserLogo;
     fpsText: FpsText;
 
     // Save coordinates for center of screen
@@ -99,8 +93,8 @@ export class Level1 extends Scene {
         );
         this.plate.setScale(0.2);
 
-        // Add patty to (0, 0) and enable it to be draggable
-        this.patty = new Ingredient(this, 0, 0, "patty", "meat");
+        // Add patty ingredient to screen at 0, 0
+        this.patty = new Ingredient(this, 0, 0, "patty");
         console.log(this.patty);
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
@@ -122,7 +116,7 @@ export class Level1 extends Scene {
         this.input.on(
             "dragstart",
             (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
-                // Find where item is on plate
+                // Find which item from plate is being dragged
                 const index = this.burgerStack.indexOf(gameObject);
                 const isTopItem = index === this.burgerStack.length - 1;
 
