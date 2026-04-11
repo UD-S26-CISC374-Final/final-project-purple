@@ -27,8 +27,15 @@ export class Preloader extends Scene {
         this.load.setPath("assets");
 
         this.load.image("logo", "logo.png");
-        this.load.image("star", "star.png");
-        this.load.image("phaser-logo", "phaser-logo.png");
+
+        // Load assets for the plate
+        this.load.image("plate", "temp_plate.png");
+        this.load.image("patty", "temp_patty.png");
+        this.load.image("bottom_bun", "bottom_bun.png");
+        this.load.image("top_bun", "temp_top_bun.png");
+        this.load.image("cheese", "temp_cheese_slice.png");
+        this.load.image("lettuce", "temp_lettuce.png");
+        this.load.image("tomato", "temp_tomato.png");
     }
 
     create() {

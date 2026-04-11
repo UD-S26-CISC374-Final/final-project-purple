@@ -1,16 +1,15 @@
 # Game Name
 
-TEXT GOES HERE
+That's Not My Programmer
 
 # Team Color
 
-TEXT GOES HERE
+Purple
 
 # Developers
 
-* Name (email)
-* Name (email)
-* Name (email)
+- Thomas Lavallee (lavallee@udel.edu)
+- Jacob Hudson (jacobth@udel.edu)
 
 # Blurb
 
