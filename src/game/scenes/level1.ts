@@ -12,12 +12,20 @@ interface Coordinate {
 const BIN_LOCATIONS: Record<string, Coordinate> = {
     patty: { x: 0, y: 0 },
     bottom_bun: { x: 500, y: 0 },
+    top_bun: { x: 800, y: 0 },
+    cheese: { x: 0, y: 400 },
+    lettuce: { x: 800, y: 400 },
+    tomato: { x: 0, y: 800 },
 };
 
 // Dictionary mapping an ingredient type to its scale (for sprite)
 const SPRITE_SCALES: Record<string, number> = {
     patty: 0.2,
     bottom_bun: 4,
+    top_bun: 0.2,
+    cheese: 0.2,
+    lettuce: 0.2,
+    tomato: 0.2,
 };
 
 // An ingredient class to represent every ingredient object on the screen
@@ -131,6 +139,42 @@ export class Level1 extends Scene {
                 BIN_LOCATIONS["bottom_bun"].x,
                 BIN_LOCATIONS["bottom_bun"].y,
                 "bottom_bun",
+                true,
+            ),
+        );
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["top_bun"].x,
+                BIN_LOCATIONS["top_bun"].y,
+                "top_bun",
+                true,
+            ),
+        );
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["cheese"].x,
+                BIN_LOCATIONS["cheese"].y,
+                "cheese",
+                true,
+            ),
+        );
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["lettuce"].x,
+                BIN_LOCATIONS["lettuce"].y,
+                "lettuce",
+                true,
+            ),
+        );
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["tomato"].x,
+                BIN_LOCATIONS["tomato"].y,
+                "tomato",
                 true,
             ),
         );
