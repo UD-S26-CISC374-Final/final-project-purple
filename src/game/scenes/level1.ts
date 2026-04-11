@@ -1,6 +1,5 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
-
 import FpsText from "../objects/fps-text";
 
 // Need to make bin locations (x and y) for each ingredient
@@ -48,7 +47,6 @@ export class Level1 extends Scene {
     private activeSprites: Ingredient[] = [];
 
     private plate!: Phaser.GameObjects.Image;
-    private patty!: Phaser.GameObjects.Image;
 
     constructor() {
         super("Level1");
@@ -99,9 +97,8 @@ export class Level1 extends Scene {
         );
         this.plate.setScale(0.2);
 
-        // Add patty ingredient to screen at 0, 0
-        this.patty = new Ingredient(this, 0, 0, "patty", true);
-        console.log(this.patty);
+        // Add ingredient bins to screen
+        this.activeSprites.push(new Ingredient(this, 0, 0, "patty", true));
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
@@ -169,7 +166,13 @@ export class Level1 extends Scene {
                     this.snapToPlate(gameObject);
                 } else {
                     // Destroy ingredient if it misses plate
+                    const indexOfDeletedElement: number =
+                        this.activeSprites.indexOf(gameObject);
+                    if (indexOfDeletedElement > -1) {
+                        this.activeSprites.splice(indexOfDeletedElement, 1);
+                    }
                     gameObject.destroy();
+                    console.log(this.activeSprites);
                 }
 
                 console.log(pointer);
