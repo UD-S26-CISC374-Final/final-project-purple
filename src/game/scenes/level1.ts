@@ -7,17 +7,22 @@ import FpsText from "../objects/fps-text";
 
 // An ingredient class to represent every ingredient object on the screen
 export class Ingredient extends Phaser.GameObjects.Image {
+    public isFromBin: boolean;
+
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
         ingredientType: string,
+        isFromBin: boolean,
     ) {
         super(scene, x, y, ingredientType);
+        this.isFromBin = isFromBin;
 
         // Add ingredient to scene
         scene.add.existing(this);
         this.setScale(0.2);
+        this.setDepth(100);
 
         // Enable Input & Hand Cursor
         this.setInteractive({ useHandCursor: true });
@@ -29,7 +34,7 @@ export class Ingredient extends Phaser.GameObjects.Image {
 
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
+    //background: Phaser.GameObjects.Image;
     fpsText: FpsText;
 
     // Save coordinates for center of screen
@@ -38,6 +43,9 @@ export class Level1 extends Scene {
 
     // Current items on the plate
     private burgerStack: Ingredient[] = [];
+
+    // Current items on the screen
+    private activeSprites: Ingredient[] = [];
 
     private plate!: Phaser.GameObjects.Image;
     private patty!: Phaser.GameObjects.Image;
@@ -56,30 +64,28 @@ export class Level1 extends Scene {
         // Snap the new ingredient and add to array
         ingredient.x = this.plate.x;
         ingredient.y = this.plate.y - (this.burgerStack.length + 1) * 12;
-        ingredient.setDepth(this.burgerStack.length + 1);
-
         this.burgerStack.push(ingredient);
 
-        // Make the new top item IS interactive
+        // Remove ingredient from bin
+        ingredient.isFromBin = false;
+
+        // Make the new top item interactive
         ingredient.setInteractive({ useHandCursor: true });
 
         // Set depth so the new item is always rendered on top
         ingredient.setDepth(this.burgerStack.length + 1);
-
-        // Trigger "Success" visual on the plate
-        this.plate.setTint(0x00ff00);
-        this.time.delayedCall(200, () => this.plate.clearTint());
     }
 
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
 
-        this.background = this.add.image(512, 384, "background");
-        this.background.setAlpha(0.5);
+        //this.background = this.add.image(512, 384, "background");
+        //this.background.setAlpha(0.5);
 
         this.fpsText = new FpsText(this);
 
+        // Save x and y coordinates for center of screen
         this.screenCenterX =
             this.cameras.main.worldView.x + this.cameras.main.width / 2;
         this.screenCenterY =
@@ -94,7 +100,7 @@ export class Level1 extends Scene {
         this.plate.setScale(0.2);
 
         // Add patty ingredient to screen at 0, 0
-        this.patty = new Ingredient(this, 0, 0, "patty");
+        this.patty = new Ingredient(this, 0, 0, "patty", true);
         console.log(this.patty);
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
@@ -120,8 +126,8 @@ export class Level1 extends Scene {
                 const index = this.burgerStack.indexOf(gameObject);
                 const isTopItem = index === this.burgerStack.length - 1;
 
-                // If the item being dragged is coming from the top of the plate, remove it
-                if (isTopItem) {
+                // If the item being dragged is coming from the top of the plate, remove it from array
+                if (this.burgerStack.length > 0 && isTopItem) {
                     // Remove the item from the array
                     this.burgerStack.pop();
 
@@ -135,6 +141,13 @@ export class Level1 extends Scene {
                         ].setInteractive();
                     }
                 }
+                // If the patty is from the bin, then spawn a new one in the bin
+                else if (gameObject.isFromBin) {
+                    this.activeSprites.push(
+                        new Ingredient(this, 0, 0, "patty", true),
+                    );
+                }
+
                 console.log(pointer);
             },
         );
@@ -155,9 +168,8 @@ export class Level1 extends Scene {
                 if (distance < 60) {
                     this.snapToPlate(gameObject);
                 } else {
-                    // Return to the ingredient bin with the corresponding coordinates if they missed
-                    gameObject.x = 0;
-                    gameObject.y = 0;
+                    // Destroy ingredient if it misses plate
+                    gameObject.destroy();
                 }
 
                 console.log(pointer);
