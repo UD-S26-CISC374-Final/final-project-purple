@@ -2,15 +2,22 @@ import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 
+// An interface representing coordinates for an object, has a starting x and starting y
 interface Coordinate {
     x: number;
     y: number;
 }
 
-// Need to make bin locations (x and y) for each ingredient
+// Dictionary mapping an ingredient type to their starting coordinates
 const BIN_LOCATIONS: Record<string, Coordinate> = {
     patty: { x: 0, y: 0 },
     bottom_bun: { x: 500, y: 0 },
+};
+
+// Dictionary mapping an ingredient type to its scale (for sprite)
+const SPRITE_SCALES: Record<string, number> = {
+    patty: 0.2,
+    bottom_bun: 4,
 };
 
 // An ingredient class to represent every ingredient object on the screen
@@ -31,7 +38,7 @@ export class Ingredient extends Phaser.GameObjects.Image {
 
         // Add ingredient to scene
         scene.add.existing(this);
-        this.setScale(0.2);
+        this.setScale(SPRITE_SCALES[this.ingredientType]);
         this.setDepth(100);
 
         // Enable Input & Hand Cursor
