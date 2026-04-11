@@ -2,21 +2,32 @@ import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 
+interface Coordinate {
+    x: number;
+    y: number;
+}
+
 // Need to make bin locations (x and y) for each ingredient
+const BIN_LOCATIONS: Record<string, Coordinate> = {
+    patty: { x: 0, y: 0 },
+    bottom_bun: { x: 500, y: 0 },
+};
 
 // An ingredient class to represent every ingredient object on the screen
 export class Ingredient extends Phaser.GameObjects.Image {
     public isFromBin: boolean;
+    public ingredientType: string;
 
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
-        ingredientType: string,
+        texture: string,
         isFromBin: boolean,
     ) {
-        super(scene, x, y, ingredientType);
+        super(scene, x, y, texture);
         this.isFromBin = isFromBin;
+        this.ingredientType = texture;
 
         // Add ingredient to scene
         scene.add.existing(this);
@@ -98,7 +109,24 @@ export class Level1 extends Scene {
         this.plate.setScale(0.2);
 
         // Add ingredient bins to screen
-        this.activeSprites.push(new Ingredient(this, 0, 0, "patty", true));
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["patty"].x,
+                BIN_LOCATIONS["patty"].y,
+                "patty",
+                true,
+            ),
+        );
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["bottom_bun"].x,
+                BIN_LOCATIONS["bottom_bun"].y,
+                "bottom_bun",
+                true,
+            ),
+        );
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
@@ -140,8 +168,16 @@ export class Level1 extends Scene {
                 }
                 // If the patty is from the bin, then spawn a new one in the bin
                 else if (gameObject.isFromBin) {
+                    const ingredientType: string = gameObject.ingredientType;
+
                     this.activeSprites.push(
-                        new Ingredient(this, 0, 0, "patty", true),
+                        new Ingredient(
+                            this,
+                            BIN_LOCATIONS[ingredientType].x,
+                            BIN_LOCATIONS[ingredientType].y,
+                            ingredientType,
+                            true,
+                        ),
                     );
                 }
 
