@@ -56,6 +56,45 @@ export class Ingredient extends Phaser.GameObjects.Image {
         scene.input.setDraggable(this);
     }
 }
+export class Order extends Phaser.GameObjects.Container {
+    public orderType: string;
+    public text: Phaser.GameObjects.Text;
+    public answer: string[];
+    public isAnswered: boolean;
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        //texture: string,
+        orderType: string,
+        answer: string[],
+        isAnswered: boolean,
+    ) {
+        super(scene, x, y);
+        this.orderType = orderType;
+        this.text = scene.add
+            .text(x, y, orderType, { fontSize: "16px", color: "#000" })
+            .setOrigin(0.5);
+        this.answer = answer;
+        this.isAnswered = isAnswered;
+
+        scene.add.existing(this);
+    }
+}
+
+export class Ticket extends Phaser.GameObjects.Image {
+    public order: Phaser.GameObjects.Text;
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        texture: string,
+        order: Phaser.GameObjects.Text,
+    ) {
+        super(scene, x, y, texture);
+        this.order = order;
+    }
+}
 
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -73,6 +112,19 @@ export class Level1 extends Scene {
     private activeSprites: Ingredient[] = [];
 
     private plate!: Phaser.GameObjects.Image;
+
+    private confirm: Phaser.GameObjects.Image;
+
+    // Create orders for the player to complete
+    private orders: Order[] = [];
+    private currentOrder: Order;
+    private orderList: Phaser.GameObjects.Text[] = [];
+    private easyOrders: Order[] = [];
+
+    // Create tickets for the orders
+    private tickets: Ticket[] = [];
+
+    private randomIndex: number;
 
     constructor() {
         super("Level1");
@@ -100,9 +152,57 @@ export class Level1 extends Scene {
         ingredient.setDepth(this.burgerStack.length + 1);
     }
 
+    private CheckOrder(answer: string[], order: string[]): boolean {
+        if (answer.length !== order.length) {
+            this.changeScene();
+            return false;
+        } else {
+            for (let i = 0; i < answer.length; i++) {
+                let innerCheck: boolean = false;
+                for (let j = 0; j < order.length; j++) {
+                    if (answer[i] === order[j]) {
+                        innerCheck = true;
+                        break;
+                    }
+                }
+                if (!innerCheck) {
+                    this.changeScene();
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
+        const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
+        const OrderY = this.cameras.main.height / 5;
+
+        // Create Easy Orders
+        this.easyOrders = [
+            new Order(
+                this,
+                -1000,
+                -1000,
+                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
+                ["bottom_bun", "patty", "cheese", "top_bun"],
+                false,
+            )
+                .setActive(false)
+                .setVisible(false),
+            new Order(
+                this,
+                -1000,
+                -1000,
+                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
+                ["bottom_bun", "lettuce", "lettuce", "patty", "top_bun"],
+                false,
+            )
+                .setActive(false)
+                .setVisible(false),
+        ];
 
         //this.background = this.add.image(512, 384, "background");
         //this.background.setAlpha(0.5);
@@ -122,6 +222,100 @@ export class Level1 extends Scene {
             "plate",
         );
         this.plate.setScale(0.2);
+        // Add tickets to the screen and sets up interactibility
+        /*this.ticket = this.add.image(100, 100, "ticket");
+        this.ticket.setScale(0.2);
+        this.ticket.setInteractive({ useHandCursor: true });
+        this.ticket.on("pointerdown", () => {
+            this.currentOrder = new Order(
+                this,
+                OrderX,
+                OrderY,
+                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
+                ["bottom_bun", "patty", "cheese", "top_bun"],
+                false,
+            );
+        });
+        this.tickets.push(
+            new Ticket(this, 100, 100, "ticket", this.orderList[0]),
+        );*/
+        for (const ticket of this.tickets) {
+            ticket.setInteractive({ useHandCursor: true });
+            ticket.on("pointerdown", () => {
+                this.currentOrder.text = ticket.order;
+            });
+        }
+        // Add orders to screen
+        /*this.orders = [
+            new Order(
+                this,
+                this.cameras.main.width - this.cameras.main.width / 6,
+                this.cameras.main.height / 5,
+                "simple_trace",
+                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
+            ),
+        ];*/
+        this.randomIndex = Math.floor(Math.random() * this.easyOrders.length);
+        this.currentOrder = new Order(
+            this,
+            OrderX,
+            OrderY,
+            this.easyOrders[this.randomIndex].text.text,
+            this.easyOrders[this.randomIndex].answer,
+            false,
+        );
+        this.orders.push(this.currentOrder);
+        /*this.orders.push(
+            new Order(
+                this,
+                this.cameras.main.width - this.cameras.main.width / 6,
+                this.cameras.main.height / 5,
+                "order_box",
+                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
+            ),
+        );*/
+        // Adds confirm button to screen
+        this.confirm = this.add.image(OrderX, OrderY + 100, "confirm");
+        this.confirm.setInteractive({ useHandCursor: true });
+        this.confirm.on("pointerdown", () => {
+            if (
+                this.CheckOrder(
+                    this.burgerStack.map(
+                        (ingredient) => ingredient.ingredientType,
+                    ),
+                    this.currentOrder.answer,
+                )
+            ) {
+                console.log("successful");
+                while (this.burgerStack.length > 0) {
+                    this.burgerStack.pop()?.destroy();
+                    console.log("stack popped");
+                }
+                console.log("finished");
+                if (this.easyOrders.every((order) => order.isAnswered)) {
+                    this.changeScene();
+                } else {
+                    this.easyOrders[this.randomIndex].isAnswered = true;
+                    while (this.easyOrders[this.randomIndex].isAnswered) {
+                        this.randomIndex = Math.floor(
+                            Math.random() * this.easyOrders.length,
+                        );
+                    }
+                    this.currentOrder = new Order(
+                        this,
+                        OrderX,
+                        OrderY,
+                        this.easyOrders[this.randomIndex].text.text,
+                        this.easyOrders[this.randomIndex].answer,
+                        false,
+                    );
+                    this.currentOrder.text =
+                        this.easyOrders[this.randomIndex].text;
+                    this.currentOrder.answer =
+                        this.easyOrders[this.randomIndex].answer;
+                }
+            }
+        });
 
         // Add ingredient bins to screen
         this.activeSprites.push(
@@ -178,7 +372,6 @@ export class Level1 extends Scene {
                 true,
             ),
         );
-
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
             "drag",

@@ -36,6 +36,8 @@ export class Preloader extends Scene {
         this.load.image("cheese", "temp_cheese_slice.png");
         this.load.image("lettuce", "temp_lettuce.png");
         this.load.image("tomato", "temp_tomato.png");
+        this.load.image("ticket", "temp_ticket.png");
+        this.load.image("confirm", "Confirm Button.png");
     }
 
     create() {
