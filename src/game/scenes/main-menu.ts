@@ -1,13 +1,34 @@
 import { GameObjects, Scene } from "phaser";
-
 import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
+// Mode Selector Button Class for Main Game Scren
+export class ModeButton extends Phaser.GameObjects.Text {
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        label: string,
+        targetScene: string,
+    ) {
+        // Add button to screen
+        super(scene, x, y, label, {
+            backgroundColor: "#000",
+            padding: { x: 10, y: 5 },
+        });
+
+        // Set button to be clickable and start the scene named in targetScene
+        this.setInteractive({ useHandCursor: true });
+        this.on("pointerdown", () => {
+            scene.scene.start(targetScene);
+        });
+
+        scene.add.existing(this);
+    }
+}
+
 export class MainMenu extends Scene implements ChangeableScene {
     background: GameObjects.Image;
-    logo: GameObjects.Image;
-    title: GameObjects.Text;
-    logoTween: Phaser.Tweens.Tween | null;
 
     constructor() {
         super("MainMenu");
@@ -16,53 +37,36 @@ export class MainMenu extends Scene implements ChangeableScene {
     create() {
         this.background = this.add.image(512, 384, "background");
 
-        this.logo = this.add.image(512, 300, "logo").setDepth(100);
-
-        this.title = this.add
-            .text(512, 460, "Main Menu", {
-                fontFamily: "Arial Black",
-                fontSize: 38,
-                color: "#ffffff",
-                stroke: "#000000",
-                strokeThickness: 8,
-                align: "center",
-            })
-            .setOrigin(0.5)
-            .setDepth(100);
+        // Add mode selector buttons to the screen
+        const basicModeSelector = new ModeButton(
+            this,
+            400,
+            400,
+            "Basic Mode",
+            "Level1",
+        );
+        const functionModeSelector = new ModeButton(
+            this,
+            400,
+            500,
+            "Function Frenzy",
+            "Level1",
+        );
+        const pointerModeSelector = new ModeButton(
+            this,
+            400,
+            600,
+            "Pointer Mode",
+            "Level1",
+        );
+        console.log(basicModeSelector);
+        console.log(functionModeSelector);
+        console.log(pointerModeSelector);
 
         EventBus.emit("current-scene-ready", this);
     }
 
     changeScene() {
-        if (this.logoTween) {
-            this.logoTween.stop();
-            this.logoTween = null;
-        }
-
         this.scene.start("Level1");
-    }
-
-    moveSprite(callback: ({ x, y }: { x: number; y: number }) => void) {
-        if (this.logoTween) {
-            if (this.logoTween.isPlaying()) {
-                this.logoTween.pause();
-            } else {
-                this.logoTween.play();
-            }
-        } else {
-            this.logoTween = this.tweens.add({
-                targets: this.logo,
-                x: { value: 750, duration: 3000, ease: "Back.easeInOut" },
-                y: { value: 80, duration: 1500, ease: "Sine.easeOut" },
-                yoyo: true,
-                repeat: -1,
-                onUpdate: () => {
-                    callback({
-                        x: Math.floor(this.logo.x),
-                        y: Math.floor(this.logo.y),
-                    });
-                },
-            });
-        }
     }
 }

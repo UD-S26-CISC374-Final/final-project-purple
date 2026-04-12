@@ -26,6 +26,7 @@ const SPRITE_SCALES: Record<string, number> = {
     cheese: 0.2,
     lettuce: 0.2,
     tomato: 0.2,
+    plate: 0.2,
 };
 
 // An ingredient class to represent every ingredient object on the screen
@@ -121,7 +122,7 @@ export class Level1 extends Scene {
             this.screenCenterY,
             "plate",
         );
-        this.plate.setScale(0.2);
+        this.plate.setScale(SPRITE_SCALES["plate"]);
 
         // Add ingredient bins to screen
         this.activeSprites.push(
