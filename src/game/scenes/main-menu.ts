@@ -3,25 +3,41 @@ import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
 // Mode Selector Button Class for Main Game Scren
-export class ModeButton extends Phaser.GameObjects.Text {
+export class ModeSelectorButton extends Phaser.GameObjects.Container {
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
-        label: string,
+        text: string,
         targetScene: string,
     ) {
-        // Add button to screen
-        super(scene, x, y, label, {
-            backgroundColor: "#000",
-            padding: { x: 10, y: 5 },
-        });
+        super(scene, x, y);
 
-        // Set button to be clickable and start the scene named in targetScene
+        // Set the width and height of the buttons
+        const width = 200;
+        const height = 60;
+        console.log(text);
+
+        // Draw the button background
+        const buttonBackground = scene.add.graphics();
+        buttonBackground.fillStyle(0x2ecc71, 1);
+        buttonBackground.fillRoundedRect(
+            -width / 2,
+            -height / 2,
+            width,
+            height,
+            15,
+        );
+        this.add(buttonBackground);
+
+        // Set the container's internal size
+        this.setSize(width, height);
+
+        // Make button interactive
         this.setInteractive({ useHandCursor: true });
-        this.on("pointerdown", () => {
-            scene.scene.start(targetScene);
-        });
+
+        // Switch scenes if button clicked
+        this.on("pointerdown", () => scene.scene.start(targetScene));
 
         scene.add.existing(this);
     }
@@ -49,7 +65,7 @@ export class MainMenu extends Scene implements ChangeableScene {
         });
         this.title.setOrigin(0.5);
 
-        // Add animation to title to move up and down slowly
+        // Add animation to title text to move up and down slowly
         this.tweens.add({
             targets: this.title,
             y: 110, // Move down slightly
@@ -60,13 +76,15 @@ export class MainMenu extends Scene implements ChangeableScene {
         });
 
         // Add mode selector buttons to the screen
-        const basicModeSelector = new ModeButton(
+        const basicModeSelector = new ModeSelectorButton(
             this,
             400,
             400,
             "Basic Mode",
             "Level1",
         );
+        console.log(basicModeSelector);
+        /*
         const functionModeSelector = new ModeButton(
             this,
             400,
@@ -84,6 +102,7 @@ export class MainMenu extends Scene implements ChangeableScene {
         console.log(basicModeSelector);
         console.log(functionModeSelector);
         console.log(pointerModeSelector);
+        */
 
         EventBus.emit("current-scene-ready", this);
     }
