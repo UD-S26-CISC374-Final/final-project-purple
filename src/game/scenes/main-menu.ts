@@ -6,6 +6,7 @@ import type { ChangeableScene } from "../reactable-scene";
 export class ModeSelectorButton extends Phaser.GameObjects.Container {
     private buttonBackground: Phaser.GameObjects.Graphics;
     private label: Phaser.GameObjects.Text;
+    private buttonOutline: Phaser.GameObjects.Graphics;
 
     constructor(
         scene: Phaser.Scene,
@@ -39,7 +40,7 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
             fontFamily: "Arial", // Or a "terminal" font for your networking game
         });
 
-        // Center the text inside the container
+        // Center the text inside the button
         this.label.setOrigin(0.5);
 
         // Add button and label to the screen
@@ -50,6 +51,19 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
 
         // Make button interactive
         this.setInteractive({ useHandCursor: true });
+
+        // Create an outline for the button that is only shown when the button is hovered over
+        this.buttonOutline = scene.add.graphics();
+        this.buttonOutline.lineStyle(4, 0xffffff, 1);
+        this.buttonOutline.strokeRoundedRect(
+            -width / 2,
+            -height / 2,
+            width,
+            height,
+            15,
+        );
+        this.buttonOutline.setVisible(false);
+        this.add(this.buttonOutline);
 
         // Switch scenes if button clicked
         this.on("pointerdown", () => scene.scene.start(targetScene));
@@ -62,6 +76,7 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
                 duration: 100,
                 ease: "Back.easeOut",
             });
+            this.buttonOutline.setVisible(true);
         });
         this.on("pointerout", () => {
             scene.tweens.add({
@@ -70,6 +85,7 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
                 duration: 100,
                 ease: "Power1",
             });
+            this.buttonOutline.setVisible(false);
         });
 
         scene.add.existing(this);
@@ -111,7 +127,7 @@ export class MainMenu extends Scene implements ChangeableScene {
         // Add mode selector buttons to the screen
         const basicModeSelector = new ModeSelectorButton(
             this,
-            400,
+            centerX,
             400,
             "Basic Mode",
             "Level1",
