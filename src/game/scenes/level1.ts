@@ -115,7 +115,7 @@ export class Level1 extends Scene {
 
     private plate!: Phaser.GameObjects.Image;
 
-    private confirm: Phaser.GameObjects.Image;
+    private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
 
     // Create orders for the player to complete
@@ -133,6 +133,7 @@ export class Level1 extends Scene {
         super("Level1");
     }
 
+    // Adds the given ingredient to the plate
     private snapToPlate(ingredient: Ingredient): void {
         // Disable the previous top item so you can't grab from the middle
         if (this.burgerStack.length > 0) {
@@ -155,6 +156,7 @@ export class Level1 extends Scene {
         ingredient.setDepth(this.burgerStack.length + 1);
     }
 
+    // Removes all ingredients from the plate
     private clearPlate(): void {
         // Loop through burger stack and destroy all elements, and remove them from activeSprites list
         this.burgerStack.forEach((currentIngredient: Ingredient) => {
@@ -292,10 +294,15 @@ export class Level1 extends Scene {
                 'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
             ),
         );*/
-        // Adds confirm button to screen
-        this.confirm = this.add.image(OrderX, OrderY + 100, "confirm");
-        this.confirm.setInteractive({ useHandCursor: true });
-        this.confirm.on("pointerdown", () => {
+
+        // Add confirm button to screen
+        this.confirmButton = new SelectorButton(
+            this,
+            OrderX + 100,
+            OrderY + 100,
+            "Confirm",
+        );
+        this.confirmButton.on("pointerdown", () => {
             if (
                 this.CheckOrder(
                     this.burgerStack.map(
