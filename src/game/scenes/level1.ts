@@ -1,6 +1,7 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
+import { SelectorButton } from "./main-menu";
 
 // An interface representing coordinates for an object, has a starting x and starting y
 interface Coordinate {
@@ -114,7 +115,8 @@ export class Level1 extends Scene {
 
     private plate!: Phaser.GameObjects.Image;
 
-    private confirm: Phaser.GameObjects.Image;
+    private confirmButton: SelectorButton;
+    private clearPlateButton: SelectorButton;
 
     // Create orders for the player to complete
     private orders: Order[] = [];
@@ -131,6 +133,7 @@ export class Level1 extends Scene {
         super("Level1");
     }
 
+    // Adds the given ingredient to the plate
     private snapToPlate(ingredient: Ingredient): void {
         // Disable the previous top item so you can't grab from the middle
         if (this.burgerStack.length > 0) {
@@ -151,6 +154,21 @@ export class Level1 extends Scene {
 
         // Set depth so the new item is always rendered on top
         ingredient.setDepth(this.burgerStack.length + 1);
+    }
+
+    // Removes all ingredients from the plate
+    private clearPlate(): void {
+        // Loop through burger stack and destroy all elements, and remove them from activeSprites list
+        this.burgerStack.forEach((currentIngredient: Ingredient) => {
+            const activeSpritesIndex: number =
+                this.activeSprites.indexOf(currentIngredient);
+            if (activeSpritesIndex > -1) {
+                this.activeSprites.splice(activeSpritesIndex, 1);
+            }
+            currentIngredient.destroy();
+        });
+
+        this.burgerStack = [];
     }
 
     private CheckOrder(answer: string[], order: string[]): boolean {
@@ -276,10 +294,16 @@ export class Level1 extends Scene {
                 'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
             ),
         );*/
-        // Adds confirm button to screen
-        this.confirm = this.add.image(OrderX, OrderY + 100, "confirm");
-        this.confirm.setInteractive({ useHandCursor: true });
-        this.confirm.on("pointerdown", () => {
+
+        // Add confirm button to screen
+        this.confirmButton = new SelectorButton(
+            this,
+            OrderX + 100,
+            OrderY + 120,
+            "Confirm",
+            140,
+        );
+        this.confirmButton.on("pointerdown", () => {
             if (
                 this.CheckOrder(
                     this.burgerStack.map(
@@ -319,6 +343,16 @@ export class Level1 extends Scene {
             }
         });
 
+        // Add clear plate button to the screen and have it clear the plate when clicked
+        this.clearPlateButton = new SelectorButton(
+            this,
+            OrderX - 100,
+            OrderY + 120,
+            "Clear Plate",
+            140,
+        ).on("pointerdown", () => this.clearPlate());
+        console.log(this.clearPlateButton);
+
         // Add ingredient bins to screen
         this.activeSprites.push(
             new Ingredient(
@@ -328,8 +362,6 @@ export class Level1 extends Scene {
                 "patty",
                 true,
             ),
-        );
-        this.activeSprites.push(
             new Ingredient(
                 this,
                 BIN_LOCATIONS["bottom_bun"].x,
@@ -337,8 +369,6 @@ export class Level1 extends Scene {
                 "bottom_bun",
                 true,
             ),
-        );
-        this.activeSprites.push(
             new Ingredient(
                 this,
                 BIN_LOCATIONS["top_bun"].x,
@@ -346,8 +376,6 @@ export class Level1 extends Scene {
                 "top_bun",
                 true,
             ),
-        );
-        this.activeSprites.push(
             new Ingredient(
                 this,
                 BIN_LOCATIONS["cheese"].x,
@@ -355,8 +383,6 @@ export class Level1 extends Scene {
                 "cheese",
                 true,
             ),
-        );
-        this.activeSprites.push(
             new Ingredient(
                 this,
                 BIN_LOCATIONS["lettuce"].x,
@@ -364,8 +390,6 @@ export class Level1 extends Scene {
                 "lettuce",
                 true,
             ),
-        );
-        this.activeSprites.push(
             new Ingredient(
                 this,
                 BIN_LOCATIONS["tomato"].x,
@@ -374,6 +398,7 @@ export class Level1 extends Scene {
                 true,
             ),
         );
+
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
             "drag",

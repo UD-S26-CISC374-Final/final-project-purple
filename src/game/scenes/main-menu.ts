@@ -3,7 +3,7 @@ import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
 // Mode Selector Button Class for Main Game Scren
-export class ModeSelectorButton extends Phaser.GameObjects.Container {
+export class SelectorButton extends Phaser.GameObjects.Container {
     private buttonBackground: Phaser.GameObjects.Graphics;
     private label: Phaser.GameObjects.Text;
     private buttonOutline: Phaser.GameObjects.Graphics;
@@ -13,13 +13,10 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
         x: number,
         y: number,
         text: string,
-        targetScene: string,
+        width: number = 200,
+        height: number = 60,
     ) {
         super(scene, x, y);
-
-        // Set the width and height of the buttons
-        const width = 200;
-        const height = 60;
 
         // Draw the button background
         this.buttonBackground = scene.add.graphics();
@@ -64,9 +61,6 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
         // Add the button, label, and outline to the container
         this.add([this.buttonBackground, this.label, this.buttonOutline]);
 
-        // Switch scenes if button clicked
-        this.on("pointerdown", () => scene.scene.start(targetScene));
-
         // Make button increase size when hovered over
         this.on("pointerover", () => {
             scene.tweens.add({
@@ -95,7 +89,7 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
 export class MainMenu extends Scene implements ChangeableScene {
     background: GameObjects.Image;
     title: GameObjects.Text;
-    modeButtons: ModeSelectorButton[] = [];
+    modeButtons: SelectorButton[] = [];
 
     constructor() {
         super("MainMenu");
@@ -125,22 +119,19 @@ export class MainMenu extends Scene implements ChangeableScene {
             loop: -1, // Loop forever
         });
 
-        // Add mode selector buttons to the screen
+        // Add mode selector buttons to the screen, and have them start their scenes when pressed
         this.modeButtons.push(
-            new ModeSelectorButton(this, centerX, 400, "Basic Mode", "Level1"),
-            new ModeSelectorButton(
-                this,
-                centerX,
-                500,
-                "Function Frenzy",
-                "Level1",
+            new SelectorButton(this, centerX, 400, "Basic Mode").on(
+                "pointerdown",
+                () => this.scene.start("Level1"),
             ),
-            new ModeSelectorButton(
-                this,
-                centerX,
-                600,
-                "Pointer Mode",
-                "Level1",
+            new SelectorButton(this, centerX, 500, "Function Frenzy").on(
+                "pointerdown",
+                () => this.scene.start("Level1"),
+            ),
+            new SelectorButton(this, centerX, 600, "Pointer Mode").on(
+                "pointerdown",
+                () => this.scene.start("Level1"),
             ),
         );
 
