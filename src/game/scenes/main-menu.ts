@@ -8,12 +8,15 @@ export class SelectorButton extends Phaser.GameObjects.Container {
     private label: Phaser.GameObjects.Text;
     private buttonOutline: Phaser.GameObjects.Graphics;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, text: string) {
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        text: string,
+        width: number = 200,
+        height: number = 60,
+    ) {
         super(scene, x, y);
-
-        // Set the width and height of the buttons
-        const width = 200;
-        const height = 60;
 
         // Draw the button background
         this.buttonBackground = scene.add.graphics();

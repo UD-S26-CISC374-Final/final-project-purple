@@ -299,8 +299,9 @@ export class Level1 extends Scene {
         this.confirmButton = new SelectorButton(
             this,
             OrderX + 100,
-            OrderY + 100,
+            OrderY + 120,
             "Confirm",
+            140,
         );
         this.confirmButton.on("pointerdown", () => {
             if (
@@ -346,8 +347,9 @@ export class Level1 extends Scene {
         this.clearPlateButton = new SelectorButton(
             this,
             OrderX - 100,
-            OrderY + 100,
+            OrderY + 120,
             "Clear Plate",
+            140,
         ).on("pointerdown", () => this.clearPlate());
         console.log(this.clearPlateButton);
 
