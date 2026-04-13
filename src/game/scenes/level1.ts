@@ -203,6 +203,7 @@ export class Level1 extends Scene {
                 .setActive(false)
                 .setVisible(false),
         ];
+        console.log(this.orderList);
 
         //this.background = this.add.image(512, 384, "background");
         //this.background.setAlpha(0.5);
