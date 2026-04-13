@@ -43,9 +43,6 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
         // Center the text inside the button
         this.label.setOrigin(0.5);
 
-        // Add button and label to the screen
-        this.add([this.buttonBackground, this.label]);
-
         // Set the container's internal size
         this.setSize(width, height);
 
@@ -63,7 +60,9 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
             15,
         );
         this.buttonOutline.setVisible(false);
-        this.add(this.buttonOutline);
+
+        // Add the button, label, and outline to the container
+        this.add([this.buttonBackground, this.label, this.buttonOutline]);
 
         // Switch scenes if button clicked
         this.on("pointerdown", () => scene.scene.start(targetScene));
@@ -88,6 +87,7 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
             this.buttonOutline.setVisible(false);
         });
 
+        // Add button container to screen
         scene.add.existing(this);
     }
 }
@@ -95,6 +95,7 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
 export class MainMenu extends Scene implements ChangeableScene {
     background: GameObjects.Image;
     title: GameObjects.Text;
+    modeButtons: ModeSelectorButton[] = [];
 
     constructor() {
         super("MainMenu");
@@ -125,33 +126,23 @@ export class MainMenu extends Scene implements ChangeableScene {
         });
 
         // Add mode selector buttons to the screen
-        const basicModeSelector = new ModeSelectorButton(
-            this,
-            centerX,
-            400,
-            "Basic Mode",
-            "Level1",
+        this.modeButtons.push(
+            new ModeSelectorButton(this, centerX, 400, "Basic Mode", "Level1"),
+            new ModeSelectorButton(
+                this,
+                centerX,
+                500,
+                "Function Frenzy",
+                "Level1",
+            ),
+            new ModeSelectorButton(
+                this,
+                centerX,
+                600,
+                "Pointer Mode",
+                "Level1",
+            ),
         );
-        console.log(basicModeSelector);
-        /*
-        const functionModeSelector = new ModeButton(
-            this,
-            400,
-            500,
-            "Function Frenzy",
-            "Level1",
-        );
-        const pointerModeSelector = new ModeButton(
-            this,
-            400,
-            600,
-            "Pointer Mode",
-            "Level1",
-        );
-        console.log(basicModeSelector);
-        console.log(functionModeSelector);
-        console.log(pointerModeSelector);
-        */
 
         EventBus.emit("current-scene-ready", this);
     }
