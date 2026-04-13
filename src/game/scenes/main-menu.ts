@@ -4,6 +4,9 @@ import type { ChangeableScene } from "../reactable-scene";
 
 // Mode Selector Button Class for Main Game Scren
 export class ModeSelectorButton extends Phaser.GameObjects.Container {
+    private buttonBackground: Phaser.GameObjects.Graphics;
+    private label: Phaser.GameObjects.Text;
+
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -16,19 +19,31 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
         // Set the width and height of the buttons
         const width = 200;
         const height = 60;
-        console.log(text);
 
         // Draw the button background
-        const buttonBackground = scene.add.graphics();
-        buttonBackground.fillStyle(0x2ecc71, 1);
-        buttonBackground.fillRoundedRect(
+        this.buttonBackground = scene.add.graphics();
+        this.buttonBackground.fillStyle(0x2ecc71, 1);
+        this.buttonBackground.fillRoundedRect(
             -width / 2,
             -height / 2,
             width,
             height,
             15,
         );
-        this.add(buttonBackground);
+
+        // Draw text for button
+        this.label = scene.add.text(0, 0, text, {
+            fontSize: "24px",
+            color: "#ffffff",
+            fontStyle: "bold",
+            fontFamily: "Arial", // Or a "terminal" font for your networking game
+        });
+
+        // Center the text inside the container
+        this.label.setOrigin(0.5);
+
+        // Add button and label to the screen
+        this.add([this.buttonBackground, this.label]);
 
         // Set the container's internal size
         this.setSize(width, height);
@@ -38,6 +53,24 @@ export class ModeSelectorButton extends Phaser.GameObjects.Container {
 
         // Switch scenes if button clicked
         this.on("pointerdown", () => scene.scene.start(targetScene));
+
+        // Make button increase size when hovered over
+        this.on("pointerover", () => {
+            scene.tweens.add({
+                targets: this,
+                scale: 1.1,
+                duration: 100,
+                ease: "Back.easeOut",
+            });
+        });
+        this.on("pointerout", () => {
+            scene.tweens.add({
+                targets: this,
+                scale: 1.0,
+                duration: 100,
+                ease: "Power1",
+            });
+        });
 
         scene.add.existing(this);
     }
