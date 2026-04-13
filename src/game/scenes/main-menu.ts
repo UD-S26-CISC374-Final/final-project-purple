@@ -1,13 +1,101 @@
 import { GameObjects, Scene } from "phaser";
-
 import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
+// Mode Selector Button Class for Main Game Scren
+export class ModeSelectorButton extends Phaser.GameObjects.Container {
+    private buttonBackground: Phaser.GameObjects.Graphics;
+    private label: Phaser.GameObjects.Text;
+    private buttonOutline: Phaser.GameObjects.Graphics;
+
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        text: string,
+        targetScene: string,
+    ) {
+        super(scene, x, y);
+
+        // Set the width and height of the buttons
+        const width = 200;
+        const height = 60;
+
+        // Draw the button background
+        this.buttonBackground = scene.add.graphics();
+        this.buttonBackground.fillStyle(0x2ecc71, 1);
+        this.buttonBackground.fillRoundedRect(
+            -width / 2,
+            -height / 2,
+            width,
+            height,
+            15,
+        );
+
+        // Draw text for button
+        this.label = scene.add.text(0, 0, text, {
+            fontSize: "24px",
+            color: "#ffffff",
+            fontStyle: "bold",
+            fontFamily: "Arial", // Or a "terminal" font for your networking game
+        });
+
+        // Center the text inside the button
+        this.label.setOrigin(0.5);
+
+        // Set the container's internal size
+        this.setSize(width, height);
+
+        // Make button interactive
+        this.setInteractive({ useHandCursor: true });
+
+        // Create an outline for the button that is only shown when the button is hovered over
+        this.buttonOutline = scene.add.graphics();
+        this.buttonOutline.lineStyle(4, 0xffffff, 1);
+        this.buttonOutline.strokeRoundedRect(
+            -width / 2,
+            -height / 2,
+            width,
+            height,
+            15,
+        );
+        this.buttonOutline.setVisible(false);
+
+        // Add the button, label, and outline to the container
+        this.add([this.buttonBackground, this.label, this.buttonOutline]);
+
+        // Switch scenes if button clicked
+        this.on("pointerdown", () => scene.scene.start(targetScene));
+
+        // Make button increase size when hovered over
+        this.on("pointerover", () => {
+            scene.tweens.add({
+                targets: this,
+                scale: 1.1,
+                duration: 100,
+                ease: "Back.easeOut",
+            });
+            this.buttonOutline.setVisible(true);
+        });
+        this.on("pointerout", () => {
+            scene.tweens.add({
+                targets: this,
+                scale: 1.0,
+                duration: 100,
+                ease: "Power1",
+            });
+            this.buttonOutline.setVisible(false);
+        });
+
+        // Add button container to screen
+        scene.add.existing(this);
+    }
+}
+
 export class MainMenu extends Scene implements ChangeableScene {
     background: GameObjects.Image;
-    logo: GameObjects.Image;
     title: GameObjects.Text;
-    logoTween: Phaser.Tweens.Tween | null;
+    modeButtons: ModeSelectorButton[] = [];
 
     constructor() {
         super("MainMenu");
@@ -16,53 +104,50 @@ export class MainMenu extends Scene implements ChangeableScene {
     create() {
         this.background = this.add.image(512, 384, "background");
 
-        this.logo = this.add.image(512, 300, "logo").setDepth(100);
+        const centerX: number = this.cameras.main.width / 2;
 
-        this.title = this.add
-            .text(512, 460, "Main Menu", {
-                fontFamily: "Arial Black",
-                fontSize: 38,
-                color: "#ffffff",
-                stroke: "#000000",
-                strokeThickness: 8,
-                align: "center",
-            })
-            .setOrigin(0.5)
-            .setDepth(100);
+        // Add title to the top center of the screen
+        this.title = this.add.text(centerX, 80, "That's Not My Programmer", {
+            fontSize: "64px",
+            color: "#000000",
+            stroke: "#000000",
+            strokeThickness: 6,
+        });
+        this.title.setOrigin(0.5);
+
+        // Add animation to title text to move up and down slowly
+        this.tweens.add({
+            targets: this.title,
+            y: 110, // Move down slightly
+            duration: 2000, // Over 2 seconds
+            ease: "Power1",
+            yoyo: true, // Go back to the original position
+            loop: -1, // Loop forever
+        });
+
+        // Add mode selector buttons to the screen
+        this.modeButtons.push(
+            new ModeSelectorButton(this, centerX, 400, "Basic Mode", "Level1"),
+            new ModeSelectorButton(
+                this,
+                centerX,
+                500,
+                "Function Frenzy",
+                "Level1",
+            ),
+            new ModeSelectorButton(
+                this,
+                centerX,
+                600,
+                "Pointer Mode",
+                "Level1",
+            ),
+        );
 
         EventBus.emit("current-scene-ready", this);
     }
 
     changeScene() {
-        if (this.logoTween) {
-            this.logoTween.stop();
-            this.logoTween = null;
-        }
-
         this.scene.start("Level1");
-    }
-
-    moveSprite(callback: ({ x, y }: { x: number; y: number }) => void) {
-        if (this.logoTween) {
-            if (this.logoTween.isPlaying()) {
-                this.logoTween.pause();
-            } else {
-                this.logoTween.play();
-            }
-        } else {
-            this.logoTween = this.tweens.add({
-                targets: this.logo,
-                x: { value: 750, duration: 3000, ease: "Back.easeInOut" },
-                y: { value: 80, duration: 1500, ease: "Sine.easeOut" },
-                yoyo: true,
-                repeat: -1,
-                onUpdate: () => {
-                    callback({
-                        x: Math.floor(this.logo.x),
-                        y: Math.floor(this.logo.y),
-                    });
-                },
-            });
-        }
     }
 }
