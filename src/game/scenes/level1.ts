@@ -84,20 +84,6 @@ export class Order extends Phaser.GameObjects.Container {
     }
 }
 
-export class Ticket extends Phaser.GameObjects.Image {
-    public order: Phaser.GameObjects.Text;
-    constructor(
-        scene: Phaser.Scene,
-        x: number,
-        y: number,
-        texture: string,
-        order: Phaser.GameObjects.Text,
-    ) {
-        super(scene, x, y, texture);
-        this.order = order;
-    }
-}
-
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     //background: Phaser.GameObjects.Image;
@@ -123,10 +109,6 @@ export class Level1 extends Scene {
     private currentOrder: Order;
     private orderList: Phaser.GameObjects.Text[] = [];
     private easyOrders: Order[] = [];
-
-    // Create tickets for the orders
-    private tickets: Ticket[] = [];
-
     private randomIndex: number;
 
     constructor() {
@@ -429,39 +411,7 @@ export class Level1 extends Scene {
             "plate",
         );
         this.plate.setScale(SPRITE_SCALES["plate"]);
-        // Add tickets to the screen and sets up interactibility
-        /*this.ticket = this.add.image(100, 100, "ticket");
-        this.ticket.setScale(0.2);
-        this.ticket.setInteractive({ useHandCursor: true });
-        this.ticket.on("pointerdown", () => {
-            this.currentOrder = new Order(
-                this,
-                OrderX,
-                OrderY,
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            );
-        });
-        this.tickets.push(
-            new Ticket(this, 100, 100, "ticket", this.orderList[0]),
-        );*/
-        for (const ticket of this.tickets) {
-            ticket.setInteractive({ useHandCursor: true });
-            ticket.on("pointerdown", () => {
-                this.currentOrder.text = ticket.order;
-            });
-        }
-        // Add orders to screen
-        /*this.orders = [
-            new Order(
-                this,
-                this.cameras.main.width - this.cameras.main.width / 6,
-                this.cameras.main.height / 5,
-                "simple_trace",
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-            ),
-        ];*/
+
         this.randomIndex = Math.floor(Math.random() * this.easyOrders.length);
         this.currentOrder = new Order(
             this,
@@ -472,21 +422,12 @@ export class Level1 extends Scene {
             false,
         );
         this.orders.push(this.currentOrder);
-        /*this.orders.push(
-            new Order(
-                this,
-                this.cameras.main.width - this.cameras.main.width / 6,
-                this.cameras.main.height / 5,
-                "order_box",
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-            ),
-        );*/
 
         // Add confirm button to screen
         this.confirmButton = new SelectorButton(
             this,
-            OrderX + 100,
-            OrderY + 120,
+            this.screenCenterX + 100,
+            OrderY + 300,
             "Confirm",
             140,
         );
@@ -526,8 +467,8 @@ export class Level1 extends Scene {
         // Add clear plate button to the screen and have it clear the plate when clicked
         this.clearPlateButton = new SelectorButton(
             this,
-            OrderX - 100,
-            OrderY + 120,
+            this.screenCenterX - 100,
+            OrderY + 300,
             "Clear Plate",
             140,
         ).on("pointerdown", () => this.clearPlate());
