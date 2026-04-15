@@ -279,11 +279,15 @@ export class Level1 extends Scene {
     private clearPlateButton: SelectorButton;
 
     // Create orders for the player to complete
-    private orders: Order[] = [];
+    //private orders: Order[] = [];
     private currentOrder: Order;
     private orderList: Phaser.GameObjects.Text[] = [];
-    private easyOrders: Order[] = [];
-    private randomIndex: number;
+    //private easyOrders: Order[] = [];
+    //private randomIndex: number;
+
+    private questions: Question[];
+
+    private questionIndex: number;
 
     constructor() {
         super("Level1");
@@ -327,26 +331,28 @@ export class Level1 extends Scene {
         this.burgerStack = [];
     }
 
+    /**
+     *  Check if the burger the player created is the same as the answer
+     * @param answer The array of ingredients required in the answer
+     * @param order The array of ingredients made by the player
+     * @returns boolean, true if the orders match
+     */
     private CheckOrder(answer: string[], order: string[]): boolean {
+        // If there are not the same amount of ingredients, return false
         if (answer.length !== order.length) {
             this.changeScene();
             return false;
-        } else {
-            for (let i = 0; i < answer.length; i++) {
-                let innerCheck: boolean = false;
-                for (let j = 0; j < order.length; j++) {
-                    if (answer[i] === order[j]) {
-                        innerCheck = true;
-                        break;
-                    }
-                }
-                if (!innerCheck) {
-                    this.changeScene();
-                    return false;
-                }
-            }
-            return true;
         }
+
+        // Compare the order to the answer
+        for (let index = 0; index < answer.length; index++) {
+            // If the ingredients don't match, return false
+            if (answer[index] !== order[index]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     create() {
@@ -357,6 +363,7 @@ export class Level1 extends Scene {
 
         console.log(EASY_QUESTIONS);
 
+        /*
         // Create Easy Orders
         this.easyOrders = [
             new Order(
@@ -493,7 +500,7 @@ export class Level1 extends Scene {
                     "top_bun",
                 ],
                 false,
-            ) /* This order is meant to trick the player into adding cheese to the burger twice, but the function only adds it once because the burger is passed by reference, so the original burger object is mutated and updated with the new cheese ingredient. */,
+            ) ,
             new Order(
                 this,
                 -1000,
@@ -567,6 +574,7 @@ export class Level1 extends Scene {
                 false,
             ),
         ];
+        */
         console.log(this.orderList);
 
         //this.background = this.add.image(512, 384, "background");
@@ -588,7 +596,20 @@ export class Level1 extends Scene {
         );
         this.plate.setScale(SPRITE_SCALES["plate"]);
 
-        this.randomIndex = Math.floor(Math.random() * this.easyOrders.length);
+        this.questions = EASY_QUESTIONS;
+
+        this.questionIndex = Math.floor(Math.random() * this.questions.length);
+        this.currentOrder = new Order(
+            this,
+            OrderX,
+            OrderY,
+            this.questions[this.questionIndex].question,
+            this.questions[this.questionIndex].answer,
+            false,
+        );
+
+        //this.randomIndex = Math.floor(Math.random() * this.easyOrders.length);
+        /*
         this.currentOrder = new Order(
             this,
             OrderX,
@@ -597,7 +618,8 @@ export class Level1 extends Scene {
             this.easyOrders[this.randomIndex].answer,
             false,
         );
-        this.orders.push(this.currentOrder);
+        */
+        //this.orders.push(this.currentOrder);
 
         // Add confirm button to screen
         this.confirmButton = new SelectorButton(
@@ -608,6 +630,7 @@ export class Level1 extends Scene {
             140,
         );
         this.confirmButton.on("pointerdown", () => {
+            // Check if the question was answered correctly
             if (
                 this.CheckOrder(
                     this.burgerStack.map(
@@ -617,26 +640,33 @@ export class Level1 extends Scene {
                 )
             ) {
                 console.log("successful");
-                while (this.burgerStack.length > 0) {
-                    this.burgerStack.pop()?.destroy();
+                // Clear burgerStack and remove item from activeSprites
+                for (let index = 0; index < this.burgerStack.length; index++) {
+                    const indexOfDeletedElement: number =
+                        this.activeSprites.indexOf(this.burgerStack[index]);
+                    if (indexOfDeletedElement > -1) {
+                        this.activeSprites.splice(indexOfDeletedElement, 1);
+                    }
+
+                    // Destroy ingredient
+                    this.burgerStack[index].destroy();
                     console.log("stack popped");
                 }
+
+                this.burgerStack = [];
                 console.log("finished");
-                if (this.easyOrders.every((order) => order.isAnswered)) {
-                    this.changeScene();
-                } else {
-                    this.easyOrders[this.randomIndex].isAnswered = true;
-                    while (this.easyOrders[this.randomIndex].isAnswered) {
-                        this.randomIndex = Math.floor(
-                            Math.random() * this.easyOrders.length,
-                        );
-                    }
-                    this.currentOrder.text.setText(
-                        this.easyOrders[this.randomIndex].text.text,
-                    );
-                    this.currentOrder.answer =
-                        this.easyOrders[this.randomIndex].answer;
-                }
+
+                //this.easyOrders[this.randomIndex].isAnswered = true;
+                //while (this.easyOrders[this.randomIndex].isAnswered) {
+                this.questionIndex = Math.floor(
+                    Math.random() * this.questions.length,
+                );
+                //}
+                this.currentOrder.text.setText(
+                    this.questions[this.questionIndex].question,
+                );
+                this.currentOrder.answer =
+                    this.questions[this.questionIndex].answer;
             }
         });
 
