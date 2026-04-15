@@ -22,9 +22,9 @@ const BIN_LOCATIONS: Record<string, Coordinate> = {
 // Dictionary mapping an ingredient type to its scale (for sprite)
 const SPRITE_SCALES: Record<string, number> = {
     patty: 0.2,
-    bottom_bun: 4,
-    top_bun: 0.2,
-    cheese: 0.2,
+    bottom_bun: 2.5,
+    top_bun: 2.5,
+    cheese: 2.5,
     lettuce: 0.2,
     tomato: 0.2,
     plate: 0.2,
