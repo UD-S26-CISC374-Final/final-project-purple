@@ -3,13 +3,24 @@ import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 import { SelectorButton } from "./main-menu";
 
-// An interface representing coordinates for an object, has a starting x and starting y
+/** An interface representing coordinates for an object, has a starting x and starting y
+ *
+ * Fields:
+ *  x: number, the x coordinate of the object
+ *  y: number, the y coordinate of the object
+ */
 interface Coordinate {
     x: number;
     y: number;
 }
 
-// An interface representing a question, contains a question, its correct answer, and a category
+/** An interface representing a question, contains a question, its correct answer, and a category
+ *
+ * Fields:
+ *  question: string, the code snippet to be displayed to the player
+ *  answer: string[], the ingredients required in the correct answer
+ *  category: string, the category of the question
+ */
 interface Question {
     question: string;
     answer: string[];
@@ -204,7 +215,15 @@ const EASY_QUESTIONS: Question[] = [
     },
 ];
 
-// An ingredient class to represent every ingredient object on the screen
+/** An ingredient class to represent every ingredient object on the screen
+ *
+ * Fields:
+ * scene: Phaser.Scene, the scene to add the ingredient to
+ * x: number, the x coordinate of the ingredient
+ * y: number, the y coordinate of the ingredient
+ * texture: string, the ingredient type (ex: patty, lettuce)
+ * isFromBin: boolean, whether ingredient is in starting bin
+ */
 export class Ingredient extends Phaser.GameObjects.Image {
     public isFromBin: boolean;
     public ingredientType: string;
@@ -232,6 +251,17 @@ export class Ingredient extends Phaser.GameObjects.Image {
         scene.input.setDraggable(this);
     }
 }
+
+/** An order class to represent the current code snippet
+ *
+ * Fields:
+ * scene: Phaser.Scene, the scene to add the code snippet to
+ * x: number, the x coordinate of the order
+ * y: number, the y coordinate of the order
+ * orderType: string, the code snippet contents
+ * answer: string[], the list of correct ingredients
+ * isAnswered: boolean, whether the order has been answered
+ */
 export class Order extends Phaser.GameObjects.Container {
     public orderType: string;
     public text: Phaser.GameObjects.Text;
@@ -241,7 +271,6 @@ export class Order extends Phaser.GameObjects.Container {
         scene: Phaser.Scene,
         x: number,
         y: number,
-        //texture: string,
         orderType: string,
         answer: string[],
         isAnswered: boolean,
@@ -278,22 +307,22 @@ export class Level1 extends Scene {
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
 
-    // Create orders for the player to complete
-    //private orders: Order[] = [];
     private currentOrder: Order;
     private orderList: Phaser.GameObjects.Text[] = [];
-    //private easyOrders: Order[] = [];
-    //private randomIndex: number;
 
     private questions: Question[];
-
     private questionIndex: number;
 
     constructor() {
         super("Level1");
     }
 
-    // Adds the given ingredient to the plate
+    /**
+     * Adds the given ingredient to the plate
+     * @param ingredient The current ingredient to add to the plate
+     *
+     * Notes: Adds ingredient to burgerStack array
+     */
     private snapToPlate(ingredient: Ingredient): void {
         // Disable the previous top item so you can't grab from the middle
         if (this.burgerStack.length > 0) {
@@ -316,7 +345,11 @@ export class Level1 extends Scene {
         ingredient.setDepth(this.burgerStack.length + 1);
     }
 
-    // Removes all ingredients from the plate
+    /**
+     * Removes all ingredients from the plate
+     *
+     * Notes: Destroys all ingredient objects on plate
+     */
     private clearPlate(): void {
         // Loop through burger stack and destroy all elements, and remove them from activeSprites list
         this.burgerStack.forEach((currentIngredient: Ingredient) => {
@@ -363,218 +396,6 @@ export class Level1 extends Scene {
 
         console.log(EASY_QUESTIONS);
 
-        /*
-        // Create Easy Orders
-        this.easyOrders = [
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            )
-                .setActive(false)
-                .setVisible(false),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
-                ["bottom_bun", "lettuce", "lettuce", "patty", "top_bun"],
-                false,
-            )
-                .setActive(false)
-                .setVisible(false),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Salad {\n\tchar[10][2] ingredients;\n}\n\nsalad1: Salad = {\n\tingredients: \n\t\t["lettuce", \n\t\t"lettuce"],\n};',
-                ["lettuce", "lettuce"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct VeggieBurger {\n\tchar[10][4] ingredients;\n\tbool vegan;\n\tbool buns;\n}\n\nveggieBurger1: VeggieBurger = {\n\tingredients: \n\t\t["lettuce"],\n\tvegan: true,\n\tbuns: true,\n};',
-                ["bottom_bun", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct DoubleBurger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ndoubleBurger1: DoubleBurger = {\n\tingredients: \n\t\t["patty", "patty"],\n\tbuns: true,\n};\ndoubleBurger1.ingredients.push("cheese");',
-                ["bottom_bun", "patty", "patty", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Cheeseburger {\n\tchar[7][3] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\norder1.ingredients.pop();\norder1.ingredients.push("lettuce");',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1);',
-                ["bottom_bun", "patty", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburgerWithCheese: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1, "cheese");',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ncheesyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};\nvoid addCheese(){\n\tcheesyBurger.ingredients.push("cheese");\n}\naddCheese();',
-                ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
-                ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[9][3] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 2;',
-                ["bottom_bun", "patty", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnoBuns: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 0;\nbuns: false',
-                ["patty", "lettuce"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][10] ingredients;\n\tbool buns;\n}\n\nhealthyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
-                [
-                    "bottom_bun",
-                    "patty",
-                    "cheese",
-                    "patty",
-                    "cheese",
-                    "patty",
-                    "cheese",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid addCheese(burger: Burger) {\n\tburger.ingredients.push("cheese");\n}',
-                [
-                    "bottom_bun",
-                    "lettuce",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ) ,
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][8] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"lettuce", \n\t\t"lettuce",\n\t\t"lettuce",\n\t\t"lettuce"],\n\tbuns: true,\n};',
-                [
-                    "bottom_bun",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "lettuce",
-                    "lettuce",
-                    "lettuce",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                "struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnothingBurger: Burger = {\n\tingredients: \n\t\t[],\n\tbuns: false,\n};",
-                [],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.unshift("lettuce");',
-                [
-                    "bottom_bun",
-                    "lettuce",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.shift();',
-                ["bottom_bun", "cheese", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid LettuceForBurger() {\n\tfor(int i = 0; i < burger.ingredients.length; i++) {\n\t\tif(burger.ingredients[i] == "lettuce") {\n\t\t\tburger.ingredients[i] = "burger";\n\t\t}\n\t}\n}',
-                ["bottom_bun", "cheese", "burger", "burger", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.splice(1, 0, "lettuce");',
-                [
-                    "bottom_bun",
-                    "patty",
-                    "lettuce",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-        ];
-        */
         console.log(this.orderList);
 
         //this.background = this.add.image(512, 384, "background");
@@ -598,6 +419,7 @@ export class Level1 extends Scene {
 
         this.questions = EASY_QUESTIONS;
 
+        // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
         this.currentOrder = new Order(
             this,
@@ -607,19 +429,6 @@ export class Level1 extends Scene {
             this.questions[this.questionIndex].answer,
             false,
         );
-
-        //this.randomIndex = Math.floor(Math.random() * this.easyOrders.length);
-        /*
-        this.currentOrder = new Order(
-            this,
-            OrderX,
-            OrderY,
-            this.easyOrders[this.randomIndex].text.text,
-            this.easyOrders[this.randomIndex].answer,
-            false,
-        );
-        */
-        //this.orders.push(this.currentOrder);
 
         // Add confirm button to screen
         this.confirmButton = new SelectorButton(
@@ -656,12 +465,10 @@ export class Level1 extends Scene {
                 this.burgerStack = [];
                 console.log("finished");
 
-                //this.easyOrders[this.randomIndex].isAnswered = true;
-                //while (this.easyOrders[this.randomIndex].isAnswered) {
+                // Display the next question to the player
                 this.questionIndex = Math.floor(
                     Math.random() * this.questions.length,
                 );
-                //}
                 this.currentOrder.text.setText(
                     this.questions[this.questionIndex].question,
                 );
