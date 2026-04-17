@@ -324,6 +324,8 @@ export class Level1 extends Scene {
 
     private questions: Question[];
     private questionIndex: number;
+    private score: number = 0;
+    private scoreText!: Phaser.GameObjects.Text;
 
     constructor() {
         super("Level1");
@@ -413,7 +415,20 @@ export class Level1 extends Scene {
         //this.background = this.add.image(512, 384, "background");
         //this.background.setAlpha(0.5);
 
+        // Display the FPS and score
         this.fpsText = new FpsText(this);
+        this.scoreText = this.add.text(
+            this.screenCenterX,
+            400,
+            `Score: ${this.score}`,
+            {
+                fontSize: "32px",
+                color: "#ffffff",
+                fontFamily: "Arial",
+                fontStyle: "bold",
+            },
+        );
+        console.log(this.scoreText);
 
         // Save x and y coordinates for center of screen
         this.screenCenterX =
@@ -462,6 +477,10 @@ export class Level1 extends Scene {
             ) {
                 // Clear plate and remove ingredients from activeSprites
                 this.clearPlate();
+
+                // Increment the player's score
+                this.score++;
+                this.scoreText.setText(`Score: ${this.score}`);
 
                 // Display the next question to the player
                 this.questionIndex = Math.floor(
