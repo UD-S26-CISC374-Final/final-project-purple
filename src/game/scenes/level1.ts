@@ -55,7 +55,7 @@ const EASY_QUESTIONS: Question[] = [
             'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Static Initialization",
-    } /*
+    },
     {
         question:
             'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
@@ -213,7 +213,6 @@ const EASY_QUESTIONS: Question[] = [
         ],
         category: "Intermediate Methods",
     },
-*/,
 ];
 
 /** An ingredient class to represent every ingredient object on the screen
@@ -285,6 +284,18 @@ export class Order extends Phaser.GameObjects.Container {
         this.isAnswered = isAnswered;
 
         scene.add.existing(this);
+    }
+
+    /**
+     * Updates the order to the new question and answer
+     * @param newQuestion The new question in the code snippet
+     * @param newAnswer The new answer for the code snippet
+     */
+    public updateOrder(newQuestion: string, newAnswer: string[]) {
+        this.orderType = newQuestion;
+        this.answer = newAnswer;
+
+        this.text.setText(newQuestion);
     }
 }
 
@@ -456,11 +467,10 @@ export class Level1 extends Scene {
                 this.questionIndex = Math.floor(
                     Math.random() * this.questions.length,
                 );
-                this.currentOrder.text.setText(
+                this.currentOrder.updateOrder(
                     this.questions[this.questionIndex].question,
+                    this.questions[this.questionIndex].answer,
                 );
-                this.currentOrder.answer =
-                    this.questions[this.questionIndex].answer;
             } else {
                 // Clear plate and remove ingredients from activeSprites
                 this.clearPlate();
