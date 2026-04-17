@@ -55,7 +55,7 @@ const EASY_QUESTIONS: Question[] = [
             'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Static Initialization",
-    },
+    } /*
     {
         question:
             'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
@@ -213,6 +213,7 @@ const EASY_QUESTIONS: Question[] = [
         ],
         category: "Intermediate Methods",
     },
+*/,
 ];
 
 /** An ingredient class to represent every ingredient object on the screen
@@ -373,7 +374,7 @@ export class Level1 extends Scene {
     private CheckOrder(answer: string[], order: string[]): boolean {
         // If there are not the same amount of ingredients, return false
         if (answer.length !== order.length) {
-            this.changeScene();
+            //this.changeScene();
             return false;
         }
 
@@ -448,22 +449,8 @@ export class Level1 extends Scene {
                     this.currentOrder.answer,
                 )
             ) {
-                console.log("successful");
-                // Clear burgerStack and remove item from activeSprites
-                for (let index = 0; index < this.burgerStack.length; index++) {
-                    const indexOfDeletedElement: number =
-                        this.activeSprites.indexOf(this.burgerStack[index]);
-                    if (indexOfDeletedElement > -1) {
-                        this.activeSprites.splice(indexOfDeletedElement, 1);
-                    }
-
-                    // Destroy ingredient
-                    this.burgerStack[index].destroy();
-                    console.log("stack popped");
-                }
-
-                this.burgerStack = [];
-                console.log("finished");
+                // Clear plate and remove ingredients from activeSprites
+                this.clearPlate();
 
                 // Display the next question to the player
                 this.questionIndex = Math.floor(
@@ -474,6 +461,11 @@ export class Level1 extends Scene {
                 );
                 this.currentOrder.answer =
                     this.questions[this.questionIndex].answer;
+            } else {
+                // Clear plate and remove ingredients from activeSprites
+                this.clearPlate();
+
+                this.changeScene();
             }
         });
 
