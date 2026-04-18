@@ -27,6 +27,14 @@ interface Question {
     category: string;
 }
 
+/** An interface representing the final stats. Contains final score, total questions answered by category, and the total number of incorrect questions by category
+ *
+ *
+ */
+export interface FinalStats {
+    final_score: number;
+}
+
 // Dictionary mapping an ingredient type to their starting coordinates
 const BIN_LOCATIONS: Record<string, Coordinate> = {
     patty: { x: 50, y: 300 },
@@ -413,25 +421,6 @@ export class Level1 extends Scene {
         return true;
     }
 
-    /**
-     * Initialize totalCategoriesAnswered and incorrectCategoriesAnswered to have all the category counts set to 0
-     */
-    private initiateQuestionTracking(): void {
-        // List of all the categories
-        const allCategories: string[] = this.questions.map(
-            (currentQuestion: Question) => {
-                return currentQuestion.category;
-            },
-        );
-
-        // Get a list of the categories and initialize the tracking dictionaries to 0
-        const uniqueCategories: Set<string> = new Set([...allCategories]);
-        uniqueCategories.forEach((category: string) => {
-            this.totalCategoriesAnswered[category] = 0;
-            this.incorrectCategoriesAnswered[category] = 0;
-        });
-    }
-
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
@@ -470,7 +459,6 @@ export class Level1 extends Scene {
         this.plate.setScale(SPRITE_SCALES["plate"]);
 
         this.questions = EASY_QUESTIONS;
-        this.initiateQuestionTracking();
 
         // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
@@ -501,25 +489,10 @@ export class Level1 extends Scene {
                     this.currentOrder.answer,
                 )
             ) {
-                // Clear plate and remove ingredients from activeSprites
-                //this.clearPlate();
-
                 // Increment the player's score
                 this.score++;
                 this.scoreText.setText(`Score: ${this.score}`);
-
-                // Display the next question to the player
-                /*
-                this.questionIndex = Math.floor(
-                    Math.random() * this.questions.length,
-                );
-                this.currentOrder.updateOrder(
-                    this.questions[this.questionIndex].question,
-                    this.questions[this.questionIndex].answer,
-                );*/
             } else {
-                // Clear plate and remove ingredients from activeSprites
-                //this.clearPlate();
                 // Increment the count of incorrect questions for that category of question
                 this.incorrectCategoriesAnswered[
                     this.questions[this.questionIndex].category
@@ -528,7 +501,11 @@ export class Level1 extends Scene {
                         this.questions[this.questionIndex].category
                     ] ?? 0) + 1;
 
-                this.changeScene();
+                // Send stats to Game Over Screen
+                const finalStats: FinalStats = {
+                    final_score: this.score,
+                };
+                this.changeScene(finalStats);
             }
 
             // Clear the plate and display the next question
@@ -708,7 +685,7 @@ export class Level1 extends Scene {
         this.fpsText.update();
     }
 
-    changeScene() {
-        this.scene.start("GameOver");
+    changeScene(finalStats: FinalStats) {
+        this.scene.start("GameOver", finalStats);
     }
 }
