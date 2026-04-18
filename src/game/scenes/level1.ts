@@ -39,11 +39,11 @@ const BIN_LOCATIONS: Record<string, Coordinate> = {
 
 // Dictionary mapping an ingredient type to its scale (for sprite)
 const SPRITE_SCALES: Record<string, number> = {
-    patty: 0.2,
+    patty: 2.5,
     bottom_bun: 2.5,
     top_bun: 2.5,
     cheese: 2.5,
-    lettuce: 0.2,
+    lettuce: 2.5,
     tomato: 0.2,
     plate: 0.2,
 };
@@ -322,8 +322,11 @@ export class Level1 extends Scene {
     private currentOrder: Order;
     private orderList: Phaser.GameObjects.Text[] = [];
 
+    // Question tracking variables
     private questions: Question[];
     private questionIndex: number;
+    private numQuestionsAnswered: number = 0;
+
     private score: number = 0;
     private scoreText!: Phaser.GameObjects.Text;
 
@@ -496,6 +499,8 @@ export class Level1 extends Scene {
 
                 this.changeScene();
             }
+
+            this.numQuestionsAnswered++;
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
