@@ -266,22 +266,22 @@ export class Order extends Phaser.GameObjects.Container {
     public orderType: string;
     public text: Phaser.GameObjects.Text;
     public answer: string[];
-    public isAnswered: boolean;
+    public category: string;
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
         orderType: string,
         answer: string[],
-        isAnswered: boolean,
+        category: string,
     ) {
         super(scene, x, y);
         this.orderType = orderType;
+        this.category = category;
         this.text = scene.add
             .text(x, y, orderType, { fontSize: "16px", color: "#000" })
             .setOrigin(0.5);
         this.answer = answer;
-        this.isAnswered = isAnswered;
 
         scene.add.existing(this);
     }
@@ -290,10 +290,16 @@ export class Order extends Phaser.GameObjects.Container {
      * Updates the order to the new question and answer
      * @param newQuestion The new question in the code snippet
      * @param newAnswer The new answer for the code snippet
+     * @param newCategory The new category for the code snippet
      */
-    public updateOrder(newQuestion: string, newAnswer: string[]) {
+    public updateOrder(
+        newQuestion: string,
+        newAnswer: string[],
+        newCategory: string,
+    ) {
         this.orderType = newQuestion;
         this.answer = newAnswer;
+        this.category = newCategory;
 
         this.text.setText(newQuestion);
     }
@@ -452,7 +458,7 @@ export class Level1 extends Scene {
             OrderY,
             this.questions[this.questionIndex].question,
             this.questions[this.questionIndex].answer,
-            false,
+            this.questions[this.questionIndex].category,
         );
 
         // Add confirm button to screen
@@ -474,26 +480,38 @@ export class Level1 extends Scene {
                 )
             ) {
                 // Clear plate and remove ingredients from activeSprites
-                this.clearPlate();
+                //this.clearPlate();
 
                 // Increment the player's score
                 this.score++;
                 this.scoreText.setText(`Score: ${this.score}`);
 
                 // Display the next question to the player
+                /*
                 this.questionIndex = Math.floor(
                     Math.random() * this.questions.length,
                 );
                 this.currentOrder.updateOrder(
                     this.questions[this.questionIndex].question,
                     this.questions[this.questionIndex].answer,
-                );
+                );*/
             } else {
                 // Clear plate and remove ingredients from activeSprites
-                this.clearPlate();
+                //this.clearPlate();
 
                 this.changeScene();
             }
+
+            // Clear the plate and display the next question
+            this.clearPlate();
+            this.questionIndex = Math.floor(
+                Math.random() * this.questions.length,
+            );
+            this.currentOrder.updateOrder(
+                this.questions[this.questionIndex].question,
+                this.questions[this.questionIndex].answer,
+                this.questions[this.questionIndex].category,
+            );
 
             this.numQuestionsAnswered++;
         });
