@@ -332,6 +332,8 @@ export class Level1 extends Scene {
     private questions: Question[];
     private questionIndex: number;
     private numQuestionsAnswered: number = 0;
+    private totalCategoriesAnswered: Record<string, number> = {};
+    private incorrectCategoriesAnswered: Record<string, number> = {};
 
     private score: number = 0;
     private scoreText!: Phaser.GameObjects.Text;
@@ -411,6 +413,25 @@ export class Level1 extends Scene {
         return true;
     }
 
+    /**
+     * Initialize totalCategoriesAnswered and incorrectCategoriesAnswered to have all the category counts set to 0
+     */
+    private initiateQuestionTracking(): void {
+        // List of all the categories
+        const allCategories: string[] = this.questions.map(
+            (currentQuestion: Question) => {
+                return currentQuestion.category;
+            },
+        );
+
+        // Get a list of the categories and initialize the tracking dictionaries to 0
+        const uniqueCategories: Set<string> = new Set([...allCategories]);
+        uniqueCategories.forEach((category: string) => {
+            this.totalCategoriesAnswered[category] = 0;
+            this.incorrectCategoriesAnswered[category] = 0;
+        });
+    }
+
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
@@ -449,6 +470,7 @@ export class Level1 extends Scene {
         this.plate.setScale(SPRITE_SCALES["plate"]);
 
         this.questions = EASY_QUESTIONS;
+        this.initiateQuestionTracking();
 
         // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
@@ -498,12 +520,29 @@ export class Level1 extends Scene {
             } else {
                 // Clear plate and remove ingredients from activeSprites
                 //this.clearPlate();
+                // Increment the count of incorrect questions for that category of question
+                this.incorrectCategoriesAnswered[
+                    this.questions[this.questionIndex].category
+                ] =
+                    (this.incorrectCategoriesAnswered[
+                        this.questions[this.questionIndex].category
+                    ] ?? 0) + 1;
 
                 this.changeScene();
             }
 
             // Clear the plate and display the next question
             this.clearPlate();
+
+            // Increment the total count for that category of question
+            this.totalCategoriesAnswered[
+                this.questions[this.questionIndex].category
+            ] =
+                (this.totalCategoriesAnswered[
+                    this.questions[this.questionIndex].category
+                ] ?? 0) + 1;
+
+            // Display the next question
             this.questionIndex = Math.floor(
                 Math.random() * this.questions.length,
             );
@@ -514,6 +553,9 @@ export class Level1 extends Scene {
             );
 
             this.numQuestionsAnswered++;
+
+            console.log(this.totalCategoriesAnswered);
+            console.log(this.incorrectCategoriesAnswered);
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
