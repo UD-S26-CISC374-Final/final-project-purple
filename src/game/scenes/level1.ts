@@ -29,12 +29,12 @@ interface Question {
 
 // Dictionary mapping an ingredient type to their starting coordinates
 const BIN_LOCATIONS: Record<string, Coordinate> = {
-    patty: { x: 0, y: 0 },
-    bottom_bun: { x: 500, y: 0 },
-    top_bun: { x: 800, y: 0 },
-    cheese: { x: 0, y: 400 },
-    lettuce: { x: 800, y: 600 },
-    tomato: { x: 0, y: 800 },
+    patty: { x: 50, y: 300 },
+    bottom_bun: { x: 50, y: 500 },
+    top_bun: { x: 250, y: 500 },
+    cheese: { x: 250, y: 300 },
+    lettuce: { x: 250, y: 700 },
+    tomato: { x: 0, y: 700 },
 };
 
 // Dictionary mapping an ingredient type to its scale (for sprite)
@@ -420,17 +420,12 @@ export class Level1 extends Scene {
 
         // Display the FPS and score
         this.fpsText = new FpsText(this);
-        this.scoreText = this.add.text(
-            this.screenCenterX,
-            400,
-            `Score: ${this.score}`,
-            {
-                fontSize: "32px",
-                color: "#ffffff",
-                fontFamily: "Arial",
-                fontStyle: "bold",
-            },
-        );
+        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
+            fontSize: "32px",
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontStyle: "bold",
+        });
         console.log(this.scoreText);
 
         // Save x and y coordinates for center of screen
