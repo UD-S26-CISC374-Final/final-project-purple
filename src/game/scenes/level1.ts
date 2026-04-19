@@ -3,34 +3,235 @@ import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 import { SelectorButton } from "./main-menu";
 
-// An interface representing coordinates for an object, has a starting x and starting y
+/** An interface representing coordinates for an object, has a starting x and starting y
+ *
+ * Fields:
+ *  x: number, the x coordinate of the object
+ *  y: number, the y coordinate of the object
+ */
 interface Coordinate {
     x: number;
     y: number;
 }
 
+/** An interface representing a question, contains a question, its correct answer, and a category
+ *
+ * Fields:
+ *  question: string, the code snippet to be displayed to the player
+ *  answer: string[], the ingredients required in the correct answer
+ *  category: string, the category of the question
+ */
+interface Question {
+    question: string;
+    answer: string[];
+    category: string;
+}
+
+/** An interface representing the final stats. Contains final score, total questions answered by category, and the total number of incorrect questions by category
+ *
+ *
+ */
+export interface FinalStats {
+    final_score: number;
+}
+
 // Dictionary mapping an ingredient type to their starting coordinates
 const BIN_LOCATIONS: Record<string, Coordinate> = {
-    patty: { x: 0, y: 0 },
-    bottom_bun: { x: 500, y: 0 },
-    top_bun: { x: 800, y: 0 },
-    cheese: { x: 0, y: 400 },
-    lettuce: { x: 800, y: 600 },
-    tomato: { x: 0, y: 800 },
+    patty: { x: 50, y: 300 },
+    bottom_bun: { x: 50, y: 500 },
+    top_bun: { x: 250, y: 500 },
+    cheese: { x: 250, y: 300 },
+    lettuce: { x: 250, y: 700 },
+    tomato: { x: 0, y: 700 },
 };
 
 // Dictionary mapping an ingredient type to its scale (for sprite)
 const SPRITE_SCALES: Record<string, number> = {
-    patty: 0.2,
-    bottom_bun: 4,
-    top_bun: 0.2,
-    cheese: 0.2,
-    lettuce: 0.2,
+    patty: 2.5,
+    bottom_bun: 2.5,
+    top_bun: 2.5,
+    cheese: 2.5,
+    lettuce: 2.5,
     tomato: 0.2,
     plate: 0.2,
 };
 
-// An ingredient class to represent every ingredient object on the screen
+// A list of easy questions
+const EASY_QUESTIONS: Question[] = [
+    {
+        question:
+            'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
+        answer: ["bottom_bun", "patty", "cheese", "top_bun"],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
+        answer: ["bottom_bun", "lettuce", "lettuce", "patty", "top_bun"],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct Salad {\n\tchar[10][2] ingredients;\n}\n\nsalad1: Salad = {\n\tingredients: \n\t\t["lettuce", \n\t\t"lettuce"],\n};',
+        answer: ["lettuce", "lettuce"],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct VeggieBurger {\n\tchar[10][4] ingredients;\n\tbool vegan;\n\tbool buns;\n}\n\nveggieBurger1: VeggieBurger = {\n\tingredients: \n\t\t["lettuce"],\n\tvegan: true,\n\tbuns: true,\n};',
+        answer: ["bottom_bun", "lettuce", "top_bun"],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct DoubleBurger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ndoubleBurger1: DoubleBurger = {\n\tingredients: \n\t\t["patty", "patty"],\n\tbuns: true,\n};\ndoubleBurger1.ingredients.push("cheese");',
+        answer: ["bottom_bun", "patty", "patty", "top_bun"],
+        category: "Basic Methods",
+    },
+    {
+        question:
+            'struct Cheeseburger {\n\tchar[7][3] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\norder1.ingredients.pop();\norder1.ingredients.push("lettuce");',
+        answer: ["bottom_bun", "patty", "cheese", "top_bun"],
+        category: "Basic Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1);',
+        answer: ["bottom_bun", "patty", "lettuce", "top_bun"],
+        category: "Intermediate Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburgerWithCheese: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1, "cheese");',
+        answer: ["bottom_bun", "patty", "cheese", "top_bun"],
+        category: "Intermediate Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ncheesyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};\nvoid addCheese(){\n\tcheesyBurger.ingredients.push("cheese");\n}\naddCheese();',
+        answer: ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
+        category: "Procedural Logic",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
+        answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[9][3] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 2;',
+        answer: ["bottom_bun", "patty", "top_bun"],
+        category: "Basic Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnoBuns: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 0;\nbuns: false',
+        answer: ["patty", "lettuce"],
+        category: "Basic Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][10] ingredients;\n\tbool buns;\n}\n\nhealthyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "patty",
+            "cheese",
+            "patty",
+            "cheese",
+            "patty",
+            "cheese",
+            "lettuce",
+            "top_bun",
+        ],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid addCheese(burger: Burger) {\n\tburger.ingredients.push("cheese");\n}',
+        answer: [
+            "bottom_bun",
+            "lettuce",
+            "patty",
+            "cheese",
+            "lettuce",
+            "top_bun",
+        ],
+        category: "Procedural Logic",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][8] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"lettuce", \n\t\t"lettuce",\n\t\t"lettuce",\n\t\t"lettuce"],\n\tbuns: true,\n};',
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "lettuce",
+            "lettuce",
+            "lettuce",
+            "lettuce",
+            "lettuce",
+            "top_bun",
+        ],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            "struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnothingBurger: Burger = {\n\tingredients: \n\t\t[],\n\tbuns: false,\n};",
+        answer: [],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.unshift("lettuce");',
+        answer: [
+            "bottom_bun",
+            "lettuce",
+            "patty",
+            "cheese",
+            "lettuce",
+            "top_bun",
+        ],
+        category: "Basic Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.shift();',
+        answer: ["bottom_bun", "cheese", "lettuce", "top_bun"],
+        category: "Basic Methods",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid LettuceForBurger() {\n\tfor(int i = 0; i < burger.ingredients.length; i++) {\n\t\tif(burger.ingredients[i] == "lettuce") {\n\t\t\tburger.ingredients[i] = "burger";\n\t\t}\n\t}\n}',
+        answer: ["bottom_bun", "cheese", "burger", "burger", "top_bun"],
+        category: "Procedural Logic",
+    },
+    {
+        question:
+            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.splice(1, 0, "lettuce");',
+        answer: [
+            "bottom_bun",
+            "patty",
+            "lettuce",
+            "cheese",
+            "lettuce",
+            "top_bun",
+        ],
+        category: "Intermediate Methods",
+    },
+];
+
+/** An ingredient class to represent every ingredient object on the screen
+ *
+ * Fields:
+ * scene: Phaser.Scene, the scene to add the ingredient to
+ * x: number, the x coordinate of the ingredient
+ * y: number, the y coordinate of the ingredient
+ * texture: string, the ingredient type (ex: patty, lettuce)
+ * isFromBin: boolean, whether ingredient is in starting bin
+ */
 export class Ingredient extends Phaser.GameObjects.Image {
     public isFromBin: boolean;
     public ingredientType: string;
@@ -58,43 +259,57 @@ export class Ingredient extends Phaser.GameObjects.Image {
         scene.input.setDraggable(this);
     }
 }
+
+/** An order class to represent the current code snippet
+ *
+ * Fields:
+ * scene: Phaser.Scene, the scene to add the code snippet to
+ * x: number, the x coordinate of the order
+ * y: number, the y coordinate of the order
+ * orderType: string, the code snippet contents
+ * answer: string[], the list of correct ingredients
+ * isAnswered: boolean, whether the order has been answered
+ */
 export class Order extends Phaser.GameObjects.Container {
     public orderType: string;
     public text: Phaser.GameObjects.Text;
     public answer: string[];
-    public isAnswered: boolean;
+    public category: string;
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
-        //texture: string,
         orderType: string,
         answer: string[],
-        isAnswered: boolean,
+        category: string,
     ) {
         super(scene, x, y);
         this.orderType = orderType;
+        this.category = category;
         this.text = scene.add
             .text(x, y, orderType, { fontSize: "16px", color: "#000" })
             .setOrigin(0.5);
         this.answer = answer;
-        this.isAnswered = isAnswered;
 
         scene.add.existing(this);
     }
-}
 
-export class Ticket extends Phaser.GameObjects.Image {
-    public order: Phaser.GameObjects.Text;
-    constructor(
-        scene: Phaser.Scene,
-        x: number,
-        y: number,
-        texture: string,
-        order: Phaser.GameObjects.Text,
+    /**
+     * Updates the order to the new question and answer
+     * @param newQuestion The new question in the code snippet
+     * @param newAnswer The new answer for the code snippet
+     * @param newCategory The new category for the code snippet
+     */
+    public updateOrder(
+        newQuestion: string,
+        newAnswer: string[],
+        newCategory: string,
     ) {
-        super(scene, x, y, texture);
-        this.order = order;
+        this.orderType = newQuestion;
+        this.answer = newAnswer;
+        this.category = newCategory;
+
+        this.text.setText(newQuestion);
     }
 }
 
@@ -118,22 +333,29 @@ export class Level1 extends Scene {
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
 
-    // Create orders for the player to complete
-    private orders: Order[] = [];
     private currentOrder: Order;
     private orderList: Phaser.GameObjects.Text[] = [];
-    private easyOrders: Order[] = [];
 
-    // Create tickets for the orders
-    private tickets: Ticket[] = [];
+    // Question tracking variables
+    private questions: Question[];
+    private questionIndex: number;
+    private numQuestionsAnswered: number = 0;
+    private totalCategoriesAnswered: Record<string, number> = {};
+    private incorrectCategoriesAnswered: Record<string, number> = {};
 
-    private randomIndex: number;
+    private score: number = 0;
+    private scoreText!: Phaser.GameObjects.Text;
 
     constructor() {
         super("Level1");
     }
 
-    // Adds the given ingredient to the plate
+    /**
+     * Adds the given ingredient to the plate
+     * @param ingredient The current ingredient to add to the plate
+     *
+     * Notes: Adds ingredient to burgerStack array
+     */
     private snapToPlate(ingredient: Ingredient): void {
         // Disable the previous top item so you can't grab from the middle
         if (this.burgerStack.length > 0) {
@@ -156,7 +378,11 @@ export class Level1 extends Scene {
         ingredient.setDepth(this.burgerStack.length + 1);
     }
 
-    // Removes all ingredients from the plate
+    /**
+     * Removes all ingredients from the plate
+     *
+     * Notes: Destroys all ingredient objects on plate
+     */
     private clearPlate(): void {
         // Loop through burger stack and destroy all elements, and remove them from activeSprites list
         this.burgerStack.forEach((currentIngredient: Ingredient) => {
@@ -171,26 +397,28 @@ export class Level1 extends Scene {
         this.burgerStack = [];
     }
 
+    /**
+     *  Check if the burger the player created is the same as the answer
+     * @param answer The array of ingredients required in the answer
+     * @param order The array of ingredients made by the player
+     * @returns boolean, true if the orders match
+     */
     private CheckOrder(answer: string[], order: string[]): boolean {
+        // If there are not the same amount of ingredients, return false
         if (answer.length !== order.length) {
-            this.changeScene();
+            //this.changeScene();
             return false;
-        } else {
-            for (let i = 0; i < answer.length; i++) {
-                let innerCheck: boolean = false;
-                for (let j = 0; j < order.length; j++) {
-                    if (answer[i] === order[j]) {
-                        innerCheck = true;
-                        break;
-                    }
-                }
-                if (!innerCheck) {
-                    this.changeScene();
-                    return false;
-                }
-            }
-            return true;
         }
+
+        // Compare the order to the answer
+        for (let index = 0; index < answer.length; index++) {
+            // If the ingredients don't match, return false
+            if (answer[index] !== order[index]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     create() {
@@ -199,222 +427,22 @@ export class Level1 extends Scene {
         const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
         const OrderY = this.cameras.main.height / 4;
 
-        // Create Easy Orders
-        this.easyOrders = [
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            )
-                .setActive(false)
-                .setVisible(false),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
-                ["bottom_bun", "lettuce", "lettuce", "patty", "top_bun"],
-                false,
-            )
-                .setActive(false)
-                .setVisible(false),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Salad {\n\tchar[10][2] ingredients;\n}\n\nsalad1: Salad = {\n\tingredients: \n\t\t["lettuce", \n\t\t"lettuce"],\n};',
-                ["lettuce", "lettuce"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct VeggieBurger {\n\tchar[10][4] ingredients;\n\tbool vegan;\n\tbool buns;\n}\n\nveggieBurger1: VeggieBurger = {\n\tingredients: \n\t\t["lettuce"],\n\tvegan: true,\n\tbuns: true,\n};',
-                ["bottom_bun", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct DoubleBurger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ndoubleBurger1: DoubleBurger = {\n\tingredients: \n\t\t["patty", "patty"],\n\tbuns: true,\n};\ndoubleBurger1.ingredients.push("cheese");',
-                ["bottom_bun", "patty", "patty", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Cheeseburger {\n\tchar[7][3] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\norder1.ingredients.pop();\norder1.ingredients.push("lettuce");',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1);',
-                ["bottom_bun", "patty", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburgerWithCheese: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1, "cheese");',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ncheesyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};\nvoid addCheese(){\n\tcheesyBurger.ingredients.push("cheese");\n}\naddCheese();',
-                ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
-                ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[9][3] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 2;',
-                ["bottom_bun", "patty", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnoBuns: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 0;\nbuns: false',
-                ["patty", "lettuce"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][10] ingredients;\n\tbool buns;\n}\n\nhealthyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
-                [
-                    "bottom_bun",
-                    "patty",
-                    "cheese",
-                    "patty",
-                    "cheese",
-                    "patty",
-                    "cheese",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid addCheese(burger: Burger) {\n\tburger.ingredients.push("cheese");\n}',
-                [
-                    "bottom_bun",
-                    "lettuce",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ) /* This order is meant to trick the player into adding cheese to the burger twice, but the function only adds it once because the burger is passed by reference, so the original burger object is mutated and updated with the new cheese ingredient. */,
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][8] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"lettuce", \n\t\t"lettuce",\n\t\t"lettuce",\n\t\t"lettuce"],\n\tbuns: true,\n};',
-                [
-                    "bottom_bun",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "lettuce",
-                    "lettuce",
-                    "lettuce",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                "struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnothingBurger: Burger = {\n\tingredients: \n\t\t[],\n\tbuns: false,\n};",
-                [],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.unshift("lettuce");',
-                [
-                    "bottom_bun",
-                    "lettuce",
-                    "patty",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.shift();',
-                ["bottom_bun", "cheese", "lettuce", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid LettuceForBurger() {\n\tfor(int i = 0; i < burger.ingredients.length; i++) {\n\t\tif(burger.ingredients[i] == "lettuce") {\n\t\t\tburger.ingredients[i] = "burger";\n\t\t}\n\t}\n}',
-                ["bottom_bun", "cheese", "burger", "burger", "top_bun"],
-                false,
-            ),
-            new Order(
-                this,
-                -1000,
-                -1000,
-                'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.splice(1, 0, "lettuce");',
-                [
-                    "bottom_bun",
-                    "patty",
-                    "lettuce",
-                    "cheese",
-                    "lettuce",
-                    "top_bun",
-                ],
-                false,
-            ),
-        ];
+        console.log(EASY_QUESTIONS);
+
         console.log(this.orderList);
 
         //this.background = this.add.image(512, 384, "background");
         //this.background.setAlpha(0.5);
 
+        // Display the FPS and score
         this.fpsText = new FpsText(this);
+        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
+            fontSize: "32px",
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontStyle: "bold",
+        });
+        console.log(this.scoreText);
 
         // Save x and y coordinates for center of screen
         this.screenCenterX =
@@ -429,68 +457,30 @@ export class Level1 extends Scene {
             "plate",
         );
         this.plate.setScale(SPRITE_SCALES["plate"]);
-        // Add tickets to the screen and sets up interactibility
-        /*this.ticket = this.add.image(100, 100, "ticket");
-        this.ticket.setScale(0.2);
-        this.ticket.setInteractive({ useHandCursor: true });
-        this.ticket.on("pointerdown", () => {
-            this.currentOrder = new Order(
-                this,
-                OrderX,
-                OrderY,
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-                ["bottom_bun", "patty", "cheese", "top_bun"],
-                false,
-            );
-        });
-        this.tickets.push(
-            new Ticket(this, 100, 100, "ticket", this.orderList[0]),
-        );*/
-        for (const ticket of this.tickets) {
-            ticket.setInteractive({ useHandCursor: true });
-            ticket.on("pointerdown", () => {
-                this.currentOrder.text = ticket.order;
-            });
-        }
-        // Add orders to screen
-        /*this.orders = [
-            new Order(
-                this,
-                this.cameras.main.width - this.cameras.main.width / 6,
-                this.cameras.main.height / 5,
-                "simple_trace",
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-            ),
-        ];*/
-        this.randomIndex = Math.floor(Math.random() * this.easyOrders.length);
+
+        this.questions = EASY_QUESTIONS;
+
+        // Choose a random question to start the player with
+        this.questionIndex = Math.floor(Math.random() * this.questions.length);
         this.currentOrder = new Order(
             this,
             OrderX,
             OrderY,
-            this.easyOrders[this.randomIndex].text.text,
-            this.easyOrders[this.randomIndex].answer,
-            false,
+            this.questions[this.questionIndex].question,
+            this.questions[this.questionIndex].answer,
+            this.questions[this.questionIndex].category,
         );
-        this.orders.push(this.currentOrder);
-        /*this.orders.push(
-            new Order(
-                this,
-                this.cameras.main.width - this.cameras.main.width / 6,
-                this.cameras.main.height / 5,
-                "order_box",
-                'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
-            ),
-        );*/
 
         // Add confirm button to screen
         this.confirmButton = new SelectorButton(
             this,
-            OrderX + 100,
-            OrderY + 120,
+            this.screenCenterX + 100,
+            OrderY + 300,
             "Confirm",
             140,
         );
         this.confirmButton.on("pointerdown", () => {
+            // Check if the question was answered correctly
             if (
                 this.CheckOrder(
                     this.burgerStack.map(
@@ -499,35 +489,57 @@ export class Level1 extends Scene {
                     this.currentOrder.answer,
                 )
             ) {
-                console.log("successful");
-                while (this.burgerStack.length > 0) {
-                    this.burgerStack.pop()?.destroy();
-                    console.log("stack popped");
-                }
-                console.log("finished");
-                if (this.easyOrders.every((order) => order.isAnswered)) {
-                    this.changeScene();
-                } else {
-                    this.easyOrders[this.randomIndex].isAnswered = true;
-                    while (this.easyOrders[this.randomIndex].isAnswered) {
-                        this.randomIndex = Math.floor(
-                            Math.random() * this.easyOrders.length,
-                        );
-                    }
-                    this.currentOrder.text.setText(
-                        this.easyOrders[this.randomIndex].text.text,
-                    );
-                    this.currentOrder.answer =
-                        this.easyOrders[this.randomIndex].answer;
-                }
+                // Increment the player's score
+                this.score++;
+                this.scoreText.setText(`Score: ${this.score}`);
+            } else {
+                // Increment the count of incorrect questions for that category of question
+                this.incorrectCategoriesAnswered[
+                    this.questions[this.questionIndex].category
+                ] =
+                    (this.incorrectCategoriesAnswered[
+                        this.questions[this.questionIndex].category
+                    ] ?? 0) + 1;
+
+                // Send stats to Game Over Screen
+                const finalStats: FinalStats = {
+                    final_score: this.score,
+                };
+                this.changeScene(finalStats);
             }
+
+            // Clear the plate and display the next question
+            this.clearPlate();
+
+            // Increment the total count for that category of question
+            this.totalCategoriesAnswered[
+                this.questions[this.questionIndex].category
+            ] =
+                (this.totalCategoriesAnswered[
+                    this.questions[this.questionIndex].category
+                ] ?? 0) + 1;
+
+            // Display the next question
+            this.questionIndex = Math.floor(
+                Math.random() * this.questions.length,
+            );
+            this.currentOrder.updateOrder(
+                this.questions[this.questionIndex].question,
+                this.questions[this.questionIndex].answer,
+                this.questions[this.questionIndex].category,
+            );
+
+            this.numQuestionsAnswered++;
+
+            console.log(this.totalCategoriesAnswered);
+            console.log(this.incorrectCategoriesAnswered);
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
         this.clearPlateButton = new SelectorButton(
             this,
-            OrderX - 100,
-            OrderY + 120,
+            this.screenCenterX - 100,
+            OrderY + 300,
             "Clear Plate",
             140,
         ).on("pointerdown", () => this.clearPlate());
@@ -673,7 +685,7 @@ export class Level1 extends Scene {
         this.fpsText.update();
     }
 
-    changeScene() {
-        this.scene.start("GameOver");
+    changeScene(finalStats: FinalStats) {
+        this.scene.start("GameOver", finalStats);
     }
 }
