@@ -24,12 +24,17 @@ export class GameOver extends Scene {
         //this.background = this.add.image(512, 384, "background");
         //this.background.setAlpha(0.5);
 
-        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
-            fontSize: "32px",
-            color: "#000000",
-            fontFamily: "Arial",
-            fontStyle: "bold",
-        });
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
+
+        this.scoreText = this.add
+            .text(centerX, centerY, `Game Over\nScore: ${this.score}`, {
+                fontSize: "32px",
+                color: "#000000",
+                fontFamily: "Arial",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5, 0.5);
         console.log(this.scoreText);
 
         EventBus.emit("current-scene-ready", this);
