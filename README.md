@@ -17,7 +17,7 @@ TEXT GOES HERE
 
 # Basic Instructions
 
-TEXT GOES HERE
+Read the code snippet found on the ticket to determine the contents of the burger. Then drag and drop each ingredient, with buns first, in left to right order as they appear in the final burger object.
 
 # Screenshot
 
@@ -29,7 +29,7 @@ TEXT GOES HERE
 
 # Educational Game Design Document
 
-Link to our [egdd](Educational Game Design Document)
+[Link to our EGDD (Educational Game Design Document)](docs/egdd.md)
 
 # Credits
 
