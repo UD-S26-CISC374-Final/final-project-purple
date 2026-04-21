@@ -13,7 +13,6 @@ export class GameOver extends Scene {
     // Variables for tracking question analytics by category
     private totalCategoriesAnswered: Record<string, number> = {};
     private incorrectCategoriesAnswered: Record<string, number> = {};
-    //private accuracyTableText!: Phaser.GameObjects.Text;
 
     constructor() {
         super("GameOver");
@@ -44,7 +43,7 @@ export class GameOver extends Scene {
                 fontFamily: "Arial",
                 fontStyle: "bold",
             })
-            .setOrigin(0.5, 0.5);
+            .setOrigin(0.5, 0);
         console.log(this.scoreText);
 
         // Style for header of table
@@ -65,9 +64,32 @@ export class GameOver extends Scene {
         // Positions for table
         const columnWidth = 250;
         const startX = centerX - columnWidth;
-        const headerY = centerY / 4;
+        const headerY = centerY / 2;
         const rowHeight = 40;
         const startY = headerY + 50;
+
+        /*const padding = 30;
+        const tableWidth = columnWidth * 2 + 200; // Adjust based on your column spacing
+        const tableHeight =
+            Object.keys(this.totalCategoriesAnswered).length * rowHeight + 100;
+
+        
+        // The top-left corner of the box
+        const boxX = startX - padding;
+        const boxY = headerY - padding;
+
+        const graphics = this.add.graphics();
+
+        // 1. Set the fill color (e.g., a light grey or white)
+        graphics.fillStyle(0xffffff, 1);
+
+        // 2. Set the border style (e.g., a dark grey line, 4px thick)
+        graphics.lineStyle(4, 0x333333, 1);
+
+        // 3. Draw the rounded rect: fillRoundedRect(x, y, width, height, radius)
+        graphics.fillRoundedRect(boxX, boxY, tableWidth, tableHeight, 15);
+        graphics.strokeRoundedRect(boxX, boxY, tableWidth, tableHeight, 15);
+        */
 
         // Draw the header for the table
         const headers = [
@@ -75,13 +97,12 @@ export class GameOver extends Scene {
             { text: "Accuracy", x: centerX },
             { text: "Total Questions", x: startX + columnWidth * 2 },
         ];
-
         headers.forEach((h) => {
             this.add
                 .text(h.x, headerY, h.text, headerStyle)
                 .setOrigin(0.5, 0.5);
         });
-        // Draw a red line at startX to see where the text should be touching
+        // Draw a line under the column names
         this.add
             .graphics()
             .lineStyle(2, 0x0)
@@ -89,7 +110,7 @@ export class GameOver extends Scene {
 
         let index: number = 0;
 
-        // Loop through each category and calculate the percent of questions answered correctly
+        // Loop through each category and calculate the percent of questions answered correctly and build the rows for the table
         for (const [category, totalCategoryQuestions] of Object.entries(
             this.totalCategoriesAnswered,
         )) {
@@ -104,17 +125,19 @@ export class GameOver extends Scene {
                 accuracy = Math.round(accuracy);
             }
 
-            // Row Column 1: Category Name (Left Aligned)
+            // Column 1: Category Name (Left Aligned)
             this.add.text(startX, yPos, category, rowStyle).setOrigin(0.5, 0.5);
 
-            // Row Column 2: Accuracy (Centered)
-            //const accColor = accuracy >= 70 ? "#008800" : "#aa0000"; // Green for pass, Red for fail
-
+            // Column 2: Accuracy (Centered)
+            const accuracyColor = accuracy >= 70 ? "#008800" : "#aa0000"; // Green for pass, Red for fail
             this.add
-                .text(centerX, yPos, `${accuracy}%`, rowStyle)
+                .text(centerX, yPos, `${accuracy}%`, {
+                    ...rowStyle,
+                    color: accuracyColor,
+                })
                 .setOrigin(0.5, 0.5);
 
-            // Row Column 3: Total Questions (Right Aligned or Offset)
+            // Column 3: Total Questions (Right Aligned or Offset)
             this.add
                 .text(
                     startX + columnWidth * 2,
@@ -126,17 +149,6 @@ export class GameOver extends Scene {
 
             index++;
         }
-
-        /*
-        this.accuracyTableText = this.add
-            .text(centerX, centerY + 200, accuracyTable, {
-                fontSize: "32px",
-                color: "#000000",
-                fontFamily: "Arial",
-                fontStyle: "bold",
-            })
-            .setOrigin(0.5, 0.5);
-        console.log(this.accuracyTableText);*/
 
         EventBus.emit("current-scene-ready", this);
     }
