@@ -4,7 +4,7 @@ import type { FinalStats } from "./level1";
 
 export class GameOver extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
-    //background: Phaser.GameObjects.Image;
+    background: Phaser.GameObjects.Image;
 
     // Score tracking variables
     private score: number;
@@ -29,8 +29,8 @@ export class GameOver extends Scene {
         this.camera = this.cameras.main;
         //this.camera.setBackgroundColor(0xff0000);
 
-        //this.background = this.add.image(512, 384, "background");
-        //this.background.setAlpha(0.5);
+        this.background = this.add.image(512, 384, "background");
+        this.background.setAlpha(0.5);
 
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height / 2;
@@ -68,29 +68,6 @@ export class GameOver extends Scene {
         const rowHeight = 40;
         const startY = headerY + 50;
 
-        /*const padding = 30;
-        const tableWidth = columnWidth * 2 + 200; // Adjust based on your column spacing
-        const tableHeight =
-            Object.keys(this.totalCategoriesAnswered).length * rowHeight + 100;
-
-        
-        // The top-left corner of the box
-        const boxX = startX - padding;
-        const boxY = headerY - padding;
-
-        const graphics = this.add.graphics();
-
-        // 1. Set the fill color (e.g., a light grey or white)
-        graphics.fillStyle(0xffffff, 1);
-
-        // 2. Set the border style (e.g., a dark grey line, 4px thick)
-        graphics.lineStyle(4, 0x333333, 1);
-
-        // 3. Draw the rounded rect: fillRoundedRect(x, y, width, height, radius)
-        graphics.fillRoundedRect(boxX, boxY, tableWidth, tableHeight, 15);
-        graphics.strokeRoundedRect(boxX, boxY, tableWidth, tableHeight, 15);
-        */
-
         // Draw the header for the table
         const headers = [
             { text: "Question Category", x: startX },
@@ -102,6 +79,7 @@ export class GameOver extends Scene {
                 .text(h.x, headerY, h.text, headerStyle)
                 .setOrigin(0.5, 0.5);
         });
+
         // Draw a line under the column names
         this.add
             .graphics()
