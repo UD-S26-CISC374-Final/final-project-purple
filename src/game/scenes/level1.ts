@@ -39,12 +39,12 @@ export interface FinalStats {
 
 // Lookup table for an ingredient's starting location
 const BIN_LOCATIONS: Record<string, Coordinate> = {
-    patty: { x: 70, y: 300 },
-    bottom_bun: { x: 70, y: 400 },
-    top_bun: { x: 250, y: 400 },
-    cheese: { x: 250, y: 300 },
-    lettuce: { x: 250, y: 500 },
-    tomato: { x: 70, y: 500 },
+    patty: { x: 70, y: 400 },
+    bottom_bun: { x: 70, y: 500 },
+    top_bun: { x: 250, y: 500 },
+    cheese: { x: 250, y: 400 },
+    lettuce: { x: 250, y: 600 },
+    tomato: { x: 70, y: 600 },
 };
 
 // Lookup table for an ingredient's sprite scale
@@ -588,7 +588,7 @@ export class Level1 extends Scene {
         // Add plate to the middle of the screen
         this.plate = this.add.image(
             this.screenCenterX,
-            this.screenCenterY,
+            this.screenCenterY + 200,
             "plate",
         );
         this.plate.setScale(SPRITE_SCALES["plate"]);
@@ -610,7 +610,7 @@ export class Level1 extends Scene {
         this.confirmButton = new SelectorButton(
             this,
             this.screenCenterX + 100,
-            OrderY + 300,
+            this.screenCenterY + 300,
             "Confirm",
             140,
         );
@@ -660,8 +660,8 @@ export class Level1 extends Scene {
 
             this.numQuestionsAnswered++;
 
-            // Switch to Game Over Screen after 5 questions
-            if (this.numQuestionsAnswered >= 5) {
+            // Switch to Game Over Screen after 10 questions
+            if (this.numQuestionsAnswered >= 10) {
                 // Send stats to Game Over Screen
                 const finalStats: FinalStats = {
                     final_score: this.score,
@@ -677,7 +677,7 @@ export class Level1 extends Scene {
         this.clearPlateButton = new SelectorButton(
             this,
             this.screenCenterX - 100,
-            OrderY + 300,
+            this.screenCenterY + 300,
             "Clear Plate",
             140,
         ).on("pointerdown", () => this.clearPlate());
@@ -809,7 +809,7 @@ export class Level1 extends Scene {
                 );
 
                 // If ingredient was dropped close to plate, add it to stack
-                if (distance < 60) {
+                if (distance < 80) {
                     this.snapToPlate(gameObject);
                 } else {
                     // Destroy ingredient if it misses plate
