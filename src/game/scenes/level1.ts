@@ -37,7 +37,7 @@ export interface FinalStats {
     incorrectCategoriesAnswered: Record<string, number>;
 }
 
-// Dictionary mapping an ingredient type to their starting coordinates
+// Lookup table for an ingredient's starting location
 const BIN_LOCATIONS: Record<string, Coordinate> = {
     patty: { x: 70, y: 300 },
     bottom_bun: { x: 70, y: 400 },
@@ -47,15 +47,25 @@ const BIN_LOCATIONS: Record<string, Coordinate> = {
     tomato: { x: 70, y: 500 },
 };
 
-// Dictionary mapping an ingredient type to its scale (for sprite)
+// Lookup table for an ingredient's sprite scale
 const SPRITE_SCALES: Record<string, number> = {
     patty: 2,
     bottom_bun: 2,
     top_bun: 2,
-    cheese: 2,
+    cheese: 2.4,
     lettuce: 2,
-    tomato: 0.12,
+    tomato: 0.1,
     plate: 0.2,
+};
+
+// Lookup table for an ingredient's height, used for determining ingredient placement on the plate
+const INGREDIENT_HEIGHTS: Record<string, number> = {
+    patty: 20,
+    bottom_bun: 12,
+    top_bun: 20,
+    cheese: 5,
+    lettuce: 12,
+    tomato: 5,
 };
 
 // A list of easy questions
@@ -381,10 +391,22 @@ export class Level1 extends Scene {
             previousTop.disableInteractive();
         }
 
+        // Calculate height of stack
+        let stackHeight = 0;
+        this.burgerStack.forEach((currentIngredient: Ingredient) => {
+            stackHeight +=
+                INGREDIENT_HEIGHTS[currentIngredient.ingredientType] ?? 10;
+        });
+
         // Snap the new ingredient and add to array
         ingredient.x = this.plate.x;
-        ingredient.y = this.plate.y - (this.burgerStack.length + 1) * 12;
+        ingredient.y = this.plate.y - stackHeight;
         this.burgerStack.push(ingredient);
+
+        // Move the top bun up
+        if (ingredient.ingredientType === "top_bun") {
+            ingredient.y -= 25;
+        }
 
         // Remove ingredient from bin
         ingredient.isFromBin = false;
