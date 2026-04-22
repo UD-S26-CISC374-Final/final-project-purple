@@ -14,6 +14,9 @@ export class GameOver extends Scene {
     private totalCategoriesAnswered: Record<string, number> = {};
     private incorrectCategoriesAnswered: Record<string, number> = {};
 
+    private screenCenterX: number;
+    private screenCenterY: number;
+
     constructor() {
         super("GameOver");
     }
@@ -25,26 +28,12 @@ export class GameOver extends Scene {
         this.incorrectCategoriesAnswered = gameData.incorrectCategoriesAnswered;
     }
 
-    create() {
-        this.camera = this.cameras.main;
-        //this.camera.setBackgroundColor(0xff0000);
-
-        this.background = this.add.image(512, 384, "background");
-        this.background.setAlpha(0.5);
-
-        const centerX = this.cameras.main.width / 2;
-        const centerY = this.cameras.main.height / 2;
-
-        // Display the score in the center of the screen
-        this.scoreText = this.add
-            .text(centerX, 40, `Game Over\nScore: ${this.score}`, {
-                fontSize: "32px",
-                color: "#000000",
-                fontFamily: "Arial",
-                fontStyle: "bold",
-            })
-            .setOrigin(0.5, 0);
-        console.log(this.scoreText);
+    /**
+     * Display the table containing accuracy by category
+     */
+    private displayAccuracyTable(): void {
+        //const centerX = this.cameras.main.width / 2;
+        //const centerY = this.cameras.main.height / 2;
 
         // Style for header of table
         const headerStyle: Phaser.Types.GameObjects.Text.TextStyle = {
@@ -63,15 +52,15 @@ export class GameOver extends Scene {
 
         // Positions for table
         const columnWidth = 250;
-        const startX = centerX - columnWidth;
-        const headerY = centerY / 2;
+        const startX = this.screenCenterX - columnWidth;
+        const headerY = this.screenCenterY / 2;
         const rowHeight = 40;
         const startY = headerY + 50;
 
         // Draw the header for the table
         const headers = [
             { text: "Question Category", x: startX },
-            { text: "Accuracy", x: centerX },
+            { text: "Accuracy", x: this.screenCenterX },
             { text: "Total Questions", x: startX + columnWidth * 2 },
         ];
         headers.forEach((h) => {
@@ -84,7 +73,12 @@ export class GameOver extends Scene {
         this.add
             .graphics()
             .lineStyle(2, 0x0)
-            .lineBetween(120, headerY + 30, centerX + 350, headerY + 30);
+            .lineBetween(
+                120,
+                headerY + 30,
+                this.screenCenterX + 350,
+                headerY + 30,
+            );
 
         let index: number = 0;
 
@@ -109,7 +103,7 @@ export class GameOver extends Scene {
             // Column 2: Accuracy (Centered)
             const accuracyColor = accuracy >= 70 ? "#008800" : "#aa0000"; // Green for pass, Red for fail
             this.add
-                .text(centerX, yPos, `${accuracy}%`, {
+                .text(this.screenCenterX, yPos, `${accuracy}%`, {
                     ...rowStyle,
                     color: accuracyColor,
                 })
@@ -127,6 +121,31 @@ export class GameOver extends Scene {
 
             index++;
         }
+    }
+
+    create() {
+        this.camera = this.cameras.main;
+        //this.camera.setBackgroundColor(0xff0000);
+
+        this.background = this.add.image(512, 384, "background");
+        this.background.setAlpha(0.5);
+
+        this.screenCenterX = this.cameras.main.width / 2;
+        this.screenCenterY = this.cameras.main.height / 2;
+
+        // Display the score in the center of the screen
+        this.scoreText = this.add
+            .text(this.screenCenterX, 40, `Game Over\nScore: ${this.score}`, {
+                fontSize: "32px",
+                color: "#000000",
+                fontFamily: "Arial",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5, 0);
+        console.log(this.scoreText);
+
+        // Display the table with accuracy by category
+        this.displayAccuracyTable();
 
         EventBus.emit("current-scene-ready", this);
     }
