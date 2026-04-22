@@ -1,6 +1,7 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import type { FinalStats } from "./level1";
+import { SelectorButton } from "./main-menu";
 
 export class GameOver extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -16,6 +17,8 @@ export class GameOver extends Scene {
 
     private screenCenterX: number;
     private screenCenterY: number;
+
+    private homeButton: SelectorButton;
 
     constructor() {
         super("GameOver");
@@ -146,6 +149,15 @@ export class GameOver extends Scene {
 
         // Display the table with accuracy by category
         this.displayAccuracyTable();
+
+        // Display the home button
+        this.homeButton = new SelectorButton(
+            this,
+            this.screenCenterX,
+            this.screenCenterY + 200,
+            "Main Menu",
+        );
+        this.homeButton.on("pointerdown", () => this.scene.start("MainMenu"));
 
         EventBus.emit("current-scene-ready", this);
     }
