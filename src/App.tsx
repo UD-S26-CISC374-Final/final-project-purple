@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import type { IRefPhaserGame } from "./PhaserGame";
 import { PhaserGame } from "./PhaserGame";
-import Phaser from "phaser";
-import type { ChangeableScene } from "./game/reactable-scene";
+//import Phaser from "phaser";
+//import type { ChangeableScene } from "./game/reactable-scene";
 
 /**
  * React Component that wraps the Phaser game and provides UI controls
@@ -30,12 +30,13 @@ import type { ChangeableScene } from "./game/reactable-scene";
  */
 function App() {
     // The sprite can only be moved in the MainMenu Scene
-    const [canMoveSprite, setCanMoveSprite] = useState(true);
+    //const [canMoveSprite, setCanMoveSprite] = useState(true);
 
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame>(null);
-    const [spritePosition, setSpritePosition] = useState({ x: 0, y: 0 });
+    //const [spritePosition, setSpritePosition] = useState({ x: 0, y: 0 });
 
+    /*
     // Change the current scene by invoking the changeScene method
     const changeScene = () => {
         if (phaserRef.current) {
@@ -45,8 +46,9 @@ function App() {
                 scene.changeScene();
             }
         }
-    };
+    };*/
 
+    /*
     // Move the sprite in the MainMenu scene by invoking the moveSprite method
     // This method may not exist in some scenes.
     const moveSprite = () => {
@@ -62,8 +64,9 @@ function App() {
                 });
             }
         }
-    };
+    };*/
 
+    /*
     // Add a new sprite to the current scene, doesn't require scene-specific methods
     const addSprite = () => {
         if (phaserRef.current) {
@@ -89,44 +92,17 @@ function App() {
                 });
             }
         }
-    };
+    };*/
 
+    /*
     // Event emitted from the PhaserGame component
     const onCurrentSceneChange = (scene: Phaser.Scene) => {
         setCanMoveSprite(scene.scene.key !== "MainMenu");
-    };
+    };*/
 
     return (
         <div id="app">
-            <PhaserGame
-                ref={phaserRef}
-                onCurrentActiveSceneChange={onCurrentSceneChange}
-            />
-            <div id="ui-panel">
-                <div>
-                    <button className="button" onClick={changeScene}>
-                        Change Scene
-                    </button>
-                </div>
-                <div>
-                    <button
-                        disabled={canMoveSprite}
-                        className="button"
-                        onClick={moveSprite}
-                    >
-                        Toggle Movement
-                    </button>
-                </div>
-                <div className="spritePosition">
-                    Sprite Position:
-                    <pre>{`{\n  x: ${spritePosition.x}\n  y: ${spritePosition.y}\n}`}</pre>
-                </div>
-                <div>
-                    <button className="button" onClick={addSprite}>
-                        Add New Sprite
-                    </button>
-                </div>
-            </div>
+            <PhaserGame ref={phaserRef} />
         </div>
     );
 }
