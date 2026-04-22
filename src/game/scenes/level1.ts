@@ -60,79 +60,101 @@ const SPRITE_SCALES: Record<string, number> = {
 const EASY_QUESTIONS: Question[] = [
     {
         question:
-            'struct Cheeseburger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};',
+            'class Cheeseburger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet order1: Cheeseburger = new Cheeseburger(\n\t\t["patty", \n\t\t"cheese"],\n\ttrue,\n);',
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Static Initialization",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nextraLettuce: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce", "lettuce"],\n\tbuns: true,\n};',
-        answer: ["bottom_bun", "lettuce", "lettuce", "patty", "top_bun"],
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet extraLettuce: Burger = new Burger(\n\t\t["patty", "lettuce", "lettuce"],\n\ttrue,\n);',
+        answer: ["bottom_bun", "patty", "lettuce", "lettuce", "top_bun"],
         category: "Static Initialization",
     },
     {
         question:
-            'struct Salad {\n\tchar[10][2] ingredients;\n}\n\nsalad1: Salad = {\n\tingredients: \n\t\t["lettuce", \n\t\t"lettuce"],\n};',
+            'class Salad {\n\tpublic ingredients: string[];\n\tconstructor(ingredients: string[]) {\n\t\tthis.ingredients = ingredients;\n\t}\n}\n\nlet salad1: Salad = new Salad(\n\t\t["lettuce", \n\t\t"lettuce"],\n);',
         answer: ["lettuce", "lettuce"],
         category: "Static Initialization",
     },
     {
         question:
-            'struct VeggieBurger {\n\tchar[10][4] ingredients;\n\tbool vegan;\n\tbool buns;\n}\n\nveggieBurger1: VeggieBurger = {\n\tingredients: \n\t\t["lettuce"],\n\tvegan: true,\n\tbuns: true,\n};',
+            'class VeggieBurger {\n\tpublic ingredients: string[];\n\tpublic vegan: boolean;\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], vegan: boolean, buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.vegan = vegan;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet veggieBurger1: VeggieBurger = new VeggieBurger(\n\t\t["lettuce"],\n\ttrue,\n\ttrue,\n);',
         answer: ["bottom_bun", "lettuce", "top_bun"],
         category: "Static Initialization",
     },
     {
         question:
-            'struct DoubleBurger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ndoubleBurger1: DoubleBurger = {\n\tingredients: \n\t\t["patty", "patty"],\n\tbuns: true,\n};\ndoubleBurger1.ingredients.push("cheese");',
-        answer: ["bottom_bun", "patty", "patty", "top_bun"],
+            'class DoubleBurger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet doubleBurger1: DoubleBurger = new DoubleBurger(\n\t\t["patty", "patty"],\n\ttrue,\n);\ndoubleBurger1.ingredients.push("cheese");',
+        answer: ["bottom_bun", "patty", "patty", "cheese", "top_bun"],
         category: "Basic Methods",
     },
     {
         question:
-            'struct Cheeseburger {\n\tchar[7][3] ingredients;\n\tbool buns;\n}\n\norder1: Cheeseburger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\norder1.ingredients.pop();\norder1.ingredients.push("lettuce");',
-        answer: ["bottom_bun", "patty", "cheese", "top_bun"],
-        category: "Basic Methods",
-    },
-    {
-        question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1);',
-        answer: ["bottom_bun", "patty", "lettuce", "top_bun"],
-        category: "Intermediate Methods",
-    },
-    {
-        question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburgerWithCheese: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger1.ingredients.splice(1, 1, "cheese");',
-        answer: ["bottom_bun", "patty", "cheese", "top_bun"],
-        category: "Intermediate Methods",
-    },
-    {
-        question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\ncheesyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese"],\n\tbuns: true,\n};\nvoid addCheese(){\n\tcheesyBurger.ingredients.push("cheese");\n}\naddCheese();',
+            'class Cheeseburger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet order1: Cheeseburger = new Cheeseburger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"cheese"],\n\ttrue,\n);',
         answer: ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
-        category: "Procedural Logic",
+        category: "Basic Methods",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet burger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);',
         answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Static Initialization",
     },
     {
         question:
-            'struct Burger {\n\tchar[9][3] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 2;',
-        answer: ["bottom_bun", "patty", "top_bun"],
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburgerWithCheese: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nfunction addCheese(burger: Burger): void {\n\tburger.ingredients.splice(1, 0, "cheese");\n}\naddCheese(burgerWithCheese);',
+        answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
+        category: "Intermediate Methods",
+    },
+    {
+        question:
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\ncheesyBurger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese"],\n\ttrue,\n);\ncheesyBurger.push("cheese")',
+        answer: ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
+        category: "Procedural Logic",
+    },
+    {
+        question:
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nfunction addThreePatties(): void {\n\tburger.ingredients.push("patty");\n\tburger.ingredients.push("patty");\n\tburger.ingredients.push("patty");\n}\naddThreePatties();',
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "lettuce",
+            "patty",
+            "patty",
+            "patty",
+            "top_bun",
+        ],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nburger.push("tomato");',
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "lettuce",
+            "tomato",
+            "top_bun",
+        ],
+        category: "Static Initialization",
+    },
+    {
+        question:
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);',
+        answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Basic Methods",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnoBuns: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.length = 0;\nbuns: false',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nnoBuns: Burger = new Burger(\n\t\t["patty", \n\t\t"lettuce"],\n\tfalse,\n);',
         answer: ["patty", "lettuce"],
         category: "Basic Methods",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][10] ingredients;\n\tbool buns;\n}\n\nhealthyBurger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nhealthyBurger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"patty", \n\t\t"cheese",\n\t\t"patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);',
         answer: [
             "bottom_bun",
             "patty",
@@ -150,20 +172,13 @@ const EASY_QUESTIONS: Question[] = [
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid addCheese(burger: Burger) {\n\tburger.ingredients.push("cheese");\n}',
-        answer: [
-            "bottom_bun",
-            "lettuce",
-            "patty",
-            "cheese",
-            "lettuce",
-            "top_bun",
-        ],
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"tomato"],\n\ttrue,\n);',
+        answer: ["bottom_bun", "patty", "cheese", "tomato", "top_bun"],
         category: "Procedural Logic",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][8] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"lettuce", \n\t\t"lettuce",\n\t\t"lettuce",\n\t\t"lettuce"],\n\tbuns: true,\n};',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"lettuce", \n\t\t"lettuce",\n\t\t"lettuce",\n\t\t"lettuce"],\n\ttrue,\n);',
         answer: [
             "bottom_bun",
             "patty",
@@ -179,13 +194,13 @@ const EASY_QUESTIONS: Question[] = [
     },
     {
         question:
-            "struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nnothingBurger: Burger = {\n\tingredients: \n\t\t[],\n\tbuns: false,\n};",
+            "class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nnothingBurger: Burger = new Burger(\n\t\t[],\n\tfalse,\n);",
         answer: [],
         category: "Static Initialization",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.unshift("lettuce");',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);burger.ingredients.unshift("lettuce");',
         answer: [
             "bottom_bun",
             "lettuce",
@@ -198,19 +213,19 @@ const EASY_QUESTIONS: Question[] = [
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.shift();',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);burger.ingredients.shift();',
         answer: ["bottom_bun", "cheese", "lettuce", "top_bun"],
         category: "Basic Methods",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nvoid LettuceForBurger() {\n\tfor(int i = 0; i < burger.ingredients.length; i++) {\n\t\tif(burger.ingredients[i] == "lettuce") {\n\t\t\tburger.ingredients[i] = "burger";\n\t\t}\n\t}\n}',
-        answer: ["bottom_bun", "cheese", "burger", "burger", "top_bun"],
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);',
+        answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Procedural Logic",
     },
     {
         question:
-            'struct Burger {\n\tchar[10][4] ingredients;\n\tbool buns;\n}\n\nburger: Burger = {\n\tingredients: \n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\tbuns: true,\n};\nburger.ingredients.splice(1, 0, "lettuce");',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(ingredients: string[], buns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);burger.ingredients.splice(1, 0, "lettuce");',
         answer: [
             "bottom_bun",
             "patty",
@@ -407,13 +422,28 @@ export class Level1 extends Scene {
         // If there are not the same amount of ingredients, return false
         if (answer.length !== order.length) {
             //this.changeScene();
+            console.log("not long enough");
+            console.log(
+                "order: [" +
+                    order.join(", ") +
+                    "]\nanswer: [" +
+                    answer.join(", ") +
+                    "]",
+            );
             return false;
         }
-
+        //checks if buns are present if they are supposed to be
+        if (
+            answer[0] === "bottom_bun" &&
+            answer[answer.length - 1] === "top_bun" &&
+            (order[0] !== "bottom_bun" || order[order.length - 1] !== "top_bun")
+        ) {
+            console.log("bun check failed");
+            return false;
+        }
         // Compare the order to the answer
-        for (let index = 0; index < answer.length; index++) {
-            // If the ingredients don't match, return false
-            if (answer[index] !== order[index]) {
+        for (let i = 0; i < answer.length; i++) {
+            if (answer[i] !== order[i]) {
                 return false;
             }
         }
@@ -617,7 +647,17 @@ export class Level1 extends Scene {
                 // If the item being dragged is coming from the top of the plate, remove it from array
                 if (this.burgerStack.length > 0 && isTopItem) {
                     // Remove the item from the array
+                    console.log(
+                        "removing " +
+                            this.burgerStack[this.burgerStack.length - 1]
+                                .ingredientType,
+                    );
                     this.burgerStack.pop();
+                    console.log(
+                        this.burgerStack.map(
+                            (ingredient) => ingredient.ingredientType,
+                        ),
+                    );
 
                     // Visual cue that it's no longer part of the "Struct"
                     gameObject.setDepth(100);
