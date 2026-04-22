@@ -346,6 +346,7 @@ export class Level1 extends Scene {
     private activeSprites: Ingredient[] = [];
 
     private plate!: Phaser.GameObjects.Image;
+    private instructionGroup: Phaser.GameObjects.Container;
 
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
@@ -453,13 +454,93 @@ export class Level1 extends Scene {
         return true;
     }
 
+    /**
+     * Create and display the instructions to the player
+     */
+    private displayInstructions(): void {
+        // Create a darkened background overlay
+        const overlay = this.add
+            .rectangle(
+                0,
+                0,
+                this.cameras.main.width,
+                this.cameras.main.height,
+                0x000000,
+                0.7,
+            )
+            .setOrigin(0);
+
+        // Create the rounded box
+        const helpBox = this.add.graphics();
+        helpBox.fillStyle(0xffffff, 1);
+        helpBox.lineStyle(4, 0x000000, 1);
+        helpBox.fillRoundedRect(
+            this.screenCenterX - 250,
+            this.screenCenterY - 220,
+            500,
+            350,
+            15,
+        );
+        helpBox.strokeRoundedRect(
+            this.screenCenterX - 250,
+            this.screenCenterY - 220,
+            500,
+            350,
+            15,
+        );
+
+        // Instruction text to be shown in the popup
+        const instructionText = `Welcome to That's Not my Programmer!\n\n
+            Build the burger by stacking the correct 
+            ingredients in the order they appear in the
+            code snippet question. When you have finished 
+            building the burger, click the confirm button.
+            Click the clear plate button to reset.
+            Remember that buns always go on the outside!\n
+            Press the 'X' to start!`;
+
+        // Add the instruction text
+        const blurb = this.add
+            .text(
+                this.screenCenterX,
+                this.screenCenterY - 20,
+                instructionText,
+                {
+                    fontSize: "20px",
+                    color: "#000000",
+                    align: "center",
+                    fontFamily: "Arial",
+                },
+            )
+            .setOrigin(0.5, 0.5);
+
+        // Create the "X" Close Button
+        const closeBtn = this.add
+            .text(this.screenCenterX + 220, this.screenCenterY - 200, "X", {
+                fontSize: "32px",
+                color: "#ff0000",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true });
+
+        // Group everything into a Container
+        this.instructionGroup = this.add
+            .container(0, 0, [overlay, helpBox, blurb, closeBtn])
+            .setDepth(1000);
+
+        // Close the popup if the X button is clicked
+        closeBtn.on("pointerdown", () => {
+            this.instructionGroup.setVisible(false);
+            // You could also trigger your game timer or spawning logic here!
+        });
+    }
+
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
         const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
         const OrderY = this.cameras.main.height / 4;
-
-        console.log(EASY_QUESTIONS);
 
         console.log(this.orderList);
 
@@ -722,6 +803,8 @@ export class Level1 extends Scene {
                 console.log(pointer);
             },
         );
+
+        this.displayInstructions();
 
         EventBus.emit("current-scene-ready", this);
     }
