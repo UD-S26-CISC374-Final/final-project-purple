@@ -33,6 +33,8 @@ interface Question {
  */
 export interface FinalStats {
     final_score: number;
+    totalCategoriesAnswered: Record<string, number>;
+    incorrectCategoriesAnswered: Record<string, number>;
 }
 
 // Dictionary mapping an ingredient type to their starting coordinates
@@ -530,12 +532,6 @@ export class Level1 extends Scene {
                     (this.incorrectCategoriesAnswered[
                         this.questions[this.questionIndex].category
                     ] ?? 0) + 1;
-
-                // Send stats to Game Over Screen
-                const finalStats: FinalStats = {
-                    final_score: this.score,
-                };
-                this.changeScene(finalStats);
             }
 
             // Clear the plate and display the next question
@@ -561,8 +557,17 @@ export class Level1 extends Scene {
 
             this.numQuestionsAnswered++;
 
-            console.log(this.totalCategoriesAnswered);
-            console.log(this.incorrectCategoriesAnswered);
+            // Switch to Game Over Screen after 5 questions
+            if (this.numQuestionsAnswered >= 5) {
+                // Send stats to Game Over Screen
+                const finalStats: FinalStats = {
+                    final_score: this.score,
+                    totalCategoriesAnswered: this.totalCategoriesAnswered,
+                    incorrectCategoriesAnswered:
+                        this.incorrectCategoriesAnswered,
+                };
+                this.changeScene(finalStats);
+            }
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
