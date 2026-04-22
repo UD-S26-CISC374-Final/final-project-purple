@@ -512,12 +512,14 @@ export class Level1 extends Scene {
         );
 
         // Instruction text to be shown in the popup
-        const instructionText = `Welcome to That's Not my Programmer!\n\n
+        const instructionText = `Welcome to That's Not my Programmer!\n
             Build the burger by stacking the correct 
-            ingredients in the order they appear in the
-            code snippet question. When you have finished 
-            building the burger, click the confirm button.
-            Click the clear plate button to reset.
+            ingredients in the order they appear in the code
+            snippet by dragging and dropping the ingredients
+            onto the plate, based on the value for that 
+            burger object. When you have finished building
+            the burger, click the confirm button. Click the
+            clear plate button to reset.
             Remember that buns always go on the outside!\n
             Press the 'X' to start!`;
 
