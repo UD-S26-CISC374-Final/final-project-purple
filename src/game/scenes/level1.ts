@@ -54,7 +54,7 @@ const SPRITE_SCALES: Record<string, number> = {
     top_bun: 2.5,
     cheese: 2.5,
     lettuce: 2.5,
-    tomato: 0.2,
+    tomato: 0.13,
     plate: 0.2,
 };
 
