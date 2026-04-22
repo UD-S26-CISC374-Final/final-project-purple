@@ -558,54 +558,10 @@ export class Level1 extends Scene {
         });
     }
 
-    create() {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
-        const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
-        const OrderY = this.cameras.main.height / 4;
-
-        console.log(this.orderList);
-
-        //this.background = this.add.image(512, 384, "background");
-        //this.background.setAlpha(0.5);
-
-        // Display the FPS and score
-        this.fpsText = new FpsText(this);
-        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
-            fontSize: "32px",
-            color: "#ffffff",
-            fontFamily: "Arial",
-            fontStyle: "bold",
-        });
-        console.log(this.scoreText);
-
-        // Save x and y coordinates for center of screen
-        this.screenCenterX =
-            this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.screenCenterY =
-            this.cameras.main.worldView.y + this.cameras.main.height / 2;
-
-        // Add plate to the middle of the screen
-        this.plate = this.add.image(
-            this.screenCenterX,
-            this.screenCenterY + 200,
-            "plate",
-        );
-        this.plate.setScale(SPRITE_SCALES["plate"]);
-
-        this.questions = EASY_QUESTIONS;
-
-        // Choose a random question to start the player with
-        this.questionIndex = Math.floor(Math.random() * this.questions.length);
-        this.currentOrder = new Order(
-            this,
-            OrderX,
-            OrderY,
-            this.questions[this.questionIndex].question,
-            this.questions[this.questionIndex].answer,
-            this.questions[this.questionIndex].category,
-        );
-
+    /**
+     * Display and set up confirm and clear plate buttons
+     */
+    private displayButtons(): void {
         // Add confirm button to screen
         this.confirmButton = new SelectorButton(
             this,
@@ -614,6 +570,8 @@ export class Level1 extends Scene {
             "Confirm",
             140,
         );
+
+        // When confirm button pressed, check if question was answered correctly
         this.confirmButton.on("pointerdown", () => {
             // Check if the question was answered correctly
             if (
@@ -682,6 +640,58 @@ export class Level1 extends Scene {
             140,
         ).on("pointerdown", () => this.clearPlate());
         console.log(this.clearPlateButton);
+    }
+
+    create() {
+        this.camera = this.cameras.main;
+        this.camera.setBackgroundColor(0x00ff00);
+        const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
+        const OrderY = this.cameras.main.height / 4;
+
+        console.log(this.orderList);
+
+        //this.background = this.add.image(512, 384, "background");
+        //this.background.setAlpha(0.5);
+
+        // Display the FPS and score
+        this.fpsText = new FpsText(this);
+        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
+            fontSize: "32px",
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontStyle: "bold",
+        });
+        console.log(this.scoreText);
+
+        // Save x and y coordinates for center of screen
+        this.screenCenterX =
+            this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.screenCenterY =
+            this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        // Add plate to the middle of the screen
+        this.plate = this.add.image(
+            this.screenCenterX,
+            this.screenCenterY + 200,
+            "plate",
+        );
+        this.plate.setScale(SPRITE_SCALES["plate"]);
+
+        this.questions = EASY_QUESTIONS;
+
+        // Choose a random question to start the player with
+        this.questionIndex = Math.floor(Math.random() * this.questions.length);
+        this.currentOrder = new Order(
+            this,
+            OrderX,
+            OrderY,
+            this.questions[this.questionIndex].question,
+            this.questions[this.questionIndex].answer,
+            this.questions[this.questionIndex].category,
+        );
+
+        // Display the 'confirm' and 'clear plate' buttons
+        this.displayButtons();
 
         // Add ingredient bins to screen
         this.activeSprites.push(
