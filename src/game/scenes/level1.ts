@@ -37,25 +37,35 @@ export interface FinalStats {
     incorrectCategoriesAnswered: Record<string, number>;
 }
 
-// Dictionary mapping an ingredient type to their starting coordinates
+// Lookup table for an ingredient's starting location
 const BIN_LOCATIONS: Record<string, Coordinate> = {
-    patty: { x: 50, y: 300 },
-    bottom_bun: { x: 50, y: 500 },
+    patty: { x: 70, y: 400 },
+    bottom_bun: { x: 70, y: 500 },
     top_bun: { x: 250, y: 500 },
-    cheese: { x: 250, y: 300 },
-    lettuce: { x: 250, y: 700 },
-    tomato: { x: 0, y: 700 },
+    cheese: { x: 250, y: 400 },
+    lettuce: { x: 250, y: 600 },
+    tomato: { x: 70, y: 600 },
 };
 
-// Dictionary mapping an ingredient type to its scale (for sprite)
+// Lookup table for an ingredient's sprite scale
 const SPRITE_SCALES: Record<string, number> = {
-    patty: 2.5,
-    bottom_bun: 2.5,
-    top_bun: 2.5,
-    cheese: 2.5,
-    lettuce: 2.5,
-    tomato: 0.13,
+    patty: 2,
+    bottom_bun: 2,
+    top_bun: 2,
+    cheese: 2.4,
+    lettuce: 2,
+    tomato: 0.1,
     plate: 0.2,
+};
+
+// Lookup table for an ingredient's height, used for determining ingredient placement on the plate
+const INGREDIENT_HEIGHTS: Record<string, number> = {
+    patty: 20,
+    bottom_bun: 12,
+    top_bun: 20,
+    cheese: 5,
+    lettuce: 12,
+    tomato: 5,
 };
 
 // A list of easy questions
@@ -381,10 +391,22 @@ export class Level1 extends Scene {
             previousTop.disableInteractive();
         }
 
+        // Calculate height of stack
+        let stackHeight = 0;
+        this.burgerStack.forEach((currentIngredient: Ingredient) => {
+            stackHeight +=
+                INGREDIENT_HEIGHTS[currentIngredient.ingredientType] ?? 10;
+        });
+
         // Snap the new ingredient and add to array
         ingredient.x = this.plate.x;
-        ingredient.y = this.plate.y - (this.burgerStack.length + 1) * 12;
+        ingredient.y = this.plate.y - stackHeight;
         this.burgerStack.push(ingredient);
+
+        // Move the top bun up
+        if (ingredient.ingredientType === "top_bun") {
+            ingredient.y -= 25;
+        }
 
         // Remove ingredient from bin
         ingredient.isFromBin = false;
@@ -536,62 +558,20 @@ export class Level1 extends Scene {
         });
     }
 
-    create() {
-        this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
-        const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
-        const OrderY = this.cameras.main.height / 4;
-
-        console.log(this.orderList);
-
-        //this.background = this.add.image(512, 384, "background");
-        //this.background.setAlpha(0.5);
-
-        // Display the FPS and score
-        this.fpsText = new FpsText(this);
-        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
-            fontSize: "32px",
-            color: "#ffffff",
-            fontFamily: "Arial",
-            fontStyle: "bold",
-        });
-        console.log(this.scoreText);
-
-        // Save x and y coordinates for center of screen
-        this.screenCenterX =
-            this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.screenCenterY =
-            this.cameras.main.worldView.y + this.cameras.main.height / 2;
-
-        // Add plate to the middle of the screen
-        this.plate = this.add.image(
-            this.screenCenterX,
-            this.screenCenterY,
-            "plate",
-        );
-        this.plate.setScale(SPRITE_SCALES["plate"]);
-
-        this.questions = EASY_QUESTIONS;
-
-        // Choose a random question to start the player with
-        this.questionIndex = Math.floor(Math.random() * this.questions.length);
-        this.currentOrder = new Order(
-            this,
-            OrderX,
-            OrderY,
-            this.questions[this.questionIndex].question,
-            this.questions[this.questionIndex].answer,
-            this.questions[this.questionIndex].category,
-        );
-
+    /**
+     * Display and set up confirm and clear plate buttons
+     */
+    private displayButtons(): void {
         // Add confirm button to screen
         this.confirmButton = new SelectorButton(
             this,
             this.screenCenterX + 100,
-            OrderY + 300,
+            this.screenCenterY + 300,
             "Confirm",
             140,
         );
+
+        // When confirm button pressed, check if question was answered correctly
         this.confirmButton.on("pointerdown", () => {
             // Check if the question was answered correctly
             if (
@@ -638,8 +618,8 @@ export class Level1 extends Scene {
 
             this.numQuestionsAnswered++;
 
-            // Switch to Game Over Screen after 5 questions
-            if (this.numQuestionsAnswered >= 5) {
+            // Switch to Game Over Screen after 10 questions
+            if (this.numQuestionsAnswered >= 10) {
                 // Send stats to Game Over Screen
                 const finalStats: FinalStats = {
                     final_score: this.score,
@@ -655,11 +635,63 @@ export class Level1 extends Scene {
         this.clearPlateButton = new SelectorButton(
             this,
             this.screenCenterX - 100,
-            OrderY + 300,
+            this.screenCenterY + 300,
             "Clear Plate",
             140,
         ).on("pointerdown", () => this.clearPlate());
         console.log(this.clearPlateButton);
+    }
+
+    create() {
+        this.camera = this.cameras.main;
+        this.camera.setBackgroundColor(0x00ff00);
+        const OrderX = this.cameras.main.width - this.cameras.main.width / 6;
+        const OrderY = this.cameras.main.height / 4;
+
+        console.log(this.orderList);
+
+        //this.background = this.add.image(512, 384, "background");
+        //this.background.setAlpha(0.5);
+
+        // Display the FPS and score
+        this.fpsText = new FpsText(this);
+        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
+            fontSize: "32px",
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontStyle: "bold",
+        });
+        console.log(this.scoreText);
+
+        // Save x and y coordinates for center of screen
+        this.screenCenterX =
+            this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.screenCenterY =
+            this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        // Add plate to the middle of the screen
+        this.plate = this.add.image(
+            this.screenCenterX,
+            this.screenCenterY + 200,
+            "plate",
+        );
+        this.plate.setScale(SPRITE_SCALES["plate"]);
+
+        this.questions = EASY_QUESTIONS;
+
+        // Choose a random question to start the player with
+        this.questionIndex = Math.floor(Math.random() * this.questions.length);
+        this.currentOrder = new Order(
+            this,
+            OrderX,
+            OrderY,
+            this.questions[this.questionIndex].question,
+            this.questions[this.questionIndex].answer,
+            this.questions[this.questionIndex].category,
+        );
+
+        // Display the 'confirm' and 'clear plate' buttons
+        this.displayButtons();
 
         // Add ingredient bins to screen
         this.activeSprites.push(
@@ -787,7 +819,7 @@ export class Level1 extends Scene {
                 );
 
                 // If ingredient was dropped close to plate, add it to stack
-                if (distance < 60) {
+                if (distance < 80) {
                     this.snapToPlate(gameObject);
                 } else {
                     // Destroy ingredient if it misses plate
