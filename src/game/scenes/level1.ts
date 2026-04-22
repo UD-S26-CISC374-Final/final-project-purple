@@ -39,22 +39,22 @@ export interface FinalStats {
 
 // Dictionary mapping an ingredient type to their starting coordinates
 const BIN_LOCATIONS: Record<string, Coordinate> = {
-    patty: { x: 50, y: 300 },
-    bottom_bun: { x: 50, y: 500 },
-    top_bun: { x: 250, y: 500 },
+    patty: { x: 70, y: 300 },
+    bottom_bun: { x: 70, y: 400 },
+    top_bun: { x: 250, y: 400 },
     cheese: { x: 250, y: 300 },
-    lettuce: { x: 250, y: 700 },
-    tomato: { x: 0, y: 700 },
+    lettuce: { x: 250, y: 500 },
+    tomato: { x: 70, y: 500 },
 };
 
 // Dictionary mapping an ingredient type to its scale (for sprite)
 const SPRITE_SCALES: Record<string, number> = {
-    patty: 2.5,
-    bottom_bun: 2.5,
-    top_bun: 2.5,
-    cheese: 2.5,
-    lettuce: 2.5,
-    tomato: 0.13,
+    patty: 2,
+    bottom_bun: 2,
+    top_bun: 2,
+    cheese: 2,
+    lettuce: 2,
+    tomato: 0.12,
     plate: 0.2,
 };
 
