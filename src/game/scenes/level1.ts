@@ -51,7 +51,7 @@ const BIN_LOCATIONS: Record<string, Coordinate> = {
 const SPRITE_SCALES: Record<string, number> = {
     patty: 2,
     bottom_bun: 2,
-    top_bun: 2,
+    top_bun: 0.12,
     cheese: 2.4,
     lettuce: 2,
     tomato: 0.1,
