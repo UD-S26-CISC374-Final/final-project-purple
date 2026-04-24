@@ -379,6 +379,20 @@ export class Level1 extends Scene {
     }
 
     /**
+     * Returns the current height of the burger
+     */
+    private getBurgerHeight(): number {
+        // Calculate height of burger stack
+        let stackHeight: number = 0;
+        this.burgerStack.forEach((currentIngredient: Ingredient) => {
+            stackHeight +=
+                INGREDIENT_HEIGHTS[currentIngredient.ingredientType] ?? 10;
+        });
+
+        return stackHeight;
+    }
+
+    /**
      * Adds the given ingredient to the plate
      * @param ingredient The current ingredient to add to the plate
      *
@@ -391,12 +405,7 @@ export class Level1 extends Scene {
             previousTop.disableInteractive();
         }
 
-        // Calculate height of stack
-        let stackHeight = 0;
-        this.burgerStack.forEach((currentIngredient: Ingredient) => {
-            stackHeight +=
-                INGREDIENT_HEIGHTS[currentIngredient.ingredientType] ?? 10;
-        });
+        const stackHeight: number = this.getBurgerHeight();
 
         // Snap the new ingredient and add to array
         ingredient.x = this.plate.x;
