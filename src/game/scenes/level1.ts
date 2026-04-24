@@ -355,8 +355,11 @@ export class Level1 extends Scene {
     // Current items on the screen
     private activeSprites: Ingredient[] = [];
 
+    // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
+    private plateHitBox: Phaser.Geom.Rectangle;
     private instructionGroup: Phaser.GameObjects.Container;
+    private debugGraphics: Phaser.GameObjects.Graphics;
 
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
@@ -653,6 +656,43 @@ export class Level1 extends Scene {
         console.log(this.clearPlateButton);
     }
 
+    /**
+     * Create the plate and hitbox for ingredients to be dropped on
+     *
+     * Notes:
+     * The hitbox is larger than the plate by 50 pixels on each side and 100 pixels on top
+     * Saves the hitbox to this.plateHitBox
+     */
+    private createPlateHitbox(): void {
+        // Plate hitbox dimensions
+        const plateWidth = this.plate.displayWidth;
+        const plateHeight = this.plate.displayHeight;
+        const hitboxWidth = plateWidth + 100;
+        const hitboxHeight = plateHeight + 100;
+
+        // Coordinates of top left of hitbox
+        const topLeftCornerX = this.plate.x - plateWidth / 2 - 50;
+        const topLeftCornerY = this.plate.y - plateHeight / 2 - 100;
+
+        // Save the dropzone as a rectangle over the plate
+        const dropZone = new Phaser.Geom.Rectangle(
+            topLeftCornerX,
+            topLeftCornerY,
+            hitboxWidth,
+            hitboxHeight,
+        );
+        this.plateHitBox = dropZone;
+
+        // Draw hitbox for debugging
+        this.debugGraphics = this.add.graphics();
+        this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
+
+        // Draw the plate hitbox
+        this.debugGraphics.strokeRectShape(this.plateHitBox);
+        this.debugGraphics.fillStyle(0x0, 0.2);
+        this.debugGraphics.fillRectShape(this.plateHitBox);
+    }
+
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
@@ -687,6 +727,8 @@ export class Level1 extends Scene {
             "plate",
         );
         this.plate.setScale(SPRITE_SCALES["plate"]);
+        this.createPlateHitbox();
+        console.log(this.plateHitBox);
 
         this.questions = EASY_QUESTIONS;
 
@@ -854,6 +896,15 @@ export class Level1 extends Scene {
 
     update() {
         this.fpsText.update();
+
+        this.debugGraphics.clear();
+        this.debugGraphics = this.add.graphics();
+        this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
+
+        // Draw the plate hitbox
+        this.debugGraphics.strokeRectShape(this.plateHitBox);
+        this.debugGraphics.fillStyle(0x0, 0.2);
+        this.debugGraphics.fillRectShape(this.plateHitBox);
     }
 
     changeScene(finalStats: FinalStats) {
