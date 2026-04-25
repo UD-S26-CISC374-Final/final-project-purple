@@ -29,11 +29,11 @@ export class Preloader extends Scene {
         this.load.image("logo", "logo.png");
 
         // Load assets for the plate
-        this.load.image("plate", "temp_plate.png");
+        this.load.image("plate", "Plate.png");
         this.load.image("patty", "patty.png");
         this.load.image("bottom_bun", "bottom_bun.png");
         this.load.image("top_bun", "top_bun.png");
-        this.load.image("cheese", "cheese_slice.png");
+        this.load.image("cheese", "cheese.png");
         this.load.image("lettuce", "lettuce.png");
         this.load.image("tomato", "Tomato.png");
         this.load.image("ticket", "temp_ticket.png");

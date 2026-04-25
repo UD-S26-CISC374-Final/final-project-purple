@@ -49,13 +49,13 @@ const BIN_LOCATIONS: Record<string, Coordinate> = {
 
 // Lookup table for an ingredient's sprite scale
 const SPRITE_SCALES: Record<string, number> = {
-    patty: 2,
-    bottom_bun: 2,
-    top_bun: 0.12,
-    cheese: 2.4,
-    lettuce: 2,
+    patty: 0.11,
+    bottom_bun: 0.11,
+    top_bun: 0.11,
+    cheese: 0.15,
+    lettuce: 0.11,
     tomato: 0.1,
-    plate: 0.2,
+    plate: 0.16,
 };
 
 // Lookup table for an ingredient's height, used for determining ingredient placement on the plate
