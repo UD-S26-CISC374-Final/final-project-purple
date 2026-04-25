@@ -428,12 +428,23 @@ export class Level1 extends Scene {
 
         // Set depth so the new item is always rendered on top
         ingredient.setDepth(this.burgerStack.length + 1);
+
+        // Increase plate hitbox height as long as it doesn't go offscreen
+        const ingredientHeight: number =
+            INGREDIENT_HEIGHTS[ingredient.ingredientType] ?? 10;
+        const newHitboxY = this.plateHitBox.y - ingredientHeight;
+        if (newHitboxY >= 0) {
+            this.plateHitBox.y = newHitboxY;
+            this.plateHitBox.height += ingredientHeight;
+        }
     }
 
     /**
-     * Removes all ingredients from the plate
+     * Removes all ingredients from the plate and reset plate hitbox
      *
-     * Notes: Destroys all ingredient objects on plate
+     * Notes:
+     * Destroys all ingredient objects on plate
+     * Resets plate hitbox
      */
     private clearPlate(): void {
         // Loop through burger stack and destroy all elements, and remove them from activeSprites list
@@ -447,6 +458,14 @@ export class Level1 extends Scene {
         });
 
         this.burgerStack = [];
+
+        // Reset plate hitbox size
+        const plateHeight = this.plate.displayHeight;
+        const hitboxHeight = plateHeight + 100;
+        const topLeftCornerY = this.plate.y - plateHeight / 2 - 100;
+
+        this.plateHitBox.height = hitboxHeight;
+        this.plateHitBox.y = topLeftCornerY;
     }
 
     /**
@@ -830,6 +849,16 @@ export class Level1 extends Scene {
                         ),
                     );
 
+                    // Decrease the plate hitbox when an item is removed
+                    const newHitboxY =
+                        this.plateHitBox.y +
+                        INGREDIENT_HEIGHTS[gameObject.ingredientType];
+                    if (newHitboxY > 0 && newHitboxY < this.scale.height) {
+                        this.plateHitBox.y = newHitboxY;
+                        this.plateHitBox.height -=
+                            INGREDIENT_HEIGHTS[gameObject.ingredientType];
+                    }
+
                     // Visual cue that it's no longer part of the "Struct"
                     gameObject.setDepth(100);
 
@@ -863,16 +892,14 @@ export class Level1 extends Scene {
         this.input.on(
             "dragend",
             (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
-                // Calculate the distance between the ingredient and the plate
-                const distance = Phaser.Math.Distance.Between(
-                    gameObject.x,
-                    gameObject.y,
-                    this.plate.x,
-                    this.plate.y,
-                );
-
-                // If ingredient was dropped close to plate, add it to stack
-                if (distance < 80) {
+                // If ingredient was dropped in plate hitbox, add it to stack
+                if (
+                    Phaser.Geom.Rectangle.Contains(
+                        this.plateHitBox,
+                        gameObject.x,
+                        gameObject.y,
+                    )
+                ) {
                     this.snapToPlate(gameObject);
                 } else {
                     // Destroy ingredient if it misses plate
