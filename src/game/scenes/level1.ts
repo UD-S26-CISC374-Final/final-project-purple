@@ -350,10 +350,10 @@ export class Level1 extends Scene {
     private screenCenterY!: number;
 
     // Current items on the plate
-    private burgerStack: Ingredient[] = [];
+    private burgerStack: Ingredient[];
 
     // Current items on the screen
-    private activeSprites: Ingredient[] = [];
+    private activeSprites: Ingredient[];
 
     // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
@@ -366,16 +366,17 @@ export class Level1 extends Scene {
     private clearPlateButton: SelectorButton;
 
     private currentOrder: Order;
-    private orderList: Phaser.GameObjects.Text[] = [];
+    private orderList: Phaser.GameObjects.Text[];
 
     // Question tracking variables
     private questions: Question[];
     private questionIndex: number;
-    private numQuestionsAnswered: number = 0;
-    private totalCategoriesAnswered: Record<string, number> = {};
-    private incorrectCategoriesAnswered: Record<string, number> = {};
+    private numQuestionsAnswered: number;
+    private totalCategoriesAnswered: Record<string, number>;
+    private incorrectCategoriesAnswered: Record<string, number>;
 
-    private score: number = 0;
+    // Score tracking variables
+    private score: number;
     private scoreText!: Phaser.GameObjects.Text;
 
     constructor() {
@@ -712,6 +713,17 @@ export class Level1 extends Scene {
         this.debugGraphics.strokeRectShape(this.plateHitBox);
         this.debugGraphics.fillStyle(0x0, 0.2);
         this.debugGraphics.fillRectShape(this.plateHitBox);*/
+    }
+
+    init() {
+        this.burgerStack = [];
+        this.orderList = [];
+        this.activeSprites = [];
+
+        this.score = 0;
+        this.numQuestionsAnswered = 0;
+        this.totalCategoriesAnswered = {};
+        this.incorrectCategoriesAnswered = {};
     }
 
     create() {
