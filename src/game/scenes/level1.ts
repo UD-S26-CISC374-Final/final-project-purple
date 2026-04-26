@@ -358,8 +358,9 @@ export class Level1 extends Scene {
     // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
     private plateHitBox: Phaser.Geom.Rectangle;
+    //private debugGraphics: Phaser.GameObjects.Graphics;
+
     private instructionGroup: Phaser.GameObjects.Container;
-    private debugGraphics: Phaser.GameObjects.Graphics;
 
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
@@ -702,6 +703,7 @@ export class Level1 extends Scene {
         );
         this.plateHitBox = dropZone;
 
+        /*
         // Draw hitbox for debugging
         this.debugGraphics = this.add.graphics();
         this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
@@ -709,7 +711,7 @@ export class Level1 extends Scene {
         // Draw the plate hitbox
         this.debugGraphics.strokeRectShape(this.plateHitBox);
         this.debugGraphics.fillStyle(0x0, 0.2);
-        this.debugGraphics.fillRectShape(this.plateHitBox);
+        this.debugGraphics.fillRectShape(this.plateHitBox);*/
     }
 
     create() {
@@ -924,14 +926,14 @@ export class Level1 extends Scene {
     update() {
         this.fpsText.update();
 
-        this.debugGraphics.clear();
+        /*this.debugGraphics.clear();
         this.debugGraphics = this.add.graphics();
         this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
 
         // Draw the plate hitbox
         this.debugGraphics.strokeRectShape(this.plateHitBox);
         this.debugGraphics.fillStyle(0x0, 0.2);
-        this.debugGraphics.fillRectShape(this.plateHitBox);
+        this.debugGraphics.fillRectShape(this.plateHitBox);*/
     }
 
     changeScene(finalStats: FinalStats) {
