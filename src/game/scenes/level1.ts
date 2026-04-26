@@ -355,7 +355,11 @@ export class Level1 extends Scene {
     // Current items on the screen
     private activeSprites: Ingredient[] = [];
 
+    // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
+    private plateHitBox: Phaser.Geom.Rectangle;
+    //private debugGraphics: Phaser.GameObjects.Graphics;
+
     private instructionGroup: Phaser.GameObjects.Container;
 
     private confirmButton: SelectorButton;
@@ -379,6 +383,20 @@ export class Level1 extends Scene {
     }
 
     /**
+     * Returns the current height of the burger
+     */
+    private getBurgerHeight(): number {
+        // Calculate height of burger stack
+        let stackHeight: number = 0;
+        this.burgerStack.forEach((currentIngredient: Ingredient) => {
+            stackHeight +=
+                INGREDIENT_HEIGHTS[currentIngredient.ingredientType] ?? 10;
+        });
+
+        return stackHeight;
+    }
+
+    /**
      * Adds the given ingredient to the plate
      * @param ingredient The current ingredient to add to the plate
      *
@@ -391,12 +409,7 @@ export class Level1 extends Scene {
             previousTop.disableInteractive();
         }
 
-        // Calculate height of stack
-        let stackHeight = 0;
-        this.burgerStack.forEach((currentIngredient: Ingredient) => {
-            stackHeight +=
-                INGREDIENT_HEIGHTS[currentIngredient.ingredientType] ?? 10;
-        });
+        const stackHeight: number = this.getBurgerHeight();
 
         // Snap the new ingredient and add to array
         ingredient.x = this.plate.x;
@@ -416,12 +429,23 @@ export class Level1 extends Scene {
 
         // Set depth so the new item is always rendered on top
         ingredient.setDepth(this.burgerStack.length + 1);
+
+        // Increase plate hitbox height as long as it doesn't go offscreen
+        const ingredientHeight: number =
+            INGREDIENT_HEIGHTS[ingredient.ingredientType] ?? 10;
+        const newHitboxY = this.plateHitBox.y - ingredientHeight;
+        if (newHitboxY >= 0) {
+            this.plateHitBox.y = newHitboxY;
+            this.plateHitBox.height += ingredientHeight;
+        }
     }
 
     /**
-     * Removes all ingredients from the plate
+     * Removes all ingredients from the plate and reset plate hitbox
      *
-     * Notes: Destroys all ingredient objects on plate
+     * Notes:
+     * Destroys all ingredient objects on plate
+     * Resets plate hitbox
      */
     private clearPlate(): void {
         // Loop through burger stack and destroy all elements, and remove them from activeSprites list
@@ -435,6 +459,14 @@ export class Level1 extends Scene {
         });
 
         this.burgerStack = [];
+
+        // Reset plate hitbox size
+        const plateHeight = this.plate.displayHeight;
+        const hitboxHeight = plateHeight + 100;
+        const topLeftCornerY = this.plate.y - plateHeight / 2 - 100;
+
+        this.plateHitBox.height = hitboxHeight;
+        this.plateHitBox.y = topLeftCornerY;
     }
 
     /**
@@ -644,6 +676,44 @@ export class Level1 extends Scene {
         console.log(this.clearPlateButton);
     }
 
+    /**
+     * Create the plate and hitbox for ingredients to be dropped on
+     *
+     * Notes:
+     * The hitbox is larger than the plate by 50 pixels on each side and 100 pixels on top
+     * Saves the hitbox to this.plateHitBox
+     */
+    private createPlateHitbox(): void {
+        // Plate hitbox dimensions
+        const plateWidth = this.plate.displayWidth;
+        const plateHeight = this.plate.displayHeight;
+        const hitboxWidth = plateWidth + 100;
+        const hitboxHeight = plateHeight + 100;
+
+        // Coordinates of top left of hitbox
+        const topLeftCornerX = this.plate.x - plateWidth / 2 - 50;
+        const topLeftCornerY = this.plate.y - plateHeight / 2 - 100;
+
+        // Save the dropzone as a rectangle over the plate
+        const dropZone = new Phaser.Geom.Rectangle(
+            topLeftCornerX,
+            topLeftCornerY,
+            hitboxWidth,
+            hitboxHeight,
+        );
+        this.plateHitBox = dropZone;
+
+        /*
+        // Draw hitbox for debugging
+        this.debugGraphics = this.add.graphics();
+        this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
+
+        // Draw the plate hitbox
+        this.debugGraphics.strokeRectShape(this.plateHitBox);
+        this.debugGraphics.fillStyle(0x0, 0.2);
+        this.debugGraphics.fillRectShape(this.plateHitBox);*/
+    }
+
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
@@ -678,6 +748,8 @@ export class Level1 extends Scene {
             "plate",
         );
         this.plate.setScale(SPRITE_SCALES["plate"]);
+        this.createPlateHitbox();
+        console.log(this.plateHitBox);
 
         this.questions = EASY_QUESTIONS;
 
@@ -779,6 +851,16 @@ export class Level1 extends Scene {
                         ),
                     );
 
+                    // Decrease the plate hitbox when an item is removed
+                    const newHitboxY =
+                        this.plateHitBox.y +
+                        INGREDIENT_HEIGHTS[gameObject.ingredientType];
+                    if (newHitboxY > 0 && newHitboxY < this.scale.height) {
+                        this.plateHitBox.y = newHitboxY;
+                        this.plateHitBox.height -=
+                            INGREDIENT_HEIGHTS[gameObject.ingredientType];
+                    }
+
                     // Visual cue that it's no longer part of the "Struct"
                     gameObject.setDepth(100);
 
@@ -812,16 +894,14 @@ export class Level1 extends Scene {
         this.input.on(
             "dragend",
             (pointer: Phaser.Input.Pointer, gameObject: Ingredient) => {
-                // Calculate the distance between the ingredient and the plate
-                const distance = Phaser.Math.Distance.Between(
-                    gameObject.x,
-                    gameObject.y,
-                    this.plate.x,
-                    this.plate.y,
-                );
-
-                // If ingredient was dropped close to plate, add it to stack
-                if (distance < 80) {
+                // If ingredient was dropped in plate hitbox, add it to stack
+                if (
+                    Phaser.Geom.Rectangle.Contains(
+                        this.plateHitBox,
+                        gameObject.x,
+                        gameObject.y,
+                    )
+                ) {
                     this.snapToPlate(gameObject);
                 } else {
                     // Destroy ingredient if it misses plate
@@ -845,6 +925,15 @@ export class Level1 extends Scene {
 
     update() {
         this.fpsText.update();
+
+        /*this.debugGraphics.clear();
+        this.debugGraphics = this.add.graphics();
+        this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
+
+        // Draw the plate hitbox
+        this.debugGraphics.strokeRectShape(this.plateHitBox);
+        this.debugGraphics.fillStyle(0x0, 0.2);
+        this.debugGraphics.fillRectShape(this.plateHitBox);*/
     }
 
     changeScene(finalStats: FinalStats) {
