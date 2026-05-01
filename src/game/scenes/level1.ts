@@ -743,7 +743,7 @@ export class Level1 extends Scene {
     // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
     private plateHitBox: Phaser.Geom.Rectangle;
-    private screen: Phaser.GameObjects.Image;
+    //private screen: Phaser.GameObjects.Image;
     //private debugGraphics: Phaser.GameObjects.Graphics;
 
     private instructionGroup: Phaser.GameObjects.Container;
@@ -1127,7 +1127,7 @@ export class Level1 extends Scene {
         this.screenCenterY =
             this.cameras.main.worldView.y + this.cameras.main.height / 2;
         // Add Order TV to the sreen
-        this.screen = this.add
+        this.add
             .image(OrderX - 27, OrderY + 200, "screen")
             .setScale(SPRITE_SCALES["screen"]);
 
