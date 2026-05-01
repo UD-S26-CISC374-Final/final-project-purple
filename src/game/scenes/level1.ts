@@ -250,7 +250,7 @@ const EASY_QUESTIONS: Question[] = [
         category: "Intermediate Methods",
     },
 ];
-const MEDIUM_QUESTIONS: Question[] = [
+/*const MEDIUM_QUESTIONS: Question[] = [
     {
         question:
             'class Burger {\n\tpublic ingredients: string[];\n\tpublic bun: boolean;\n\tconstructor(\ningredients: string[];, \nbuns:boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\npublic ExtraCheese(): void {\n\t\tthis.ingredients.push("cheese");\n\t\tthis.ingredients.push("cheese");\n}\n\ndoubleBurger: Burger = new Burger(["patty","patty"], true);\ndoubleBurger.ExtraCheese();\ndoubleBurger.ExtraCheese();',
@@ -434,8 +434,8 @@ const MEDIUM_QUESTIONS: Question[] = [
         ],
         category: "Procedural Logic",
     },
-];
-const HARD_QUESTIONS: Question[] = [
+];*/
+/*const HARD_QUESTIONS: Question[] = [
     {
         question:
             'class Burger {\n\tpublic ingredients: string[]; \n\tpublic buns: boolean;\n\tconstructor(\ningredients: string[], \nbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger1: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nlet burger2: Burger = burger1;\nburger1.ingredients.push("tomato");',
@@ -633,7 +633,7 @@ const HARD_QUESTIONS: Question[] = [
         answer: ["lettuce", "tomato", "lettuce", "tomato", "tomato"],
         category: "Deep Copy",
     },
-];
+];*/
 
 /** An ingredient class to represent every ingredient object on the screen
  *
@@ -1141,7 +1141,7 @@ export class Level1 extends Scene {
         this.createPlateHitbox();
         console.log(this.plateHitBox);
 
-        this.questions = MEDIUM_QUESTIONS;
+        this.questions = EASY_QUESTIONS;
 
         // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
