@@ -2,6 +2,8 @@ import { GameObjects, Scene } from "phaser";
 import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
+export let gameType: string = "none";
+
 // Mode Selector Button Class for Main Game Scren
 export class SelectorButton extends Phaser.GameObjects.Container {
     private buttonBackground: Phaser.GameObjects.Graphics;
@@ -123,15 +125,25 @@ export class MainMenu extends Scene implements ChangeableScene {
         this.modeButtons.push(
             new SelectorButton(this, centerX, 400, "Basic Mode").on(
                 "pointerdown",
-                () => this.scene.start("Level1"),
+                () => {
+                    gameType = "easy";
+                    this.scene.start("Level1");
+                },
             ),
             new SelectorButton(this, centerX, 500, "Function Frenzy").on(
                 "pointerdown",
-                () => this.scene.start("Level1"),
+                () => {
+                    gameType = "medium";
+                    console.log("Starting medium questions");
+                    this.scene.start("Level1");
+                },
             ),
             new SelectorButton(this, centerX, 600, "Pointer Mode").on(
                 "pointerdown",
-                () => this.scene.start("Level1"),
+                () => {
+                    gameType = "hard";
+                    this.scene.start("Level1");
+                },
             ),
         );
 

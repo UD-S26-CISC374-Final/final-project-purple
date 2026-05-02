@@ -2,6 +2,7 @@ import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 import { SelectorButton } from "./main-menu";
+import { gameType } from "./main-menu";
 
 /** An interface representing coordinates for an object, has a starting x and starting y
  *
@@ -40,8 +41,8 @@ export interface FinalStats {
 // Lookup table for an ingredient's starting location
 const BIN_LOCATIONS: Record<string, Coordinate> = {
     patty: { x: 70, y: 400 },
-    bottom_bun: { x: 70, y: 500 },
-    top_bun: { x: 250, y: 500 },
+    bottom_bun: { x: 70, y: 485 },
+    top_bun: { x: 250, y: 495 },
     cheese: { x: 250, y: 400 },
     lettuce: { x: 250, y: 600 },
     tomato: { x: 70, y: 600 },
@@ -56,7 +57,7 @@ const SPRITE_SCALES: Record<string, number> = {
     lettuce: 0.11,
     tomato: 0.1,
     plate: 0.16,
-    screen: 0.115,
+    screen: 0.13,
 };
 
 // Lookup table for an ingredient's height, used for determining ingredient placement on the plate
@@ -250,7 +251,7 @@ const EASY_QUESTIONS: Question[] = [
         category: "Intermediate Methods",
     },
 ];
-/*const MEDIUM_QUESTIONS: Question[] = [
+const MEDIUM_QUESTIONS: Question[] = [
     {
         question:
             'class Burger {\n\tpublic ingredients: string[];\n\tpublic bun: boolean;\n\tconstructor(\ningredients: string[];, \nbuns:boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\npublic ExtraCheese(): void {\n\t\tthis.ingredients.push("cheese");\n\t\tthis.ingredients.push("cheese");\n}\n\ndoubleBurger: Burger = new Burger(["patty","patty"], true);\ndoubleBurger.ExtraCheese();\ndoubleBurger.ExtraCheese();',
@@ -386,7 +387,7 @@ const EASY_QUESTIONS: Question[] = [
     },
     {
         question:
-            'class Salad {\n\tpublic ingredients: string[];\n\tconstructor(\ningredients: string[]) {\n\t\tthis.ingredients = ingredients;\n\t}\npublic extraLarge() {\n\tthis.ingredients = [...this.ingredients, "tomato","lettuce","lettuce"];\n}\n}\n\nlet salad1: Salad = new Salad(\n\t\t["lettuce", \n\t\t"lettuce"],\n);\nsalad1.ingredients.push("tomato");\nsalad1.extraLarge();\nsalad1.ingredients.pop();salad1.ingredients.shift();',
+            'class Salad {\n\tpublic ingredients: string[];\n\tconstructor(\ningredients: string[]) {\n\t\tthis.ingredients = ingredients;\n\t}\npublic extraLarge() {\n\tthis.ingredients = [\n...this.ingredients, \n"tomato",\n"lettuce",\n"lettuce"\n];\n}\n}\n\nlet salad1: Salad = new Salad(\n\t\t["lettuce", \n\t\t"lettuce"],\n);\nsalad1.ingredients.push("tomato");\nsalad1.extraLarge();\nsalad1.ingredients.pop();salad1.ingredients.shift();',
         answer: [
             "lettuce",
             "lettuce",
@@ -434,8 +435,8 @@ const EASY_QUESTIONS: Question[] = [
         ],
         category: "Procedural Logic",
     },
-];*/
-/*const HARD_QUESTIONS: Question[] = [
+];
+const HARD_QUESTIONS: Question[] = [
     {
         question:
             'class Burger {\n\tpublic ingredients: string[]; \n\tpublic buns: boolean;\n\tconstructor(\ningredients: string[], \nbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger1: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nlet burger2: Burger = burger1;\nburger1.ingredients.push("tomato");',
@@ -633,7 +634,7 @@ const EASY_QUESTIONS: Question[] = [
         answer: ["lettuce", "tomato", "lettuce", "tomato", "tomato"],
         category: "Deep Copy",
     },
-];*/
+];
 
 /** An ingredient class to represent every ingredient object on the screen
  *
@@ -727,7 +728,7 @@ export class Order extends Phaser.GameObjects.Container {
 
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
-    //background: Phaser.GameObjects.Image;
+    background: Phaser.GameObjects.Image;
     fpsText: FpsText;
 
     // Save coordinates for center of screen
@@ -754,6 +755,8 @@ export class Level1 extends Scene {
     private currentOrder: Order;
     private orderList: Phaser.GameObjects.Text[] = [];
 
+    private plates: Phaser.GameObjects.Image[] = [];
+
     // Question tracking variables
     private questions: Question[];
     private questionIndex: number;
@@ -764,10 +767,17 @@ export class Level1 extends Scene {
     private score: number = 0;
     private scoreText!: Phaser.GameObjects.Text;
 
+    //create timer
+    private timerX = 5;
+    private timerY = 100;
+    private timerWidth = 300;
+    private timerHeight = 30;
+    private timerRadius = this.timerHeight / 2;
+    private timerOffset = 5;
+
     constructor() {
         super("Level1");
     }
-
     /**
      * Returns the current height of the burger
      */
@@ -993,6 +1003,14 @@ export class Level1 extends Scene {
 
         // When confirm button pressed, check if question was answered correctly
         this.confirmButton.on("pointerdown", () => {
+            // Makes the text pop out, regardless of whether the answer was correct or not
+            this.tweens.add({
+                targets: this.scoreText,
+                scale: 1.5,
+                duration: 300,
+                yoyo: true,
+                ease: "Power1",
+            });
             // Check if the question was answered correctly
             if (
                 this.CheckOrder(
@@ -1005,6 +1023,32 @@ export class Level1 extends Scene {
                 // Increment the player's score
                 this.score++;
                 this.scoreText.setText(`Score: ${this.score}`);
+
+                //flashes the text green
+                this.scoreText.setTint(0x00ff00);
+                this.tweens.addCounter({
+                    from: 0,
+                    to: 100,
+                    duration: 1000,
+                    onUpdate: (tween) => {
+                        const value = tween.getValue() ?? 0;
+
+                        const colorObject =
+                            Phaser.Display.Color.Interpolate.ColorWithColor(
+                                Phaser.Display.Color.ValueToColor(0x00ff00),
+                                Phaser.Display.Color.ValueToColor(0xffffff),
+                                100,
+                                value,
+                            );
+
+                        const color = Phaser.Display.Color.GetColor(
+                            colorObject.r,
+                            colorObject.g,
+                            colorObject.b,
+                        );
+                        this.scoreText.setTint(color);
+                    },
+                });
             } else {
                 // Increment the count of incorrect questions for that category of question
                 this.incorrectCategoriesAnswered[
@@ -1013,6 +1057,31 @@ export class Level1 extends Scene {
                     (this.incorrectCategoriesAnswered[
                         this.questions[this.questionIndex].category
                     ] ?? 0) + 1;
+                //flash the text red
+                this.scoreText.setTint(0xff0000);
+                this.tweens.addCounter({
+                    from: 0,
+                    to: 100,
+                    duration: 1000,
+                    onUpdate: (tween) => {
+                        const value = tween.getValue() ?? 0;
+
+                        const colorObject =
+                            Phaser.Display.Color.Interpolate.ColorWithColor(
+                                Phaser.Display.Color.ValueToColor(0xff0000),
+                                Phaser.Display.Color.ValueToColor(0xffffff),
+                                100,
+                                value,
+                            );
+
+                        const color = Phaser.Display.Color.GetColor(
+                            colorObject.r,
+                            colorObject.g,
+                            colorObject.b,
+                        );
+                        this.scoreText.setTint(color);
+                    },
+                });
             }
 
             // Clear the plate and display the next question
@@ -1039,7 +1108,7 @@ export class Level1 extends Scene {
             this.numQuestionsAnswered++;
 
             // Switch to Game Over Screen after 10 questions
-            if (this.numQuestionsAnswered >= 10) {
+            /*if (this.numQuestionsAnswered >= 10) {
                 // Send stats to Game Over Screen
                 const finalStats: FinalStats = {
                     final_score: this.score,
@@ -1048,7 +1117,7 @@ export class Level1 extends Scene {
                         this.incorrectCategoriesAnswered,
                 };
                 this.changeScene(finalStats);
-            }
+            }*/
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
@@ -1101,15 +1170,79 @@ export class Level1 extends Scene {
     }
 
     create() {
+        this.background = this.add.image(512, 384, "Background");
+        this.background.setScale(0.115);
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
-        const OrderX = this.cameras.main.width - this.cameras.main.width / 5;
-        const OrderY = this.cameras.main.height / 4;
+        //this.camera.setBackgroundColor(0x00ff00);
+        const OrderX = 600;
+        const OrderY = 20;
 
-        console.log(this.orderList);
+        // Create timer and background
+        const timerBackground = this.add.graphics();
+        timerBackground.fillStyle(0xffffff, 1);
+        timerBackground.fillRoundedRect(
+            this.timerX - this.timerOffset,
+            this.timerY - this.timerOffset,
+            this.timerWidth + 2 * this.timerOffset,
+            this.timerHeight + 2 * this.timerOffset,
+            this.timerRadius + this.timerOffset,
+        );
 
-        //this.background = this.add.image(512, 384, "background");
-        //this.background.setAlpha(0.5);
+        const currentColor = { color: 0x00ff00 };
+
+        this.tweens.addCounter({
+            from: 0,
+            to: 100,
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            onUpdate: (tween) => {
+                const value = tween.getValue() ?? 0;
+                const colorObject =
+                    Phaser.Display.Color.Interpolate.ColorWithColor(
+                        Phaser.Display.Color.ValueToColor(0x00ff00),
+                        Phaser.Display.Color.ValueToColor(0xabffab),
+                        100,
+                        value,
+                    );
+                currentColor.color = Phaser.Display.Color.GetColor(
+                    colorObject.r,
+                    colorObject.g,
+                    colorObject.b,
+                );
+            },
+        });
+
+        const timerBar = this.add.graphics();
+        timerBar.fillStyle(0x00ff00, 1);
+        let progress = 1.0;
+        this.time.addEvent({
+            delay: 20,
+            callback: () => {
+                if (progress - 0.1 > 0) {
+                    progress -= 0.0001;
+                    timerBar.clear();
+                    timerBar.fillStyle(currentColor.color, 1);
+                    timerBar.fillRoundedRect(
+                        this.timerX,
+                        this.timerY,
+                        this.timerWidth * progress,
+                        this.timerHeight,
+                        this.timerRadius,
+                    );
+                } else {
+                    // Switches to gameover screen
+                    const finalStats: FinalStats = {
+                        final_score: this.score,
+                        totalCategoriesAnswered: this.totalCategoriesAnswered,
+                        incorrectCategoriesAnswered:
+                            this.incorrectCategoriesAnswered,
+                    };
+                    this.changeScene(finalStats);
+                }
+            },
+            loop: true,
+        });
 
         // Display the FPS and score
         this.fpsText = new FpsText(this);
@@ -1118,6 +1251,8 @@ export class Level1 extends Scene {
             color: "#ffffff",
             fontFamily: "Arial",
             fontStyle: "bold",
+            stroke: "#000000",
+            strokeThickness: 10,
         });
         console.log(this.scoreText);
 
@@ -1128,8 +1263,9 @@ export class Level1 extends Scene {
             this.cameras.main.worldView.y + this.cameras.main.height / 2;
         // Add Order TV to the sreen
         this.add
-            .image(OrderX - 27, OrderY + 200, "screen")
-            .setScale(SPRITE_SCALES["screen"]);
+            .image(this.screenCenterX * 2 + 80, -115, "screen")
+            .setScale(SPRITE_SCALES["screen"])
+            .setOrigin(1, 0);
 
         // Add plate to the middle of the screen
         this.plate = this.add.image(
@@ -1140,9 +1276,45 @@ export class Level1 extends Scene {
         this.plate.setScale(SPRITE_SCALES["plate"]);
         this.createPlateHitbox();
         console.log(this.plateHitBox);
+        if (gameType === "easy") {
+            this.questions = EASY_QUESTIONS;
+        } else if (gameType === "medium") {
+            this.questions = MEDIUM_QUESTIONS;
+        } else if (gameType === "hard") {
+            this.questions = HARD_QUESTIONS;
+        }
+        console.log("Gamemode: " + gameType);
 
-        this.questions = EASY_QUESTIONS;
-
+        this.plates.push(
+            this.add
+                .image(70, 400, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+        this.plates.push(
+            this.add
+                .image(70, 500, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+        this.plates.push(
+            this.add
+                .image(250, 500, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+        this.plates.push(
+            this.add
+                .image(250, 400, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+        this.plates.push(
+            this.add
+                .image(250, 600, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+        this.plates.push(
+            this.add
+                .image(70, 600, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
         // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
         this.currentOrder = new Order(
@@ -1153,7 +1325,7 @@ export class Level1 extends Scene {
             this.questions[this.questionIndex].answer,
             this.questions[this.questionIndex].category,
         );
-
+        this.currentOrder.text.setOrigin(0, 0);
         // Display the 'confirm' and 'clear plate' buttons
         this.displayButtons();
 
