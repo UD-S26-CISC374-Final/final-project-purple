@@ -753,7 +753,7 @@ export class Level1 extends Scene {
     private clearPlateButton: SelectorButton;
 
     private currentOrder: Order;
-    private orderList: Phaser.GameObjects.Text[] = [];
+    //private orderList: Phaser.GameObjects.Text[] = [];
 
     private plates: Phaser.GameObjects.Image[] = [];
 
