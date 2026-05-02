@@ -15,7 +15,7 @@ export class SelectorButton extends Phaser.GameObjects.Container {
         x: number,
         y: number,
         text: string,
-        width: number = 200,
+        width: number = 220,
         height: number = 60,
     ) {
         super(scene, x, y);
@@ -123,7 +123,7 @@ export class MainMenu extends Scene implements ChangeableScene {
 
         // Add mode selector buttons to the screen, and have them start their scenes when pressed
         this.modeButtons.push(
-            new SelectorButton(this, centerX, 400, "Basic Mode").on(
+            new SelectorButton(this, centerX, 400, "Standard Servings").on(
                 "pointerdown",
                 () => {
                     gameType = "easy";
@@ -138,13 +138,20 @@ export class MainMenu extends Scene implements ChangeableScene {
                     this.scene.start("Level1");
                 },
             ),
-            new SelectorButton(this, centerX, 600, "Pointer Mode").on(
+            new SelectorButton(this, centerX, 600, "Copying Chaos").on(
                 "pointerdown",
                 () => {
                     gameType = "hard";
                     this.scene.start("Level1");
                 },
             ),
+            /*new SelectorButton(this, centerX, 700, "Free Build").on(
+                "pointerdown",
+                () => {
+                    gameType = "free";
+                    this.scene.start("Level1");
+                },
+            ),*/
         );
 
         EventBus.emit("current-scene-ready", this);

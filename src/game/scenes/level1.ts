@@ -470,7 +470,7 @@ const HARD_QUESTIONS: Question[] = [
     },
     {
         question:
-            'class Cheeseburger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\ningredients: string[], \nbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet order1: Cheeseburger = new Cheeseburger(\n\t\t["patty", \n\t\t"cheese"],\n\ttrue,\n);\nlet order2: Cheeseburger = new Cheeseburger([...order1.ingredients], order1.buns);\norder1.ingredients.unshift("lettuce");   ',
+            'class Cheeseburger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\ningredients: string[], \nbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet order1: Cheeseburger = new Cheeseburger(\n\t\t["patty", \n\t\t"cheese"],\n\ttrue,\n);\nlet order2: Cheeseburger = new Cheeseburger(\n[...order1.ingredients], \norder1.buns);\norder1.ingredients.unshift("lettuce");   ',
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Deep Copy",
     },
@@ -530,7 +530,7 @@ const HARD_QUESTIONS: Question[] = [
     },
     {
         question:
-            'class Salad {\n\tpublic ingredients: string[];\n\tconstructor(\ningredients: string[]) {\n\t\tthis.ingredients = [...ingredients];\n\t}\n}\n\nlet salad1: Salad = new Salad(\n\t\t["lettuce", \n\t\t"tomato", \n\t\t"lettuce"],\n);\nlet salad2: Salad = new Salad([...salad1.ingredients].pop());\nsalad2.ingredients.push("tomato");\nsalad1 = salad2;',
+            'class Salad {\n\tpublic ingredients: string[];\n\tconstructor(\ningredients: string[]) {\n\t\tthis.ingredients = [...ingredients];\n\t}\n}\n\nlet salad1: Salad = new Salad(\n\t\t["lettuce", \n\t\t"tomato", \n\t\t"lettuce"],\n);\nlet salad2: Salad = new Salad(\n[...salad1.ingredients].pop());\nsalad2.ingredients.push("tomato");\nsalad1 = salad2;',
         answer: ["lettuce", "tomato", "tomato"],
         category: "Deep Copy",
     },
@@ -1174,12 +1174,12 @@ export class Level1 extends Scene {
         this.background.setScale(0.115);
         this.camera = this.cameras.main;
         //this.camera.setBackgroundColor(0x00ff00);
-        const OrderX = 600;
+        const OrderX = 510;
         const OrderY = 20;
 
         // Create timer and background
         const timerBackground = this.add.graphics();
-        timerBackground.fillStyle(0xffffff, 1);
+        timerBackground.fillStyle(0xd4d4d4, 1);
         timerBackground.fillRoundedRect(
             this.timerX - this.timerOffset,
             this.timerY - this.timerOffset,
