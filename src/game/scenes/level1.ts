@@ -655,6 +655,83 @@ export class Level1 extends Scene {
         this.debugGraphics.fillRectShape(this.plateHitBox);*/
     }
 
+    /**
+     * Displays ingredient bins and the plates underneath them
+     *
+     * Side Effects:
+     * Modifies this.plates array
+     * Modifies this.activeSprites array
+     */
+    private displayIngredientBins(): void {
+        // Display the plates where the ingredients sit
+        this.plates.push(
+            this.add
+                .image(70, 400, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(70, 500, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(250, 500, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(250, 400, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(250, 600, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(70, 600, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+
+        // Add ingredient bins to screen
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["patty"].x,
+                BIN_LOCATIONS["patty"].y,
+                "patty",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["bottom_bun"].x,
+                BIN_LOCATIONS["bottom_bun"].y,
+                "bottom_bun",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["top_bun"].x,
+                BIN_LOCATIONS["top_bun"].y,
+                "top_bun",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["cheese"].x,
+                BIN_LOCATIONS["cheese"].y,
+                "cheese",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["lettuce"].x,
+                BIN_LOCATIONS["lettuce"].y,
+                "lettuce",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["tomato"].x,
+                BIN_LOCATIONS["tomato"].y,
+                "tomato",
+                true,
+            ),
+        );
+    }
+
     create() {
         this.background = this.add.image(512, 384, "Background");
         this.background.setScale(0.115);
@@ -754,36 +831,9 @@ export class Level1 extends Scene {
         // Initialize the question bank
         this.questions = QUESTION_BANK[gameType];
 
-        this.plates.push(
-            this.add
-                .image(70, 400, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(70, 500, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(250, 500, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(250, 400, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(250, 600, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(70, 600, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
+        // Display ingredients and the plates they sit on
+        this.displayIngredientBins();
+
         // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
         this.currentOrder = new Order(
@@ -795,54 +845,9 @@ export class Level1 extends Scene {
             this.questions[this.questionIndex].category,
         );
         this.currentOrder.text.setOrigin(0, 0);
+
         // Display the 'confirm' and 'clear plate' buttons
         this.displayButtons();
-
-        // Add ingredient bins to screen
-        this.activeSprites.push(
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["patty"].x,
-                BIN_LOCATIONS["patty"].y,
-                "patty",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["bottom_bun"].x,
-                BIN_LOCATIONS["bottom_bun"].y,
-                "bottom_bun",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["top_bun"].x,
-                BIN_LOCATIONS["top_bun"].y,
-                "top_bun",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["cheese"].x,
-                BIN_LOCATIONS["cheese"].y,
-                "cheese",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["lettuce"].x,
-                BIN_LOCATIONS["lettuce"].y,
-                "lettuce",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["tomato"].x,
-                BIN_LOCATIONS["tomato"].y,
-                "tomato",
-                true,
-            ),
-        );
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
