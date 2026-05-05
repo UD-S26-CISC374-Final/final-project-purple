@@ -580,3 +580,9 @@ export const HARD_QUESTIONS: Question[] = [
         category: "Deep Copy",
     },
 ];
+
+export const QUESTION_BANK: Record<string, Question[]> = {
+    easy: EASY_QUESTIONS,
+    medium: MEDIUM_QUESTIONS,
+    hard: HARD_QUESTIONS,
+};

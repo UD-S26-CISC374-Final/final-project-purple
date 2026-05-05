@@ -2,12 +2,7 @@ import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 import { SelectorButton, gameType } from "./main-menu";
-import {
-    type Question,
-    EASY_QUESTIONS,
-    MEDIUM_QUESTIONS,
-    HARD_QUESTIONS,
-} from "../data/questions";
+import { type Question, QUESTION_BANK } from "../data/questions";
 
 /** An interface representing coordinates for an object, has a starting x and starting y
  *
@@ -622,6 +617,14 @@ export class Level1 extends Scene {
      * Saves the hitbox to this.plateHitBox
      */
     private createPlateHitbox(): void {
+        // Add plate to the middle of the screen
+        this.plate = this.add.image(
+            this.screenCenterX,
+            this.screenCenterY + 200,
+            "plate",
+        );
+        this.plate.setScale(SPRITE_SCALES["plate"]);
+
         // Plate hitbox dimensions
         const plateWidth = this.plate.displayWidth;
         const plateHeight = this.plate.displayHeight;
@@ -744,23 +747,12 @@ export class Level1 extends Scene {
         this.screenCenterY =
             this.cameras.main.worldView.y + this.cameras.main.height / 2;
 
-        // Add plate to the middle of the screen
-        this.plate = this.add.image(
-            this.screenCenterX,
-            this.screenCenterY + 200,
-            "plate",
-        );
-        this.plate.setScale(SPRITE_SCALES["plate"]);
+        // Display plate
         this.createPlateHitbox();
         console.log(this.plateHitBox);
-        if (gameType === "easy") {
-            this.questions = EASY_QUESTIONS;
-        } else if (gameType === "medium") {
-            this.questions = MEDIUM_QUESTIONS;
-        } else if (gameType === "hard") {
-            this.questions = HARD_QUESTIONS;
-        }
-        console.log("Gamemode: " + gameType);
+
+        // Initialize the question bank
+        this.questions = QUESTION_BANK[gameType];
 
         this.plates.push(
             this.add
