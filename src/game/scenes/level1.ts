@@ -2,12 +2,7 @@ import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
 import { SelectorButton, gameType } from "./main-menu";
-import {
-    type Question,
-    EASY_QUESTIONS,
-    MEDIUM_QUESTIONS,
-    HARD_QUESTIONS,
-} from "../data/questions";
+import { type Question, QUESTION_BANK } from "../data/questions";
 
 /** An interface representing coordinates for an object, has a starting x and starting y
  *
@@ -92,10 +87,24 @@ export class Ingredient extends Phaser.GameObjects.Image {
         this.setDepth(100);
 
         // Enable Input & Hand Cursor
-        this.setInteractive({ useHandCursor: true });
+        this.setInteractive({
+            useHandCursor: true,
+            pixelPerfect: true,
+            alphaTolerance: 1,
+        });
 
         // Enable dragging object
         scene.input.setDraggable(this);
+
+        // Highlight ingredient when the mouse hovers over it
+        this.on("pointerover", () => {
+            // color, outerStrength, innerStrength, knockout
+            this.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        this.on("pointerout", () => {
+            // Remove glow when mouse is removed
+            this.postFX.clear();
+        });
     }
 }
 
@@ -608,6 +617,14 @@ export class Level1 extends Scene {
      * Saves the hitbox to this.plateHitBox
      */
     private createPlateHitbox(): void {
+        // Add plate to the middle of the screen
+        this.plate = this.add.image(
+            this.screenCenterX,
+            this.screenCenterY + 200,
+            "plate",
+        );
+        this.plate.setScale(SPRITE_SCALES["plate"]);
+
         // Plate hitbox dimensions
         const plateWidth = this.plate.displayWidth;
         const plateHeight = this.plate.displayHeight;
@@ -636,6 +653,83 @@ export class Level1 extends Scene {
         this.debugGraphics.strokeRectShape(this.plateHitBox);
         this.debugGraphics.fillStyle(0x0, 0.2);
         this.debugGraphics.fillRectShape(this.plateHitBox);*/
+    }
+
+    /**
+     * Displays ingredient bins and the plates underneath them
+     *
+     * Side Effects:
+     * Modifies this.plates array
+     * Modifies this.activeSprites array
+     */
+    private displayIngredientBins(): void {
+        // Display the plates where the ingredients sit
+        this.plates.push(
+            this.add
+                .image(70, 400, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(70, 500, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(250, 500, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(250, 400, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(250, 600, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+            this.add
+                .image(70, 600, "plate")
+                .setScale(SPRITE_SCALES["plate"] * 0.6),
+        );
+
+        // Add ingredient bins to screen
+        this.activeSprites.push(
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["patty"].x,
+                BIN_LOCATIONS["patty"].y,
+                "patty",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["bottom_bun"].x,
+                BIN_LOCATIONS["bottom_bun"].y,
+                "bottom_bun",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["top_bun"].x,
+                BIN_LOCATIONS["top_bun"].y,
+                "top_bun",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["cheese"].x,
+                BIN_LOCATIONS["cheese"].y,
+                "cheese",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["lettuce"].x,
+                BIN_LOCATIONS["lettuce"].y,
+                "lettuce",
+                true,
+            ),
+            new Ingredient(
+                this,
+                BIN_LOCATIONS["tomato"].x,
+                BIN_LOCATIONS["tomato"].y,
+                "tomato",
+                true,
+            ),
+        );
     }
 
     create() {
@@ -730,54 +824,16 @@ export class Level1 extends Scene {
         this.screenCenterY =
             this.cameras.main.worldView.y + this.cameras.main.height / 2;
 
-        // Add plate to the middle of the screen
-        this.plate = this.add.image(
-            this.screenCenterX,
-            this.screenCenterY + 200,
-            "plate",
-        );
-        this.plate.setScale(SPRITE_SCALES["plate"]);
+        // Display plate
         this.createPlateHitbox();
         console.log(this.plateHitBox);
-        if (gameType === "easy") {
-            this.questions = EASY_QUESTIONS;
-        } else if (gameType === "medium") {
-            this.questions = MEDIUM_QUESTIONS;
-        } else if (gameType === "hard") {
-            this.questions = HARD_QUESTIONS;
-        }
-        console.log("Gamemode: " + gameType);
 
-        this.plates.push(
-            this.add
-                .image(70, 400, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(70, 500, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(250, 500, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(250, 400, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(250, 600, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
-        this.plates.push(
-            this.add
-                .image(70, 600, "plate")
-                .setScale(SPRITE_SCALES["plate"] * 0.6),
-        );
+        // Initialize the question bank
+        this.questions = QUESTION_BANK[gameType];
+
+        // Display ingredients and the plates they sit on
+        this.displayIngredientBins();
+
         // Choose a random question to start the player with
         this.questionIndex = Math.floor(Math.random() * this.questions.length);
         this.currentOrder = new Order(
@@ -789,54 +845,9 @@ export class Level1 extends Scene {
             this.questions[this.questionIndex].category,
         );
         this.currentOrder.text.setOrigin(0, 0);
+
         // Display the 'confirm' and 'clear plate' buttons
         this.displayButtons();
-
-        // Add ingredient bins to screen
-        this.activeSprites.push(
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["patty"].x,
-                BIN_LOCATIONS["patty"].y,
-                "patty",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["bottom_bun"].x,
-                BIN_LOCATIONS["bottom_bun"].y,
-                "bottom_bun",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["top_bun"].x,
-                BIN_LOCATIONS["top_bun"].y,
-                "top_bun",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["cheese"].x,
-                BIN_LOCATIONS["cheese"].y,
-                "cheese",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["lettuce"].x,
-                BIN_LOCATIONS["lettuce"].y,
-                "lettuce",
-                true,
-            ),
-            new Ingredient(
-                this,
-                BIN_LOCATIONS["tomato"].x,
-                BIN_LOCATIONS["tomato"].y,
-                "tomato",
-                true,
-            ),
-        );
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
