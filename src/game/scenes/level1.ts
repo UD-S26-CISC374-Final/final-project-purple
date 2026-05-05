@@ -681,13 +681,14 @@ export class Ingredient extends Phaser.GameObjects.Image {
  * y: number, the y coordinate of the order
  * orderType: string, the code snippet contents
  * answer: string[], the list of correct ingredients
- * isAnswered: boolean, whether the order has been answered
+ * orderScreen: the TV order screen (used for code snippet size scaling)
  */
 export class Order extends Phaser.GameObjects.Container {
     public orderType: string;
     public text: Phaser.GameObjects.Text;
     public answer: string[];
     public category: string;
+    public orderScreen: Phaser.GameObjects.Image;
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -697,14 +698,54 @@ export class Order extends Phaser.GameObjects.Container {
         category: string,
     ) {
         super(scene, x, y);
+
+        const screenCenterX =
+            scene.cameras.main.worldView.x + scene.cameras.main.width / 2;
+
+        // Add Order TV to the sreen
+        this.orderScreen = scene.add
+            .image(screenCenterX * 2 + 80, -115, "screen")
+            .setScale(SPRITE_SCALES["screen"])
+            .setOrigin(1, 0);
+
+        // Initialize the details of the order
         this.orderType = orderType;
         this.category = category;
-        this.text = scene.add
-            .text(x, y, orderType, { fontSize: "16px", color: "white" })
-            .setOrigin(0.5);
         this.answer = answer;
 
+        // Update code snippet and its size
+        this.text = scene.add
+            .text(x, y, orderType, { fontSize: "24px", color: "white" })
+            .setOrigin(0.5);
+        this.scaleCodeSnippet();
+
         scene.add.existing(this);
+    }
+
+    /**
+     * Scales the code snippet to fit the TV screen
+     *
+     * Side Effects: Modifies the font size of the text snippet
+     */
+    public scaleCodeSnippet() {
+        // Font size of the code snippet
+        let fontSize: number = 24;
+        this.text.setFontSize(fontSize);
+
+        // The width and height of the TV (configurable)
+        const maxWidth = this.orderScreen.displayWidth - 185;
+        const maxHeight = this.orderScreen.displayHeight - 100;
+
+        // Keep reducing the font size while the code snippet is larger than the screen
+        while (
+            this.text.displayWidth > maxWidth ||
+            this.text.displayHeight > maxHeight
+        ) {
+            // Decrease and update the font size
+            fontSize = Math.floor(fontSize * 0.9);
+            this.text.setFontSize(fontSize);
+            this.text.updateText();
+        }
     }
 
     /**
@@ -718,11 +759,14 @@ export class Order extends Phaser.GameObjects.Container {
         newAnswer: string[],
         newCategory: string,
     ) {
+        // Update order details
         this.orderType = newQuestion;
         this.answer = newAnswer;
         this.category = newCategory;
 
+        // Update code snippet text on TV and scale the text
         this.text.setText(newQuestion);
+        this.scaleCodeSnippet();
     }
 }
 
@@ -744,7 +788,6 @@ export class Level1 extends Scene {
     // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
     private plateHitBox: Phaser.Geom.Rectangle;
-    //private screen: Phaser.GameObjects.Image;
     //private debugGraphics: Phaser.GameObjects.Graphics;
 
     private instructionGroup: Phaser.GameObjects.Container;
@@ -753,7 +796,6 @@ export class Level1 extends Scene {
     private clearPlateButton: SelectorButton;
 
     private currentOrder: Order;
-    //private orderList: Phaser.GameObjects.Text[] = [];
 
     private plates: Phaser.GameObjects.Image[] = [];
 
@@ -764,10 +806,11 @@ export class Level1 extends Scene {
     private totalCategoriesAnswered: Record<string, number> = {};
     private incorrectCategoriesAnswered: Record<string, number> = {};
 
+    // Score tracking
     private score: number = 0;
     private scoreText!: Phaser.GameObjects.Text;
 
-    //create timer
+    // Create the timer
     private timerX = 5;
     private timerY = 100;
     private timerWidth = 300;
@@ -1173,7 +1216,6 @@ export class Level1 extends Scene {
         this.background = this.add.image(512, 384, "Background");
         this.background.setScale(0.115);
         this.camera = this.cameras.main;
-        //this.camera.setBackgroundColor(0x00ff00);
         const OrderX = 510;
         const OrderY = 20;
 
@@ -1261,11 +1303,6 @@ export class Level1 extends Scene {
             this.cameras.main.worldView.x + this.cameras.main.width / 2;
         this.screenCenterY =
             this.cameras.main.worldView.y + this.cameras.main.height / 2;
-        // Add Order TV to the sreen
-        this.add
-            .image(this.screenCenterX * 2 + 80, -115, "screen")
-            .setScale(SPRITE_SCALES["screen"])
-            .setOrigin(1, 0);
 
         // Add plate to the middle of the screen
         this.plate = this.add.image(
