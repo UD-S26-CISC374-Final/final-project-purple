@@ -160,7 +160,7 @@ export class Order extends Phaser.GameObjects.Container {
 
         // The width and height of the TV (configurable)
         const maxWidth = this.orderScreen.displayWidth - 185;
-        const maxHeight = this.orderScreen.displayHeight - 100;
+        const maxHeight = this.orderScreen.displayHeight - 280;
 
         // Keep reducing the font size while the code snippet is larger than the screen
         while (
