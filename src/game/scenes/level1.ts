@@ -92,10 +92,24 @@ export class Ingredient extends Phaser.GameObjects.Image {
         this.setDepth(100);
 
         // Enable Input & Hand Cursor
-        this.setInteractive({ useHandCursor: true });
+        this.setInteractive({
+            useHandCursor: true,
+            pixelPerfect: true,
+            alphaTolerance: 1,
+        });
 
         // Enable dragging object
         scene.input.setDraggable(this);
+
+        // Highlight ingredient when the mouse hovers over it
+        this.on("pointerover", () => {
+            // color, outerStrength, innerStrength, knockout
+            this.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        this.on("pointerout", () => {
+            // Remove glow when mouse is removed
+            this.postFX.clear();
+        });
     }
 }
 
