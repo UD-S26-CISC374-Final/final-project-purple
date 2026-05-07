@@ -121,6 +121,8 @@ export class Ingredient extends Phaser.GameObjects.Image {
 export class Order extends Phaser.GameObjects.Container {
     public orderType: string;
     public text: Phaser.GameObjects.Text;
+    public targetType: string;
+    public target: Phaser.GameObjects.Text;
     public answer: string[];
     public category: string;
     public orderScreen: Phaser.GameObjects.Image;
@@ -129,6 +131,7 @@ export class Order extends Phaser.GameObjects.Container {
         x: number,
         y: number,
         orderType: string,
+        targetType: string,
         answer: string[],
         category: string,
     ) {
@@ -147,12 +150,20 @@ export class Order extends Phaser.GameObjects.Container {
         this.orderType = orderType;
         this.category = category;
         this.answer = answer;
+        // Update target
 
         // Update code snippet and its size
         this.text = scene.add
             .text(x, y, orderType, { fontSize: "24px", color: "white" })
             .setOrigin(0.5);
         this.scaleCodeSnippet();
+        this.target = scene.add
+            .text(10, 150, "Target: " + targetType, {
+                fontSize: "40px",
+                color: "white",
+                backgroundColor: "black",
+            })
+            .setOrigin(0);
 
         scene.add.existing(this);
     }
@@ -192,16 +203,19 @@ export class Order extends Phaser.GameObjects.Container {
     public updateOrder(
         newQuestion: string,
         newAnswer: string[],
+        newTarget: string,
         newCategory: string,
     ) {
         // Update order details
         this.orderType = newQuestion;
         this.answer = newAnswer;
+        this.targetType = newTarget;
         this.category = newCategory;
 
         // Update code snippet text on TV and scale the text
         this.text.setText(newQuestion);
         this.scaleCodeSnippet();
+        this.target.setText(newTarget);
     }
 }
 
@@ -580,6 +594,7 @@ export class Level1 extends Scene {
             this.currentOrder.updateOrder(
                 this.questions[this.questionIndex].question,
                 this.questions[this.questionIndex].answer,
+                this.questions[this.questionIndex].target,
                 this.questions[this.questionIndex].category,
             );
 
@@ -841,6 +856,7 @@ export class Level1 extends Scene {
             OrderX,
             OrderY,
             this.questions[this.questionIndex].question,
+            this.questions[this.questionIndex].target,
             this.questions[this.questionIndex].answer,
             this.questions[this.questionIndex].category,
         );
