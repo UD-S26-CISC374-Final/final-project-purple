@@ -159,7 +159,7 @@ export class Order extends Phaser.GameObjects.Container {
         this.scaleCodeSnippet();
         this.target = scene.add
             .text(10, 150, "Target: " + targetType, {
-                fontSize: "40px",
+                fontSize: "35px",
                 color: "white",
                 backgroundColor: "black",
             })
@@ -594,7 +594,7 @@ export class Level1 extends Scene {
             this.currentOrder.updateOrder(
                 this.questions[this.questionIndex].question,
                 this.questions[this.questionIndex].answer,
-                this.questions[this.questionIndex].target,
+                "Target: " + this.questions[this.questionIndex].target,
                 this.questions[this.questionIndex].category,
             );
 
