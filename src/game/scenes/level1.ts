@@ -229,10 +229,10 @@ export class Level1 extends Scene {
     private screenCenterY!: number;
 
     // Current items on the plate
-    private burgerStack: Ingredient[] = [];
+    private burgerStack: Ingredient[];
 
     // Current items on the screen
-    private activeSprites: Ingredient[] = [];
+    private activeSprites: Ingredient[];
 
     // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
@@ -246,17 +246,17 @@ export class Level1 extends Scene {
 
     private currentOrder: Order;
 
-    private plates: Phaser.GameObjects.Image[] = [];
+    private plates: Phaser.GameObjects.Image[];
 
     // Question tracking variables
     private questions: Question[];
     private questionIndex: number;
-    private numQuestionsAnswered: number = 0;
-    private totalCategoriesAnswered: Record<string, number> = {};
-    private incorrectCategoriesAnswered: Record<string, number> = {};
+    private numQuestionsAnswered: number;
+    private totalCategoriesAnswered: Record<string, number>;
+    private incorrectCategoriesAnswered: Record<string, number>;
 
     // Score tracking
-    private score: number = 0;
+    private score: number;
     private scoreText!: Phaser.GameObjects.Text;
 
     // Create the timer
@@ -819,6 +819,25 @@ export class Level1 extends Scene {
         });
     }
 
+    init() {
+        // Save x and y coordinates for center of screen
+        this.screenCenterX =
+            this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.screenCenterY =
+            this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        // Reset sprite tracking
+        this.burgerStack = [];
+        this.activeSprites = [];
+        this.plates = [];
+
+        // Reset stat tracking
+        this.score = 0;
+        this.numQuestionsAnswered = 0;
+        this.incorrectCategoriesAnswered = {};
+        this.totalCategoriesAnswered = {};
+    }
+
     create() {
         this.background = this.add.image(512, 384, "Background");
         this.background.setScale(0.115);
@@ -840,12 +859,6 @@ export class Level1 extends Scene {
             strokeThickness: 10,
         });
         console.log(this.scoreText);
-
-        // Save x and y coordinates for center of screen
-        this.screenCenterX =
-            this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.screenCenterY =
-            this.cameras.main.worldView.y + this.cameras.main.height / 2;
 
         // Display plate
         this.createPlateHitbox();
