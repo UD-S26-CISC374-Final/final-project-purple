@@ -1,7 +1,7 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
-import { SelectorButton, gameType } from "./main-menu";
+import { SelectorButton, type ModeInfo } from "./main-menu";
 import { type Question, QUESTION_BANK } from "../data/questions";
 
 /** An interface representing coordinates for an object, has a starting x and starting y
@@ -23,6 +23,7 @@ export interface FinalStats {
     final_score: number;
     totalCategoriesAnswered: Record<string, number>;
     incorrectCategoriesAnswered: Record<string, number>;
+    gameMode: string;
 }
 
 // Lookup table for an ingredient's starting location
@@ -229,10 +230,10 @@ export class Level1 extends Scene {
     private screenCenterY!: number;
 
     // Current items on the plate
-    private burgerStack: Ingredient[] = [];
+    private burgerStack: Ingredient[];
 
     // Current items on the screen
-    private activeSprites: Ingredient[] = [];
+    private activeSprites: Ingredient[];
 
     // Plate and plate hitbox
     private plate!: Phaser.GameObjects.Image;
@@ -241,22 +242,25 @@ export class Level1 extends Scene {
 
     private instructionGroup: Phaser.GameObjects.Container;
 
+    // Buttons on screen
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
+    private mainMenuButton: SelectorButton;
 
     private currentOrder: Order;
 
-    private plates: Phaser.GameObjects.Image[] = [];
+    private plates: Phaser.GameObjects.Image[];
 
     // Question tracking variables
+    private gameMode: string;
     private questions: Question[];
     private questionIndex: number;
-    private numQuestionsAnswered: number = 0;
-    private totalCategoriesAnswered: Record<string, number> = {};
-    private incorrectCategoriesAnswered: Record<string, number> = {};
+    private numQuestionsAnswered: number;
+    private totalCategoriesAnswered: Record<string, number>;
+    private incorrectCategoriesAnswered: Record<string, number>;
 
     // Score tracking
-    private score: number = 0;
+    private score: number;
     private scoreText!: Phaser.GameObjects.Text;
 
     // Create the timer
@@ -481,7 +485,10 @@ export class Level1 extends Scene {
     }
 
     /**
-     * Display and set up confirm and clear plate buttons
+     * Display and set up:
+     *  - Confirm button
+     *  - Clear plate button
+     *  - Main menu button
      */
     private displayButtons(): void {
         // Add confirm button to screen
@@ -496,13 +503,16 @@ export class Level1 extends Scene {
         // When confirm button pressed, check if question was answered correctly
         this.confirmButton.on("pointerdown", () => {
             // Makes the text pop out, regardless of whether the answer was correct or not
-            this.tweens.add({
-                targets: this.scoreText,
-                scale: 1.5,
-                duration: 300,
-                yoyo: true,
-                ease: "Power1",
-            });
+            if (!this.tweens.isTweening(this.scoreText)) {
+                this.tweens.add({
+                    targets: this.scoreText,
+                    scale: 1.5,
+                    duration: 300,
+                    yoyo: true,
+                    ease: "Power1",
+                });
+            }
+
             // Check if the question was answered correctly
             if (
                 this.CheckOrder(
@@ -622,6 +632,17 @@ export class Level1 extends Scene {
             140,
         ).on("pointerdown", () => this.clearPlate());
         console.log(this.clearPlateButton);
+
+        // Add main menu button to bottom right corner of screen
+        this.mainMenuButton = new SelectorButton(
+            this,
+            this.scale.width - 80,
+            this.scale.height - 20,
+            "Main Menu",
+            140,
+            40,
+        ).on("pointerdown", () => this.scene.start("MainMenu"));
+        console.log(this.mainMenuButton);
     }
 
     /**
@@ -747,14 +768,11 @@ export class Level1 extends Scene {
         );
     }
 
-    create() {
-        this.background = this.add.image(512, 384, "Background");
-        this.background.setScale(0.115);
-        this.camera = this.cameras.main;
-        const OrderX = 510;
-        const OrderY = 20;
-
-        // Create timer and background
+    /**
+     * Creates the timer and timer countdown
+     */
+    private createTimer() {
+        // Create timer bar
         const timerBackground = this.add.graphics();
         timerBackground.fillStyle(0xd4d4d4, 1);
         timerBackground.fillRoundedRect(
@@ -792,6 +810,8 @@ export class Level1 extends Scene {
 
         const timerBar = this.add.graphics();
         timerBar.fillStyle(0x00ff00, 1);
+
+        // Decrease timer in timer bar and switch to Game Over screen when time is up
         let progress = 1.0;
         this.time.addEvent({
             delay: 20,
@@ -814,12 +834,45 @@ export class Level1 extends Scene {
                         totalCategoriesAnswered: this.totalCategoriesAnswered,
                         incorrectCategoriesAnswered:
                             this.incorrectCategoriesAnswered,
+                        gameMode: this.gameMode,
                     };
                     this.changeScene(finalStats);
                 }
             },
             loop: true,
         });
+    }
+
+    init(gameInfo: ModeInfo) {
+        // Save x and y coordinates for center of screen
+        this.screenCenterX =
+            this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        this.screenCenterY =
+            this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        this.gameMode = gameInfo.gameType;
+
+        // Reset sprite tracking
+        this.burgerStack = [];
+        this.activeSprites = [];
+        this.plates = [];
+
+        // Reset stat tracking
+        this.score = 0;
+        this.numQuestionsAnswered = 0;
+        this.incorrectCategoriesAnswered = {};
+        this.totalCategoriesAnswered = {};
+    }
+
+    create() {
+        this.background = this.add.image(512, 384, "Background");
+        this.background.setScale(0.115);
+        this.camera = this.cameras.main;
+        const OrderX = 510;
+        const OrderY = 20;
+
+        // Create the timer bar
+        this.createTimer();
 
         // Display the FPS and score
         this.fpsText = new FpsText(this);
@@ -833,18 +886,12 @@ export class Level1 extends Scene {
         });
         console.log(this.scoreText);
 
-        // Save x and y coordinates for center of screen
-        this.screenCenterX =
-            this.cameras.main.worldView.x + this.cameras.main.width / 2;
-        this.screenCenterY =
-            this.cameras.main.worldView.y + this.cameras.main.height / 2;
-
         // Display plate
         this.createPlateHitbox();
         console.log(this.plateHitBox);
 
         // Initialize the question bank
-        this.questions = QUESTION_BANK[gameType];
+        this.questions = QUESTION_BANK[this.gameMode];
 
         // Display ingredients and the plates they sit on
         this.displayIngredientBins();
