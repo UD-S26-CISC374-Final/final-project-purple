@@ -1,7 +1,7 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
-import { SelectorButton, type modeInfo } from "./main-menu";
+import { SelectorButton, type ModeInfo } from "./main-menu";
 import { type Question, QUESTION_BANK } from "../data/questions";
 
 /** An interface representing coordinates for an object, has a starting x and starting y
@@ -840,7 +840,7 @@ export class Level1 extends Scene {
         });
     }
 
-    init(gameInfo: modeInfo) {
+    init(gameInfo: ModeInfo) {
         // Save x and y coordinates for center of screen
         this.screenCenterX =
             this.cameras.main.worldView.x + this.cameras.main.width / 2;

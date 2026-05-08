@@ -2,7 +2,7 @@ import { GameObjects, Scene } from "phaser";
 import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
-export interface modeInfo {
+export interface ModeInfo {
     gameType: string;
 }
 
@@ -138,21 +138,21 @@ export class MainMenu extends Scene implements ChangeableScene {
             new SelectorButton(this, centerX, 400, "Standard Servings").on(
                 "pointerdown",
                 () => {
-                    const gameInfo: modeInfo = { gameType: "easy" };
+                    const gameInfo: ModeInfo = { gameType: "easy" };
                     this.scene.start("Level1", gameInfo);
                 },
             ),
             new SelectorButton(this, centerX, 500, "Function Frenzy").on(
                 "pointerdown",
                 () => {
-                    const gameInfo: modeInfo = { gameType: "medium" };
+                    const gameInfo: ModeInfo = { gameType: "medium" };
                     this.scene.start("Level1", gameInfo);
                 },
             ),
             new SelectorButton(this, centerX, 600, "Copying Chaos").on(
                 "pointerdown",
                 () => {
-                    const gameInfo: modeInfo = { gameType: "hard" };
+                    const gameInfo: ModeInfo = { gameType: "hard" };
                     this.scene.start("Level1", gameInfo);
                 },
             ),

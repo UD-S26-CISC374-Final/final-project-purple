@@ -1,7 +1,7 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import type { FinalStats } from "./level1";
-import { SelectorButton } from "./main-menu";
+import { SelectorButton, type ModeInfo } from "./main-menu";
 
 export class GameOver extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -14,11 +14,14 @@ export class GameOver extends Scene {
     // Variables for tracking question analytics by category
     private totalCategoriesAnswered: Record<string, number> = {};
     private incorrectCategoriesAnswered: Record<string, number> = {};
+    private gameMode: string;
 
     private screenCenterX: number;
     private screenCenterY: number;
 
+    // Buttons
     private homeButton: SelectorButton;
+    private retryButton: SelectorButton;
 
     constructor() {
         super("GameOver");
@@ -29,6 +32,7 @@ export class GameOver extends Scene {
         this.score = gameData.final_score;
         this.totalCategoriesAnswered = gameData.totalCategoriesAnswered;
         this.incorrectCategoriesAnswered = gameData.incorrectCategoriesAnswered;
+        this.gameMode = gameData.gameMode;
     }
 
     /**
@@ -126,6 +130,36 @@ export class GameOver extends Scene {
         }
     }
 
+    /**
+     * Display and setup the Main Menu and Retry buttons
+     *
+     * Side Effects: Sets the homeButton and retryButton variables to be the new buttons
+     */
+    private displayButtons(): void {
+        const buttonY: number = this.screenCenterY + 200;
+
+        // Display the home button
+        this.homeButton = new SelectorButton(
+            this,
+            this.screenCenterX - 150,
+            buttonY,
+            "Main Menu",
+        );
+        this.homeButton.on("pointerdown", () => this.scene.start("MainMenu"));
+
+        // Display the retry button
+        this.retryButton = new SelectorButton(
+            this,
+            this.screenCenterX + 150,
+            buttonY,
+            "Retry",
+        );
+        const gameModeObject: ModeInfo = { gameType: this.gameMode };
+        this.retryButton.on("pointerdown", () =>
+            this.scene.start("Level1", gameModeObject),
+        );
+    }
+
     create() {
         this.camera = this.cameras.main;
         //this.camera.setBackgroundColor(0xff0000);
@@ -150,14 +184,8 @@ export class GameOver extends Scene {
         // Display the table with accuracy by category
         this.displayAccuracyTable();
 
-        // Display the home button
-        this.homeButton = new SelectorButton(
-            this,
-            this.screenCenterX,
-            this.screenCenterY + 200,
-            "Main Menu",
-        );
-        this.homeButton.on("pointerdown", () => this.scene.start("MainMenu"));
+        // Display the Main Menu and Retry buttons
+        this.displayButtons();
 
         EventBus.emit("current-scene-ready", this);
     }
