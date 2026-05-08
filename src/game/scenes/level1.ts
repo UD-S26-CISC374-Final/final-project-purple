@@ -241,8 +241,10 @@ export class Level1 extends Scene {
 
     private instructionGroup: Phaser.GameObjects.Container;
 
+    // Buttons on screen
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
+    private mainMenuButton: SelectorButton;
 
     private currentOrder: Order;
 
@@ -481,7 +483,10 @@ export class Level1 extends Scene {
     }
 
     /**
-     * Display and set up confirm and clear plate buttons
+     * Display and set up:
+     *  - Confirm button
+     *  - Clear plate button
+     *  - Main menu button
      */
     private displayButtons(): void {
         // Add confirm button to screen
@@ -622,6 +627,17 @@ export class Level1 extends Scene {
             140,
         ).on("pointerdown", () => this.clearPlate());
         console.log(this.clearPlateButton);
+
+        // Add main menu button to bottom right corner of screen
+        this.mainMenuButton = new SelectorButton(
+            this,
+            this.scale.width - 80,
+            this.scale.height - 20,
+            "Main Menu",
+            140,
+            40,
+        ).on("pointerdown", () => this.scene.start("MainMenu"));
+        console.log(this.mainMenuButton);
     }
 
     /**
