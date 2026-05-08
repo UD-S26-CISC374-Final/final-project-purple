@@ -747,14 +747,11 @@ export class Level1 extends Scene {
         );
     }
 
-    create() {
-        this.background = this.add.image(512, 384, "Background");
-        this.background.setScale(0.115);
-        this.camera = this.cameras.main;
-        const OrderX = 510;
-        const OrderY = 20;
-
-        // Create timer and background
+    /**
+     * Creates the timer and timer countdown
+     */
+    private createTimer() {
+        // Create timer bar
         const timerBackground = this.add.graphics();
         timerBackground.fillStyle(0xd4d4d4, 1);
         timerBackground.fillRoundedRect(
@@ -820,6 +817,17 @@ export class Level1 extends Scene {
             },
             loop: true,
         });
+    }
+
+    create() {
+        this.background = this.add.image(512, 384, "Background");
+        this.background.setScale(0.115);
+        this.camera = this.cameras.main;
+        const OrderX = 510;
+        const OrderY = 20;
+
+        // Create the timer bar
+        this.createTimer();
 
         // Display the FPS and score
         this.fpsText = new FpsText(this);
