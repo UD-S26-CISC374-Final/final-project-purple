@@ -503,13 +503,16 @@ export class Level1 extends Scene {
         // When confirm button pressed, check if question was answered correctly
         this.confirmButton.on("pointerdown", () => {
             // Makes the text pop out, regardless of whether the answer was correct or not
-            this.tweens.add({
-                targets: this.scoreText,
-                scale: 1.5,
-                duration: 300,
-                yoyo: true,
-                ease: "Power1",
-            });
+            if (!this.tweens.isTweening(this.scoreText)) {
+                this.tweens.add({
+                    targets: this.scoreText,
+                    scale: 1.5,
+                    duration: 300,
+                    yoyo: true,
+                    ease: "Power1",
+                });
+            }
+
             // Check if the question was answered correctly
             if (
                 this.CheckOrder(
