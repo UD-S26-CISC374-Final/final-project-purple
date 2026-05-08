@@ -2,9 +2,21 @@ import { GameObjects, Scene } from "phaser";
 import { EventBus } from "../event-bus";
 import type { ChangeableScene } from "../reactable-scene";
 
-export let gameType: string = "none";
+export interface modeInfo {
+    gameType: string;
+}
 
-// Mode Selector Button Class for Main Game Scren
+/**
+ * Mode Selector Button Class for Main Game Scren
+ *
+ * Fields:
+ *  scene: Phaser.Scene, the scene to add the button to
+        x: number, the x coordinate to place the button at
+        y: number, the y coordinate to place the button at
+        text: string, the text to display in the button
+        width: number, the width of the button in pixels, defaults to 220
+        height: number, the height of the button in pixels, defaults to 60
+ * */
 export class SelectorButton extends Phaser.GameObjects.Container {
     private buttonBackground: Phaser.GameObjects.Graphics;
     private label: Phaser.GameObjects.Text;
@@ -121,28 +133,27 @@ export class MainMenu extends Scene implements ChangeableScene {
             loop: -1, // Loop forever
         });
 
-        // Add mode selector buttons to the screen, and have them start their scenes when pressed
+        // Add mode selector buttons to the screen, and have them start their modes when pressed
         this.modeButtons.push(
             new SelectorButton(this, centerX, 400, "Standard Servings").on(
                 "pointerdown",
                 () => {
-                    gameType = "easy";
-                    this.scene.start("Level1");
+                    const gameInfo: modeInfo = { gameType: "easy" };
+                    this.scene.start("Level1", gameInfo);
                 },
             ),
             new SelectorButton(this, centerX, 500, "Function Frenzy").on(
                 "pointerdown",
                 () => {
-                    gameType = "medium";
-                    console.log("Starting medium questions");
-                    this.scene.start("Level1");
+                    const gameInfo: modeInfo = { gameType: "medium" };
+                    this.scene.start("Level1", gameInfo);
                 },
             ),
             new SelectorButton(this, centerX, 600, "Copying Chaos").on(
                 "pointerdown",
                 () => {
-                    gameType = "hard";
-                    this.scene.start("Level1");
+                    const gameInfo: modeInfo = { gameType: "hard" };
+                    this.scene.start("Level1", gameInfo);
                 },
             ),
             /*new SelectorButton(this, centerX, 700, "Free Build").on(

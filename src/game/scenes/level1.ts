@@ -1,7 +1,7 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
 import FpsText from "../objects/fps-text";
-import { SelectorButton, gameType } from "./main-menu";
+import { SelectorButton, type modeInfo } from "./main-menu";
 import { type Question, QUESTION_BANK } from "../data/questions";
 
 /** An interface representing coordinates for an object, has a starting x and starting y
@@ -23,6 +23,7 @@ export interface FinalStats {
     final_score: number;
     totalCategoriesAnswered: Record<string, number>;
     incorrectCategoriesAnswered: Record<string, number>;
+    gameMode: string;
 }
 
 // Lookup table for an ingredient's starting location
@@ -251,6 +252,7 @@ export class Level1 extends Scene {
     private plates: Phaser.GameObjects.Image[];
 
     // Question tracking variables
+    private gameMode: string;
     private questions: Question[];
     private questionIndex: number;
     private numQuestionsAnswered: number;
@@ -805,6 +807,8 @@ export class Level1 extends Scene {
 
         const timerBar = this.add.graphics();
         timerBar.fillStyle(0x00ff00, 1);
+
+        // Decrease timer in timer bar and switch to Game Over screen when time is up
         let progress = 1.0;
         this.time.addEvent({
             delay: 20,
@@ -827,6 +831,7 @@ export class Level1 extends Scene {
                         totalCategoriesAnswered: this.totalCategoriesAnswered,
                         incorrectCategoriesAnswered:
                             this.incorrectCategoriesAnswered,
+                        gameMode: this.gameMode,
                     };
                     this.changeScene(finalStats);
                 }
@@ -835,12 +840,14 @@ export class Level1 extends Scene {
         });
     }
 
-    init() {
+    init(gameInfo: modeInfo) {
         // Save x and y coordinates for center of screen
         this.screenCenterX =
             this.cameras.main.worldView.x + this.cameras.main.width / 2;
         this.screenCenterY =
             this.cameras.main.worldView.y + this.cameras.main.height / 2;
+
+        this.gameMode = gameInfo.gameType;
 
         // Reset sprite tracking
         this.burgerStack = [];
@@ -881,7 +888,7 @@ export class Level1 extends Scene {
         console.log(this.plateHitBox);
 
         // Initialize the question bank
-        this.questions = QUESTION_BANK[gameType];
+        this.questions = QUESTION_BANK[this.gameMode];
 
         // Display ingredients and the plates they sit on
         this.displayIngredientBins();
