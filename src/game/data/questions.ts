@@ -10,6 +10,7 @@ export interface Question {
     target: string;
     answer: string[];
     category: string;
+    explanation: string;
 }
 
 // A list of easy questions
@@ -20,6 +21,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "order1",
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -27,6 +30,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "extraLettuce",
         answer: ["bottom_bun", "patty", "lettuce", "lettuce", "top_bun"],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -34,6 +39,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "lettuce"],
         category: "Static Initialization",
+        explanation:
+            "Since Salad does not have buns, only the ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -41,6 +48,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "veggieBurger1",
         answer: ["bottom_bun", "lettuce", "top_bun"],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -48,6 +57,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "doubleBurger1",
         answer: ["bottom_bun", "patty", "patty", "cheese", "top_bun"],
         category: "Basic Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -55,6 +66,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "order1",
         answer: ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
         category: "Basic Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -62,6 +75,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -69,6 +84,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "burgerWithCheese",
         answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Intermediate Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since the burger is a local variable, it is not affecting the main array.",
     },
     {
         question:
@@ -76,6 +93,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "cheesyBurger",
         answer: ["bottom_bun", "patty", "cheese", "cheese", "top_bun"],
         category: "Procedural Logic",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since cheese is pushed, it is added to the end of the ingredients array, which is right before the top bun.",
     },
     {
         question:
@@ -92,6 +111,8 @@ export const EASY_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since patty is pushed three times, it is added to the end of the ingredients array three times, which is right before the top bun.",
     },
     {
         question:
@@ -106,6 +127,8 @@ export const EASY_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since tomato is pushed, it is added to the end of the ingredients array, which is right before the top bun.",
     },
     {
         question:
@@ -113,6 +136,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Basic Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -120,6 +145,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "noBuns",
         answer: ["patty", "lettuce"],
         category: "Basic Methods",
+        explanation:
+            "Since buns is false, they are not added to the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -139,6 +166,8 @@ export const EASY_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -146,6 +175,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "patty", "cheese", "tomato", "top_bun"],
         category: "Procedural Logic",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -163,6 +194,8 @@ export const EASY_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Static Initialization",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -170,6 +203,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "nothingBurger",
         answer: [],
         category: "Static Initialization",
+        explanation:
+            "Since buns is false, they are not added to the burger.\n Since there are no ingredients in the array, no ingredients are added to the burger.",
     },
     {
         question:
@@ -184,6 +219,8 @@ export const EASY_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Basic Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since lettuce is unshifted, it is added to the beginning of the ingredients array, which is right after the bottom bun.",
     },
     {
         question:
@@ -191,6 +228,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "cheese", "lettuce", "top_bun"],
         category: "Basic Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since patty is shifted, it is removed from the beginning of the ingredients array, which is right after the bottom bun.",
     },
     {
         question:
@@ -198,6 +237,8 @@ export const EASY_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
         category: "Procedural Logic",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -212,6 +253,8 @@ export const EASY_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Intermediate Methods",
+        explanation:
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since lettuce is spliced in location 1, it is the second ingredient added, after the patty and before the original cheese and lettuce.",
     },
 ];
 
@@ -232,6 +275,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Class Function",
+        explanation:
+            "Since ExtraCheese is called twice, cheese is added to the end of the ingredients array four times, which is right before the top bun.",
     },
     {
         question:
@@ -246,6 +291,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "lettuce",
         ],
         category: "Intermediate Methods",
+        explanation:
+            "Since lettuce is spliced in location 1, it is the second ingredient added, after the patty and before the original cheese and lettuce.\n Since tomato is spliced in location 1, it is the third ingredient added, after the patty and before the original cheese and lettuce and the spliced lettuce.\n Since LettuceBuns is called, the first and last ingredients are changed to lettuce.",
     },
     {
         question:
@@ -260,6 +307,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Procedural Logic",
+        explanation:
+            "Since extraTomatos is called, tomato is added to the end of the ingredients array, which is right before the top bun.",
     },
     {
         question:
@@ -276,13 +325,17 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Procedural Logic",
+        explanation:
+            "Since tomato is unshifted, it is added to the beginning of the ingredients array, which is right after the bottom bun.\n Since tomato is pushed, it is added to the end of the ingredients array, which is right before the top bun.\n Since extraLettuce is called, lettuce is added to the end of the ingredients array, which is right before the top bun.",
     },
     {
         question:
             'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction removeBuns(burger: Burger) {\n\tburger.buns = false;\n}\nremoveBuns(burger);',
         target: "burger",
-        answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
+        answer: ["patty", "cheese", "lettuce"],
         category: "Procedural Logic",
+        explanation:
+            "Since removeBuns is called, buns is set to false, so the bottom and top buns are removed from the burger.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -290,13 +343,17 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["patty", "cheese", "lettuce"],
         category: "Procedural Logic",
+        explanation:
+            "Since extraPatties is called, patty is added to the end of the ingredients array, which is right before the top bun.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
-            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nburger.ingredients.splice(1, 0, "tomato");\nfunction veganBurger() {\n\tfor(let i = 0; i < burger.ingredients.length; i++) {\n\t\tif(burger.ingredients[i] === "cheese" || \n\t\t\tburger.ingredients[i] === "patty") {\n\t\t\tburger.ingredients.splice(i, 1);\n\t\t\ti--;\n\t\t}\n\t}\n}\nveganBurger();',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction extraTomatos(burger: Burger) {\n\tburger.ingredients.push("tomato");\n}\nextraTomatos(burger);',
         target: "burger",
         answer: ["bottom_bun", "tomato", "lettuce", "top_bun"],
         category: "Intermediate Methods",
+        explanation:
+            "Since extraTomatos is called, tomato is added to the end of the ingredients array, which is right before the top bun.",
     },
     {
         question:
@@ -304,6 +361,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["lettuce", "cheese", "tomato", "lettuce", "lettuce"],
         category: "Intermediate Methods",
+        explanation:
+            "Since lettuce is spliced in location 1, it is the second ingredient added, after the patty and before the original cheese and lettuce.\n Since vegetarianBurger is called, the for loop removes all patties from the ingredients array, buns is set to false so the bottom and top buns are removed from the burger, lettuce is unshifted so it is added to the beginning of the ingredients array, therefore it is the first ingredient, and lettuce is pushed so it is added to the end of the ingredients array, being on the top.",
     },
     {
         question:
@@ -311,6 +370,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["patty", "cheese", "tomato", "lettuce"],
         category: "Intermediate Methods",
+        explanation:
+            "Since lettuce is spliced in location 1, it is the second ingredient added, after the patty and before the original cheese and lettuce.\n Since inverseBuns is called, buns is set to false, so the bottom and top buns are removed from the burger.",
     },
     {
         question:
@@ -327,6 +388,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Class Function",
+        explanation:
+            "Since doubleIngredients is called, patty, cheese, and lettuce are each added to the end of the ingredients array.",
     },
     {
         question:
@@ -334,6 +397,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "patty", "lettuce", "tomato", "top_bun"],
         category: "Class Function",
+        explanation:
+            "Since removeIngredient is called with cheese, cheese is removed from the ingredients array.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -341,13 +406,17 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "burger",
         answer: ["bottom_bun", "cheese", "lettuce", "top_bun"],
         category: "Class Function",
+        explanation:
+            "Since removeIngredient is called with tomato, tomato is removed from the ingredients array.\n Since removeIngredient is called with patty, patty is removed from the ingredients array.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
-            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n\n\tpublic ReplacePatty(ingredient: string) {\n\t\tfor(let i = 0; i < this.ingredients.length; i++) {\n\t\t\tif(this.ingredients[i] === "patty") {\n\t\t\t\tthis.ingredients[i] = ingredient; \n\t\t\t}\n\t\t}\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"tomato"],\n\t\ttrue,\n);\nburger.removeIngredient("tomato"); \nburger.replacePatty("cheese");',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n\n\tpublic removeIngredient(ingredient: string) {\n\t\tfor(let i = 0; i < this.ingredients.length; i++) {\n\t\t\tif(this.ingredients[i] === ingredient) {\n\t\t\t\tthis.ingredients.splice(i, 1);\n\t\t\t\ti--;\n\t\t\t}\n\n\tpublic ReplacePatty(ingredient: string) {\n\t\tfor(let i = 0; i < this.ingredients.length; i++) {\n\t\t\tif(this.ingredients[i] === "patty") {\n\t\t\t\tthis.ingredients[i] = ingredient; \n\t\t\t}\n\t\t}\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce", \n\t\t"tomato"],\n\t\ttrue,\n);\nburger.removeIngredient("tomato"); \nburger.replacePatty("cheese");',
         target: "burger",
         answer: ["bottom_bun", "cheese", "cheese", "lettuce", "top_bun"],
         category: "Class Function",
+        explanation:
+            "Since removeIngredient is called with tomato, tomato is removed from the ingredients array.\n Since replacePatty is called with cheese, patty is replaced with cheese in the ingredients array.\n The ingredients are added in the order they are listed in the array.",
     },
     {
         question:
@@ -363,6 +432,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Class Function",
+        explanation:
+            "Since replacePatty is called with lettuce, patty is replaced with lettuce in the ingredients array.\n Since patty is spliced in location 1, it is the second ingredient added, after the bottom bun and before the original cheese, lettuce, and tomato.\n Since replacePatty is called with cheese, the new patty is replaced with cheese in the ingredients array.",
     },
     {
         question:
@@ -377,6 +448,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
             "lettuce",
         ],
         category: "Class Function",
+        explanation:
+            "Since tomato is pushed, it is added to the end of the ingredients array.\n Since extraLarge is called, tomato, lettuce, and lettuce are added to the end of the ingredients array.\n Since pop is called, the last ingredient, which is lettuce, is removed from the ingredients array.\n Since shift is called, the first ingredient, which is lettuce, is removed from the ingredients array.",
     },
     {
         question:
@@ -384,6 +457,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "lettuce", "tomato", "lettuce", "lettuce"],
         category: "Class Function",
+        explanation:
+            "Since extraLarge is called, tomato, lettuce, and lettuce are added to the end of the ingredients array.",
     },
     {
         question:
@@ -391,6 +466,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "tomato", "lettuce", "tomato"],
         category: "Class Function",
+        explanation:
+            "Since doubleSalad is called, lettuce and tomato are each added to the end of the ingredients array.",
     },
     {
         question:
@@ -398,6 +475,8 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "tomato", "tomato", "tomato"],
         category: "Class Function",
+        explanation:
+            "Since addTomato is called, tomato is added to the end of the ingredients array twice, which is right after the original tomato.",
     },
     {
         question:
@@ -405,20 +484,17 @@ export const MEDIUM_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "tomato", "tomato", "lettuce", "tomato"],
         category: "Class Function",
+        explanation:
+            "Since tomato is pushed, it is added to the end of the ingredients array, which is right after the original tomato.\n Since lettuce is pushed, it is added to the end of the ingredients array, which is right after the original tomato and the pushed tomato.\n Since tomato is pushed, it is added to the end of the ingredients array, which is right after the original tomato and the pushed tomato and lettuce.",
     },
     {
         question:
             'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nlet burger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nburger.ingredients.unshift("tomato");\nfunction TomatoBuns() {\n\tburger.ingredients.push("tomato");\n\tburger.ingredients.unshift("tomato");\n\tburger.buns = false;\n}\nTomatoBuns();',
         target: "burger",
-        answer: [
-            "tomato",
-            "bottom_bun",
-            "patty",
-            "cheese",
-            "lettuce",
-            "tomato",
-        ],
+        answer: ["tomato", "patty", "cheese", "lettuce", "tomato"],
         category: "Procedural Logic",
+        explanation:
+            "Since tomato is unshifted, it is added to the beginning of the ingredients array, which is right after the bottom bun.\n Since tomatoBuns is called, tomatos are added to the beginning and end of the ingredients array, and buns are removed.",
     },
 ];
 
@@ -426,7 +502,7 @@ export const MEDIUM_QUESTIONS: Question[] = [
 export const HARD_QUESTIONS: Question[] = [
     {
         question:
-            'class Burger {\n\tpublic ingredients: string[]; \n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\t\tthis.ingredients = ingredients;\n\t\t\tthis.buns = buns;\n\t}\n}\n\nburger1: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nlet burger2: Burger = burger1;\nburger1.ingredients.push("tomato");',
+            'class Burger {\n\tpublic ingredients: string[]; \n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\t\tthis.ingredients = ingredients;\n\t\t\tthis.buns = buns;\n\t}\n}\n\nburger1: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nlet burger2: Burger = burger1;\nburger2.ingredients.push("tomato");',
         target: "burger1",
         answer: [
             "bottom_bun",
@@ -437,6 +513,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Shallow Copy",
+        explanation:
+            "Since burger2 is set equal to burger1, they reference the same object in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since tomato is pushed to burger2, it affects burger1, and added to the end of the ingredients array.",
     },
     {
         question:
@@ -444,6 +522,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "burger1",
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Shallow Copy",
+        explanation:
+            "Since burger2 is set equal to burger1, they reference the same object in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since pop is called on burger2, it removes the last ingredient, which is lettuce, from the ingredients array of both burger1 and burger2.",
     },
     {
         question:
@@ -451,6 +531,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "lettuce", "tomato"],
         category: "Shallow Copy",
+        explanation:
+            "Since salad2 is set equal to salad1, they reference the same object in memory, so changes to the ingredients array in salad1 also affect salad2.\n Since tomato is pushed to salad1, it affects salad2, and added to the end of the ingredients array.",
     },
     {
         question:
@@ -458,6 +540,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "lettuce", "tomato"],
         category: "Deep Copy",
+        explanation:
+            "Since salad2 is created with a new array that is a copy of salad1's ingredients, they reference different objects in memory, so changes to the ingredients array in salad1 do not affect salad2.\n Since pop is called on salad1, it removes the last ingredient, which is lettuce, from the ingredients array of salad1, but does not affect salad2.",
     },
     {
         question:
@@ -465,6 +549,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "order1",
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Deep Copy",
+        explanation:
+            "Since order2 is created with a new array that is a copy of order1's ingredients, they reference different objects in memory, so changes to the ingredients array in order1 do not affect order2.\n Since lettuce is unshifted to order1, it is added to the beginning of the ingredients array of order1, which is right after the bottom bun, but does not affect order2.",
     },
     {
         question:
@@ -479,6 +565,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since shift is called on burger2, it removes the first ingredient, which is patty, from the ingredients array of burger2, but does not affect burger1.",
     },
     {
         question:
@@ -495,6 +583,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since tomato is unshifted to burger1, it is added to the beginning of the ingredients array of burger1, which is right after the bottom bun, but does not affect burger2.",
     },
     {
         question:
@@ -502,6 +592,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "nothingBurger",
         answer: [],
         category: "Deep Copy",
+        explanation:
+            "Since somethingBurger is created with a new array that is a copy of nothingBurger's ingredients, they reference different objects in memory, so changes to the ingredients array and buns property in somethingBurger do not affect nothingBurger.\n Since buns is set to true in somethingBurger, it does not affect nothingBurger, which still has buns set to false.\n Since ingredients is set to a new array with patty and cheese in somethingBurger, it does not affect nothingBurger, which still has an empty ingredients array.",
     },
     {
         question:
@@ -509,6 +601,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "burger1",
         answer: ["bottom_bun", "patty", "top_bun"],
         category: "Shallow Copy",
+        explanation:
+            "Since burger2 is set equal to burger1, they reference the same object in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -524,6 +618,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since push returns the new length of the array, burger2.ingredients is set to 5, which is not an array, so it does not affect burger1.\n Since burger1.ingredients is set equal to burger2.ingredients, which is 5, it does not affect the ingredients array of burger1, which still has the original ingredients.",
     },
     {
         question:
@@ -531,6 +627,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "tomato", "tomato"],
         category: "Deep Copy",
+        explanation:
+            "Since salad2 is created with a new array that is a copy of salad1's ingredients, they reference different objects in memory, so changes to the ingredients array in salad1 do not affect salad2.\n Since pop returns the last ingredient, which is lettuce, salad2.ingredients is set to lettuce, which is not an array, so it does not affect salad1.\n Since tomato is pushed to salad2.ingredients, which is lettuce, it does not affect salad1.\n Since salad1 is set equal to salad2, it now references the same object in memory as salad2, so changes to the ingredients array in salad1 also affect salad2.",
     },
     {
         question:
@@ -545,6 +643,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Shallow Copy",
+        explanation:
+            "Since cheeseBurger2 is set equal to cheeseBurger1, they reference the same object in memory, so changes to the ingredients array in cheeseBurger1 also affect cheeseBurger2.\n Since extraCheese is called on cheeseBurger2, it pushes cheese to the end of the ingredients array of both cheeseBurger1 and cheeseBurger2.",
     },
     {
         question:
@@ -560,6 +660,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -567,6 +669,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "burger1",
         answer: ["lettuce", "patty", "cheese", "tomato", "lettuce"],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since replaceBuns is called on burger1, it unshifts lettuce to the beginning of the ingredients array of burger1, which is right after the bottom bun, and pushes lettuce to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.",
     },
     {
         question:
@@ -582,6 +686,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and cheese, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.\n Since lettuce is pushed to order2, which is the new array that burger2 references, it does not affect burger1.",
     },
     {
         question:
@@ -597,6 +703,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -612,6 +720,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Shallow Copy",
+        explanation:
+            "Since burger2 is set equal to burger1, they reference the same object in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since cheese is pushed to burger2, it is added to the end of the ingredients array of both burger1 and burger2.",
     },
     {
         question:
@@ -626,6 +736,8 @@ export const HARD_QUESTIONS: Question[] = [
             "top_bun",
         ],
         category: "Deep Copy",
+        explanation:
+            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -633,6 +745,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "burger1",
         answer: ["patty", "cheese", "lettuce", "tomato"],
         category: "Shallow Copy",
+        explanation:
+            "Since burger2 is set equal to burger1, they reference the same object in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.\n Since buns is set to false in burger2, it does not affect burger1, which still has buns set to true.",
     },
     {
         question:
@@ -640,6 +754,8 @@ export const HARD_QUESTIONS: Question[] = [
         target: "salad1",
         answer: ["lettuce", "tomato", "lettuce", "tomato", "tomato"],
         category: "Deep Copy",
+        explanation:
+            "Since salad2 is created with a new array that is a copy of salad1's ingredients, they reference different objects in memory, so changes to the ingredients array in salad1 do not affect salad2.\n Since push returns the new length of the array, salad2.ingredients is set to 4, which is not an array, so it does not affect salad1.\n Since splice is called on salad2.ingredients, which is 4, it does not affect salad1.\n Since salad1 is set equal to salad2, it now references the same object in memory as salad2, so changes to the ingredients array in salad1 also affect salad2.",
     },
 ];
 

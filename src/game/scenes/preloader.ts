@@ -41,6 +41,17 @@ export class Preloader extends Scene {
         this.load.image("screen", "Order TV.png");
         // level background
         this.load.image("Background", "Background.png");
+        // Load sound effects
+        this.load.audio("pop", "Pop Sound.mp3");
+
+        this.load.audio("cheese_splat", "ralsei-splat.mp3");
+        this.load.audio("lettuce_crunch", "Lettuce Sound.mp3");
+        this.load.audio("tomato_squish", "Tomato Sound.mp3");
+        this.load.audio("bun_thud", "Buns Sound.mp3");
+        this.load.audio("patty_moo", "Patty Sound.mp3");
+
+        this.load.audio("correct", "correct.mp3");
+        this.load.audio("incorrect", "wrong-lie-incorrect-buzzer.mp3");
     }
 
     create() {

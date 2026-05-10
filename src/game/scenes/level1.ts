@@ -14,6 +14,33 @@ interface Coordinate {
     x: number;
     y: number;
 }
+/**
+ * Scales text to fit within the given width and height by reducing the font size until it fits
+ * @param fontSize The starting font size of the text   * @param maxWidth The maximum width the text can be before it needs to be scaled down
+ * @param maxHeight The maximum height the text can be before it needs to be scaled down
+ * @param text The text object to scale
+ *
+ * Side Effects: Modifies the font size of the text snippet
+ */
+function scaleText(
+    fontSize: number,
+    maxWidth: number,
+    maxHeight: number,
+    text: Phaser.GameObjects.Text,
+): void {
+    // Font size of the code snippet
+    text.setFontSize(fontSize);
+
+    // The width and height of the TV (configurable)
+
+    // Keep reducing the font size while the code snippet is larger than the screen
+    while (text.displayWidth > maxWidth || text.displayHeight > maxHeight) {
+        // Decrease and update the font size
+        fontSize = Math.floor(fontSize * 0.9);
+        text.setFontSize(fontSize);
+        text.updateText();
+    }
+}
 
 /** An interface representing the final stats. Contains final score, total questions answered by category, and the total number of incorrect questions by category
  *
@@ -127,6 +154,7 @@ export class Order extends Phaser.GameObjects.Container {
     public answer: string[];
     public category: string;
     public orderScreen: Phaser.GameObjects.Image;
+    public explanation: string;
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -135,6 +163,7 @@ export class Order extends Phaser.GameObjects.Container {
         targetType: string,
         answer: string[],
         category: string,
+        explanation: string,
     ) {
         super(scene, x, y);
 
@@ -151,13 +180,19 @@ export class Order extends Phaser.GameObjects.Container {
         this.orderType = orderType;
         this.category = category;
         this.answer = answer;
+        this.explanation = explanation;
         // Update target
 
         // Update code snippet and its size
         this.text = scene.add
             .text(x, y, orderType, { fontSize: "24px", color: "white" })
             .setOrigin(0.5);
-        this.scaleCodeSnippet();
+        scaleText(
+            24,
+            this.orderScreen.displayWidth - 185,
+            this.orderScreen.displayHeight - 280,
+            this.text,
+        );
         this.target = scene.add
             .text(10, 150, "Target: " + targetType, {
                 fontSize: "35px",
@@ -167,32 +202,6 @@ export class Order extends Phaser.GameObjects.Container {
             .setOrigin(0);
 
         scene.add.existing(this);
-    }
-
-    /**
-     * Scales the code snippet to fit the TV screen
-     *
-     * Side Effects: Modifies the font size of the text snippet
-     */
-    public scaleCodeSnippet() {
-        // Font size of the code snippet
-        let fontSize: number = 24;
-        this.text.setFontSize(fontSize);
-
-        // The width and height of the TV (configurable)
-        const maxWidth = this.orderScreen.displayWidth - 185;
-        const maxHeight = this.orderScreen.displayHeight - 280;
-
-        // Keep reducing the font size while the code snippet is larger than the screen
-        while (
-            this.text.displayWidth > maxWidth ||
-            this.text.displayHeight > maxHeight
-        ) {
-            // Decrease and update the font size
-            fontSize = Math.floor(fontSize * 0.9);
-            this.text.setFontSize(fontSize);
-            this.text.updateText();
-        }
     }
 
     /**
@@ -206,16 +215,23 @@ export class Order extends Phaser.GameObjects.Container {
         newAnswer: string[],
         newTarget: string,
         newCategory: string,
+        newExplanation: string,
     ) {
         // Update order details
         this.orderType = newQuestion;
         this.answer = newAnswer;
         this.targetType = newTarget;
         this.category = newCategory;
+        this.explanation = newExplanation;
 
         // Update code snippet text on TV and scale the text
         this.text.setText(newQuestion);
-        this.scaleCodeSnippet();
+        scaleText(
+            24,
+            this.orderScreen.displayWidth - 185,
+            this.orderScreen.displayHeight - 280,
+            this.text,
+        );
         this.target.setText(newTarget);
     }
 }
@@ -271,6 +287,20 @@ export class Level1 extends Scene {
     private timerRadius = this.timerHeight / 2;
     private timerOffset = 5;
 
+    //Creates Explanation
+    private orderExplanation: Phaser.GameObjects.Text;
+
+    // Sound effects
+    private popSound: Phaser.Sound.BaseSound;
+    private cheeseSplatSound: Phaser.Sound.BaseSound;
+    private lettuceCrunchSound: Phaser.Sound.BaseSound;
+    private tomatoSquishSound: Phaser.Sound.BaseSound;
+    private bunThudSound: Phaser.Sound.BaseSound;
+    private pattyMooSound: Phaser.Sound.BaseSound;
+    // Correct and incorrect answer sounds
+    private correctSound: Phaser.Sound.BaseSound;
+    private incorrectSound: Phaser.Sound.BaseSound;
+
     constructor() {
         super("Level1");
     }
@@ -307,6 +337,22 @@ export class Level1 extends Scene {
         ingredient.x = this.plate.x;
         ingredient.y = this.plate.y - stackHeight;
         this.burgerStack.push(ingredient);
+        if (ingredient.ingredientType === "cheese") {
+            this.cheeseSplatSound.play();
+        } else if (ingredient.ingredientType === "lettuce") {
+            this.lettuceCrunchSound.play();
+        } else if (ingredient.ingredientType === "tomato") {
+            this.tomatoSquishSound.play();
+        } else if (
+            ingredient.ingredientType === "bottom_bun" ||
+            ingredient.ingredientType === "top_bun"
+        ) {
+            this.bunThudSound.play();
+        } else if (ingredient.ingredientType === "patty") {
+            this.pattyMooSound.play();
+        } else {
+            this.popSound.play();
+        }
 
         // Move the top bun up
         if (ingredient.ingredientType === "top_bun") {
@@ -522,6 +568,9 @@ export class Level1 extends Scene {
                     this.currentOrder.answer,
                 )
             ) {
+                // Play correct sound effect
+                this.correctSound.play();
+
                 // Increment the player's score
                 this.score++;
                 this.scoreText.setText(`Score: ${this.score}`);
@@ -551,6 +600,7 @@ export class Level1 extends Scene {
                         this.scoreText.setTint(color);
                     },
                 });
+                this.orderExplanation.setVisible(false);
             } else {
                 // Increment the count of incorrect questions for that category of question
                 this.incorrectCategoriesAnswered[
@@ -559,6 +609,8 @@ export class Level1 extends Scene {
                     (this.incorrectCategoriesAnswered[
                         this.questions[this.questionIndex].category
                     ] ?? 0) + 1;
+                // Play incorrect sound effect
+                this.incorrectSound.play();
                 //flash the text red
                 this.scoreText.setTint(0xff0000);
                 this.tweens.addCounter({
@@ -584,6 +636,14 @@ export class Level1 extends Scene {
                         this.scoreText.setTint(color);
                     },
                 });
+                this.orderExplanation.setText(
+                    "ERROR:Answer is: [" +
+                        this.currentOrder.answer.join(", ") +
+                        "]\n" +
+                        this.currentOrder.explanation,
+                );
+                scaleText(70, 475, 400, this.orderExplanation);
+                this.orderExplanation.setVisible(true);
             }
 
             // Clear the plate and display the next question
@@ -606,6 +666,7 @@ export class Level1 extends Scene {
                 this.questions[this.questionIndex].answer,
                 "Target: " + this.questions[this.questionIndex].target,
                 this.questions[this.questionIndex].category,
+                this.questions[this.questionIndex].explanation,
             );
 
             this.numQuestionsAnswered++;
@@ -906,11 +967,48 @@ export class Level1 extends Scene {
             this.questions[this.questionIndex].target,
             this.questions[this.questionIndex].answer,
             this.questions[this.questionIndex].category,
+            this.questions[this.questionIndex].explanation,
+        );
+        console.log(
+            "Current order explanation: " + this.currentOrder.explanation,
         );
         this.currentOrder.text.setOrigin(0, 0);
 
         // Display the 'confirm' and 'clear plate' buttons
         this.displayButtons();
+
+        // Create sound effect
+        this.popSound = this.sound.add("pop");
+        this.cheeseSplatSound = this.sound.add("cheese_splat");
+        this.lettuceCrunchSound = this.sound.add("lettuce_crunch");
+        this.tomatoSquishSound = this.sound.add("tomato_squish");
+        this.bunThudSound = this.sound.add("bun_thud");
+        this.pattyMooSound = this.sound.add("patty_moo");
+        this.correctSound = this.sound.add("correct");
+        this.incorrectSound = this.sound.add("incorrect");
+
+        // Creates explanation text;
+        this.orderExplanation = this.add
+            .text(
+                10,
+                200,
+                "ERROR:\nAnswer is: [" +
+                    this.currentOrder.answer.join(", ") +
+                    "]\n" +
+                    this.currentOrder.explanation,
+                {
+                    fontSize: "32px",
+                    color: "#ff0000",
+                    fontFamily: "Arial",
+                    fontStyle: "bold",
+                    stroke: "#000000",
+                    backgroundColor: "#000000",
+                    strokeThickness: 10,
+                },
+            )
+            .setOrigin(0, 0)
+            .setVisible(false);
+        console.log("Explanation text: " + this.orderExplanation.text);
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
