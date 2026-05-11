@@ -181,7 +181,6 @@ export class Order extends Phaser.GameObjects.Container {
         this.category = category;
         this.answer = answer;
         this.explanation = explanation;
-        // Update target
 
         // Update code snippet and its size
         this.text = scene.add
@@ -193,9 +192,11 @@ export class Order extends Phaser.GameObjects.Container {
             this.orderScreen.displayHeight - 280,
             this.text,
         );
+
+        // Update current order to make
         this.target = scene.add
-            .text(10, 150, "Target: " + targetType, {
-                fontSize: "35px",
+            .text(10, 150, "Current Order:\n'" + targetType + "'", {
+                fontSize: "30px",
                 color: "white",
                 backgroundColor: "black",
             })
@@ -552,7 +553,7 @@ export class Level1 extends Scene {
                     },
                 });
                 this.orderExplanation.setText(
-                    "ERROR:Answer is: [" +
+                    "Answer is: [" +
                         this.currentOrder.answer.join(", ") +
                         "]\n" +
                         this.currentOrder.explanation,
@@ -579,7 +580,9 @@ export class Level1 extends Scene {
             this.currentOrder.updateOrder(
                 this.questions[this.questionIndex].question,
                 this.questions[this.questionIndex].answer,
-                "Target: " + this.questions[this.questionIndex].target,
+                "Current Order:\n'" +
+                    this.questions[this.questionIndex].target +
+                    "'",
                 this.questions[this.questionIndex].category,
                 this.questions[this.questionIndex].explanation,
             );
@@ -1074,8 +1077,8 @@ export class Level1 extends Scene {
         this.orderExplanation = this.add
             .text(
                 10,
-                200,
-                "ERROR:\nAnswer is: [" +
+                220,
+                "Answer is: [" +
                     this.currentOrder.answer.join(", ") +
                     "]\n" +
                     this.currentOrder.explanation,
