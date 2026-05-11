@@ -39,7 +39,8 @@ export class Preloader extends Scene {
         this.load.image("ticket", "temp_ticket.png");
         this.load.image("confirm", "Confirm Button.png");
         this.load.image("screen", "Order TV.png");
-        this.load.image("arrow", "temp_arrow.png");
+        this.load.image("left_arrow", "left_arrow.png");
+        this.load.image("right_arrow", "right_arrow.png");
 
         // Load level background
         this.load.image("Background", "Background.png");

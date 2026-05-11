@@ -822,14 +822,32 @@ export class Level1 extends Scene {
     private displayTutorial(): void {
         // The list of tutorial videos, and their descriptions
         const tutorialVideos = [
-            { key: "step1_video", text: "Step 1" },
-            { key: "step1_video", text: "Step 2" },
+            {
+                key: "step1_video",
+                text: "Read the code snippet in the top right to determine the value of \nthe given order. Then build the order with buns on the outside\n(if applicable) and place ingredients in the order they appear.",
+            },
+            {
+                key: "step1_video",
+                text: "Drag and drop the ingredients onto the plate in the order\nthey appear in the final order.",
+            },
+            {
+                key: "step1_video",
+                text: "Click the 'Clear Plate' button to empty the plate and restart.",
+            },
+            {
+                key: "step1_video",
+                text: "Click the 'Confirm' button to submit your order.",
+            },
+            {
+                key: "step1_video",
+                text: "Keep watch for the timer in the top left and the score of how \nmany points you have earned.",
+            },
         ];
         let currentVideoIndex = 0;
 
         // Create the popup container in the middle of the screen
         const popupWidth: number = this.screenCenterX * 1.2;
-        const popupHeight: number = this.screenCenterY * 1.2;
+        const popupHeight: number = this.screenCenterY * 1.7;
         const popupContainer = this.add.container(
             this.screenCenterX,
             this.screenCenterY,
@@ -863,10 +881,10 @@ export class Level1 extends Scene {
 
         // The current tutorial description being displayed
         const bottomY = popupContainer.y + popupContainer.displayHeight / 2;
-        const textY = bottomY - 200;
+        const textY = bottomY - 170;
         const tutorialDescription = this.add
             .text(0, textY, tutorialVideos[0].text, {
-                fontSize: "30px",
+                fontSize: "14px",
                 color: "0x0",
             })
             .setOrigin(0.5);
@@ -875,9 +893,9 @@ export class Level1 extends Scene {
         const nextArrowX = popupWidth / 2 - 50;
         const arrowY = popupHeight / 2 - 50;
         const nextArrow = this.add
-            .sprite(nextArrowX, arrowY, "arrow")
+            .sprite(nextArrowX, arrowY, "right_arrow")
             .setInteractive({ useHandCursor: true })
-            .setScale(0.1);
+            .setScale(0.08);
         nextArrow.on("pointerdown", () => {
             currentVideoIndex = (currentVideoIndex + 1) % tutorialVideos.length;
             currentTutorialVideo.changeSource(
@@ -888,13 +906,21 @@ export class Level1 extends Scene {
             // Update Text
             tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
         });
+        // Highlight "next" arrow when the mouse hovers over it
+        nextArrow.on("pointerover", () => {
+            nextArrow.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        nextArrow.on("pointerout", () => {
+            // Remove glow when mouse is removed
+            nextArrow.postFX.clear();
+        });
 
         // When the "previous" arrow is clicked, switch the tutorial video being displayed
         const prevArrowX = -(popupWidth / 2 - 50);
         const prevArrow = this.add
-            .sprite(prevArrowX, arrowY, "arrow")
+            .sprite(prevArrowX, arrowY, "left_arrow")
             .setInteractive({ useHandCursor: true })
-            .setScale(0.1);
+            .setScale(0.08);
         prevArrow.on("pointerdown", () => {
             currentVideoIndex =
                 (currentVideoIndex - 1 + tutorialVideos.length) %
@@ -906,6 +932,15 @@ export class Level1 extends Scene {
 
             // Update Text
             tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
+        });
+
+        // Highlight "previos" arrow when the mouse hovers over it
+        prevArrow.on("pointerover", () => {
+            prevArrow.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        prevArrow.on("pointerout", () => {
+            // Remove glow when mouse is removed
+            prevArrow.postFX.clear();
         });
 
         // Add background and title to the container
