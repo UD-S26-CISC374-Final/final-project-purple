@@ -832,7 +832,7 @@ export class Level1 extends Scene {
     /**
      * Creates the timer and timer countdown
      */
-    private createTimer() {
+    private createTimer(): void {
         // Create timer bar
         const timerBackground = this.add.graphics();
         timerBackground.fillStyle(0xd4d4d4, 1);
@@ -902,6 +902,69 @@ export class Level1 extends Scene {
             },
             loop: true,
         });
+    }
+
+    private displayTutorial(): void {
+        // 1. Define the tutorial videos
+        const tutorialSteps = [
+            { type: "video", key: "step1_video", text: "Move with WASD" },
+        ];
+        //let currentIndex = 0;
+
+        const popupWidth: number = this.screenCenterX * 1.2;
+        const popupHeight: number = this.screenCenterY * 1.2;
+
+        // Create the popup container in the middle of the screen
+        const popupContainer = this.add.container(
+            this.screenCenterX,
+            this.screenCenterY,
+        );
+
+        // Configure the background for the popup to be a beige rounded rectangle
+        const background = this.add.graphics();
+        background.fillStyle(0xede8d0, 1);
+        background.fillRoundedRect(
+            -(popupWidth / 2),
+            -(popupHeight / 2),
+            popupWidth,
+            popupHeight,
+            20,
+        );
+
+        // Configure the title to read "Tutorial" at the top of the popup
+        const title = this.add
+            .text(0, -(popupHeight / 2) + 25, "Tutorial", {
+                fontSize: "30px",
+                color: "0x0",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5);
+
+        // Set the first tutorial to play
+        const currentTutorialDisplay = this.add
+            .video(0, 0, tutorialSteps[0].key)
+            .setScale(0.35)
+            .play(true);
+
+        const bottomY = popupContainer.y + popupContainer.displayHeight / 2;
+        const textY = bottomY - 200;
+
+        // The current tutorial description being displayed
+        const tutorialDescription = this.add
+            .text(0, textY, tutorialSteps[0].text, {
+                fontSize: "30px",
+                color: "0x0",
+            })
+            .setOrigin(0.5);
+
+        // Add background and title to the container
+        popupContainer.add([
+            background,
+            title,
+            currentTutorialDisplay,
+            tutorialDescription,
+        ]);
+        popupContainer.setDepth(1000);
     }
 
     init(gameInfo: ModeInfo) {
@@ -1115,7 +1178,8 @@ export class Level1 extends Scene {
             },
         );
 
-        this.displayInstructions();
+        //this.displayInstructions();
+        this.displayTutorial();
 
         EventBus.emit("current-scene-ready", this);
     }

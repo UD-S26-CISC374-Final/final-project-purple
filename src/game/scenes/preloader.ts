@@ -28,7 +28,7 @@ export class Preloader extends Scene {
 
         this.load.image("logo", "logo.png");
 
-        // Load assets for the plate
+        // Load game assets
         this.load.image("plate", "Plate.png");
         this.load.image("patty", "patty.png");
         this.load.image("bottom_bun", "bottom_bun.png");
@@ -39,19 +39,23 @@ export class Preloader extends Scene {
         this.load.image("ticket", "temp_ticket.png");
         this.load.image("confirm", "Confirm Button.png");
         this.load.image("screen", "Order TV.png");
-        // level background
+        this.load.image("arrow", "temp_arrow.png");
+
+        // Load level background
         this.load.image("Background", "Background.png");
+
         // Load sound effects
         this.load.audio("pop", "Pop Sound.mp3");
-
         this.load.audio("cheese_splat", "ralsei-splat.mp3");
         this.load.audio("lettuce_crunch", "Lettuce Sound.mp3");
         this.load.audio("tomato_squish", "Tomato Sound.mp3");
         this.load.audio("bun_thud", "Buns Sound.mp3");
         this.load.audio("patty_moo", "Patty Sound.mp3");
-
         this.load.audio("correct", "correct.mp3");
         this.load.audio("incorrect", "wrong-lie-incorrect-buzzer.mp3");
+
+        // Load tutorial videos
+        this.load.video("step1_video", "test1.mp4");
     }
 
     create() {
