@@ -848,6 +848,7 @@ export class Level1 extends Scene {
         // Create the popup container in the middle of the screen
         const popupWidth: number = this.screenCenterX * 1.2;
         const popupHeight: number = this.screenCenterY * 1.7;
+        const headerY: number = -(popupHeight / 2) + 25;
         const popupContainer = this.add.container(
             this.screenCenterX,
             this.screenCenterY,
@@ -864,9 +865,27 @@ export class Level1 extends Scene {
             20,
         );
 
+        // Create the "X" Close Button
+        const closeButton = this.add
+            .text(popupWidth / 2 - 20, headerY, "X", {
+                fontSize: "32px",
+                color: "#5c5c5c",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5);
+        closeButton.on("pointerover", () => {
+            closeButton.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        closeButton.on("pointerout", () => {
+            closeButton.postFX.clear();
+        });
+        closeButton.on("pointerdown", () => {
+            popupContainer.destroy();
+        });
+
         // Set the title to be "Tutorial" at the top of the popup
         const title = this.add
-            .text(0, -(popupHeight / 2) + 25, "Tutorial", {
+            .text(0, headerY, "Tutorial", {
                 fontSize: "30px",
                 color: "0x0",
                 fontStyle: "bold",
@@ -897,6 +916,7 @@ export class Level1 extends Scene {
             .setInteractive({ useHandCursor: true })
             .setScale(0.08);
         nextArrow.on("pointerdown", () => {
+            // Change the video to the next tutorial
             currentVideoIndex = (currentVideoIndex + 1) % tutorialVideos.length;
             currentTutorialVideo.changeSource(
                 tutorialVideos[currentVideoIndex].key,
@@ -905,13 +925,18 @@ export class Level1 extends Scene {
 
             // Update Text
             tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
+
+            // Make the X button clickable if all slides have been viewed
+            if (currentVideoIndex === tutorialVideos.length - 1) {
+                closeButton.setColor("#ff0000");
+                closeButton.setInteractive({ useHandCursor: true });
+            }
         });
         // Highlight "next" arrow when the mouse hovers over it
         nextArrow.on("pointerover", () => {
             nextArrow.postFX.addGlow(0xffbf00, 5, 0, false);
         });
         nextArrow.on("pointerout", () => {
-            // Remove glow when mouse is removed
             nextArrow.postFX.clear();
         });
 
@@ -922,6 +947,7 @@ export class Level1 extends Scene {
             .setInteractive({ useHandCursor: true })
             .setScale(0.08);
         prevArrow.on("pointerdown", () => {
+            // Change the current tutorial slide being shown
             currentVideoIndex =
                 (currentVideoIndex - 1 + tutorialVideos.length) %
                 tutorialVideos.length;
@@ -932,18 +958,23 @@ export class Level1 extends Scene {
 
             // Update Text
             tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
+
+            // Make the X button clickable if all slides have been viewed
+            if (currentVideoIndex === tutorialVideos.length - 1) {
+                closeButton.setColor("#ff0000");
+                closeButton.setInteractive({ useHandCursor: true });
+            }
         });
 
-        // Highlight "previos" arrow when the mouse hovers over it
+        // Highlight "previous" arrow when the mouse hovers over it
         prevArrow.on("pointerover", () => {
             prevArrow.postFX.addGlow(0xffbf00, 5, 0, false);
         });
         prevArrow.on("pointerout", () => {
-            // Remove glow when mouse is removed
             prevArrow.postFX.clear();
         });
 
-        // Add background and title to the container
+        // Add background, title, arrows, description, video, and close button to the popup container
         popupContainer.add([
             background,
             title,
@@ -951,6 +982,7 @@ export class Level1 extends Scene {
             prevArrow,
             tutorialDescription,
             currentTutorialVideo,
+            closeButton,
         ]);
         popupContainer.setDepth(1000);
     }
