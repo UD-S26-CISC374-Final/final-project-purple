@@ -251,17 +251,49 @@ When you answer a question at the last second, the game rewards you with a sense
 
 ![The Pizza Sprite](../public/assets/Pizza_Sprite.png)
 
+- Patty Sprite:
+
+<br>
+
+![The Patty Sprite](../public/assets/Burger.png)
+
+- Top Bun Sprite:
+
+<br>
+
+![The Top Bun Sprite](../public/assets/top_bun.png)
+
+- Bottom Bun Sprite:
+
+<br>
+
+![The Bottom Bun Sprite](../public/assets/bottom_bun.png)
+
+- Lettuce Sprite:
+
+<br>
+
+![The Lettuce Sprite](../public/assets/lettuce.png)
+
+- Cheese Sprite:
+
+<br>
+
+![The Tomato Sprite](../public/assets/Tomato.png)
+
 - Burger Sprite:
 
 <br>
 
-![The Burger Sprite](../public/assets/Burger_Sprite.png)
+![The Burger Sprite](../public/assets/Burger.png)
 
 - Plate Texture:
 
 <br>
 
-![The Plate Sprite](../public/assets/Plate_Sprite.png)
+
+
+![The Plate Sprite](../public/assets/Plate.png)
 
 **Environment Art/Textures**:
 
@@ -269,13 +301,8 @@ When you answer a question at the last second, the game rewards you with a sense
 
 <br>
 
-![Kitchen Background](../public/assets/Kitchen_Background.png)
+![Kitchen Background](../public/assets/Background.png)
 
-- Conveyor Belt:
-
-<br>
-
-![Conveyor Belt](../public/assets/Conveyor_Belt.png)
 
 ## Audio
 
