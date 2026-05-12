@@ -260,6 +260,7 @@ export class Level1 extends Scene {
     // Buttons on screen
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
+    private explanationButton: SelectorButton;
     private mainMenuButton: SelectorButton;
 
     private currentOrder: Order;
@@ -447,9 +448,71 @@ export class Level1 extends Scene {
     }
 
     /**
+     * Display the explanation for the previous question if the player got it wrong
+     */
+    private displayExplanation(): void {
+        const explanationText = this.add
+            .text(0, 0, this.orderExplanation.text, {
+                color: "#0",
+            })
+            .setOrigin(0.5, 0.5);
+
+        // Create the popup container in the middle of the screen
+        const popupWidth: number = explanationText.displayWidth + 20;
+        const popupHeight: number = this.screenCenterY;
+        const headerY: number = -(popupHeight / 2) + 25;
+        const popupContainer = this.add.container(
+            this.screenCenterX,
+            this.screenCenterY,
+        );
+
+        const headerText = this.add
+            .text(0, -popupHeight / 2 + 20, "Explanation", {
+                color: "0x0",
+                fontStyle: "bold",
+                fontSize: "30px",
+            })
+            .setOrigin(0.5);
+
+        // Configure the background for the popup to be a beige rounded rectangle
+        const background = this.add.graphics();
+        background.fillStyle(0xede8d0, 1);
+        background.fillRoundedRect(
+            -(popupWidth / 2),
+            -(popupHeight / 2),
+            popupWidth,
+            popupHeight,
+            20,
+        );
+
+        // Create the "X" Close Button
+        const closeButton = this.add
+            .text(popupWidth / 2 - 20, headerY, "X", {
+                fontSize: "32px",
+                color: "#ff0000",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true });
+        closeButton.on("pointerdown", () => {
+            popupContainer.destroy();
+        });
+
+        // Add background, title, arrows, description, video, and close button to the popup container
+        popupContainer.add([
+            background,
+            headerText,
+            explanationText,
+            closeButton,
+        ]);
+        popupContainer.setDepth(1000);
+    }
+
+    /**
      * Display and set up:
      *  - Confirm button
      *  - Clear plate button
+     *  - Explanation button
      *  - Main menu button
      */
     private displayButtons(): void {
@@ -517,6 +580,7 @@ export class Level1 extends Scene {
                     },
                 });
                 this.orderExplanation.setVisible(false);
+                this.explanationButton.setVisible(false);
             } else {
                 // Increment the count of incorrect questions for that category of question
                 this.incorrectCategoriesAnswered[
@@ -560,6 +624,7 @@ export class Level1 extends Scene {
                 );
                 scaleText(70, 475, 400, this.orderExplanation);
                 this.orderExplanation.setVisible(true);
+                this.explanationButton.setVisible(true);
             }
 
             // Clear the plate and display the next question
@@ -588,18 +653,18 @@ export class Level1 extends Scene {
             );
 
             this.numQuestionsAnswered++;
+        });
 
-            // Switch to Game Over Screen after 10 questions
-            /*if (this.numQuestionsAnswered >= 10) {
-                // Send stats to Game Over Screen
-                const finalStats: FinalStats = {
-                    final_score: this.score,
-                    totalCategoriesAnswered: this.totalCategoriesAnswered,
-                    incorrectCategoriesAnswered:
-                        this.incorrectCategoriesAnswered,
-                };
-                this.changeScene(finalStats);
-            }*/
+        this.explanationButton = new SelectorButton(
+            this,
+            80,
+            250,
+            "Explanation",
+            140,
+            40,
+        ).setVisible(false);
+        this.explanationButton.on("pointerdown", () => {
+            this.displayExplanation();
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
