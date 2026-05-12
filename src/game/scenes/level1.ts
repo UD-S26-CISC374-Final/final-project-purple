@@ -967,11 +967,11 @@ export class Level1 extends Scene {
         const tutorialVideos = [
             {
                 key: "step1_video",
-                text: "Read the code snippet in the top right to determine the value of \nthe given order. Then build the order with buns on the outside\n(if applicable) and place ingredients in the order they appear.",
+                text: "Read the code snippet in the top right to determine the value of the given order. Then build the order with buns on the outside (if applicable) and place ingredients in the order they appear.",
             },
             {
                 key: "step1_video",
-                text: "Drag and drop the ingredients onto the plate in the order\nthey appear in the final order.",
+                text: "Drag and drop the ingredients onto the plate in the order they appear in the final order.",
             },
             {
                 key: "step1_video",
@@ -983,7 +983,11 @@ export class Level1 extends Scene {
             },
             {
                 key: "step1_video",
-                text: "Keep watch for the timer in the top left and the score of how \nmany points you have earned.",
+                text: "Keep watch for the timer in the top left and the score of how many points you have earned.",
+            },
+            {
+                key: "step1_video",
+                text: "If you got a question incorrect, select the 'Explanation' button to understand how to get the correct answer.",
             },
         ];
         let currentVideoIndex = 0;
@@ -1047,8 +1051,10 @@ export class Level1 extends Scene {
         const textY = bottomY - 170;
         const tutorialDescription = this.add
             .text(0, textY, tutorialVideos[0].text, {
-                fontSize: "14px",
+                fontSize: "18px",
                 color: "0x0",
+                align: "center",
+                wordWrap: { width: popupWidth - 40 },
             })
             .setOrigin(0.5);
 
