@@ -284,6 +284,7 @@ export class Level1 extends Scene {
     private scoreText!: Phaser.GameObjects.Text;
 
     // Create the timer
+    private timerText: Phaser.GameObjects.Text;
     private timerX = 5;
     private timerY = 100;
     private timerWidth = 300;
@@ -501,21 +502,26 @@ export class Level1 extends Scene {
      * Display the explanation for the previous question if the player got it wrong
      */
     private displayExplanation(): void {
+        // Make the overlay appear
         this.toggleOverlay();
-        const explanationText = this.add
-            .text(0, 0, this.orderExplanation.text, {
-                color: "#0",
-            })
-            .setOrigin(0.5, 0.5);
 
         // Create the popup container in the middle of the screen
-        const popupWidth: number = explanationText.displayWidth + 20;
-        const popupHeight: number = this.screenCenterY;
+        const popupWidth: number = this.screenCenterX * 1.4;
+        const popupHeight: number = this.screenCenterY * 1.7;
         const headerY: number = -(popupHeight / 2) + 25;
         const popupContainer = this.add.container(
             this.screenCenterX,
             this.screenCenterY,
         );
+
+        const explanationText = this.add
+            .text(0, 0, this.orderExplanation.text, {
+                color: "#0",
+                fontSize: "20px",
+                align: "center", // 1. Centers lines relative to each other
+                wordWrap: { width: popupWidth - 40 },
+            })
+            .setOrigin(0.5, 0.5);
 
         const headerText = this.add
             .text(0, -popupHeight / 2 + 20, "Explanation", {
@@ -872,6 +878,17 @@ export class Level1 extends Scene {
      * Creates the timer and timer countdown
      */
     private createTimer(): void {
+        // Add the "Timer: " text to screen
+        this.timerText = this.add.text(0, 65, "Timer: ", {
+            fontSize: "24px",
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontStyle: "bold",
+            stroke: "#000000",
+            strokeThickness: 6,
+        });
+        console.log(this.timerText);
+
         // Create timer bar
         const timerBackground = this.add.graphics();
         timerBackground.fillStyle(0xd4d4d4, 1);
