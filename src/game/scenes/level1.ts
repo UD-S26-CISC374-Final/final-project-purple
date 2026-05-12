@@ -335,6 +335,7 @@ export class Level1 extends Scene {
         if (this.burgerStack.length > 0) {
             const previousTop = this.burgerStack[this.burgerStack.length - 1];
             previousTop.disableInteractive();
+            previousTop.postFX.clear();
         }
 
         const stackHeight: number = this.getBurgerHeight();
