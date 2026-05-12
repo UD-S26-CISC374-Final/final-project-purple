@@ -307,14 +307,13 @@ When you answer a question at the last second, the game rewards you with a sense
 ## Audio
 
 - Music List (Ambient sound)
-    - Title theme: Lobby Music - Papa’s Freezeria
-    - Normal mode: First Track - Night of the Consumers
-    - Fever mode: Physical Challenge - Deltarune
+    - Main Music: Main Theme - Jacob Hudson
 
 - Sound List (SFX)
-    - Correct guess: Tada sound - Windows 3.1
-    - Wrong Guess: Incorrect buzzer sound effect
-    - Throwing Away Food: Squash Sound - Deltarune
+    - Correct guess: MyInstants - https://www.myinstants.com/en/instant/correct-answer-gameshow/
+    - Wrong Guess: MyInstants - https://www.myinstants.com/en/instant/wrong-lie-incorrect-buzzer-4726/
+    - Patty Sound: Pixabay - https://pixabay.com/sound-effects/nature-cow-mooing-type-03-293302/
+    - Cheese: Ralsei Squash - Deltarune
 
 # Metadata
 
