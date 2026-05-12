@@ -199,6 +199,7 @@ export class Order extends Phaser.GameObjects.Container {
                 fontSize: "30px",
                 color: "white",
                 backgroundColor: "black",
+                padding: { x: 5, y: 5 },
             })
             .setOrigin(0);
 
@@ -497,6 +498,12 @@ export class Level1 extends Scene {
             .setInteractive({ useHandCursor: true });
         closeButton.on("pointerdown", () => {
             popupContainer.destroy();
+        });
+        closeButton.on("pointerover", () => {
+            closeButton.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        closeButton.on("pointerout", () => {
+            closeButton.postFX.clear();
         });
 
         // Add background, title, arrows, description, video, and close button to the popup container
