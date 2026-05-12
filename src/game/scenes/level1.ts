@@ -289,6 +289,7 @@ export class Level1 extends Scene {
 
     // Creates Explanation
     private orderExplanation: Phaser.GameObjects.Text;
+    private orderAnswer: Phaser.GameObjects.Text;
 
     // Sound effects
     private popSound: Phaser.Sound.BaseSound;
@@ -579,8 +580,8 @@ export class Level1 extends Scene {
                         this.scoreText.setTint(color);
                     },
                 });
-                this.orderExplanation.setVisible(false);
                 this.explanationButton.setVisible(false);
+                this.orderAnswer.setVisible(false);
             } else {
                 // Increment the count of incorrect questions for that category of question
                 this.incorrectCategoriesAnswered[
@@ -616,15 +617,13 @@ export class Level1 extends Scene {
                         this.scoreText.setTint(color);
                     },
                 });
-                this.orderExplanation.setText(
-                    "Answer is: [" +
-                        this.currentOrder.answer.join(", ") +
-                        "]\n" +
-                        this.currentOrder.explanation,
+                this.orderExplanation.setText(this.currentOrder.explanation);
+                this.orderAnswer.setText(
+                    "Answer is: [" + this.currentOrder.answer.join(", ") + "]",
                 );
                 scaleText(70, 475, 400, this.orderExplanation);
-                this.orderExplanation.setVisible(true);
                 this.explanationButton.setVisible(true);
+                this.orderAnswer.setVisible(true);
             }
 
             // Clear the plate and display the next question
@@ -1139,14 +1138,11 @@ export class Level1 extends Scene {
         this.incorrectSound = this.sound.add("incorrect");
 
         // Creates explanation text;
-        this.orderExplanation = this.add
+        this.orderAnswer = this.add
             .text(
                 10,
                 220,
-                "Answer is: [" +
-                    this.currentOrder.answer.join(", ") +
-                    "]\n" +
-                    this.currentOrder.explanation,
+                "Answer is [" + this.currentOrder.answer.join(", " + "]"),
                 {
                     fontSize: "32px",
                     color: "#ff0000",
@@ -1157,6 +1153,17 @@ export class Level1 extends Scene {
                     strokeThickness: 10,
                 },
             )
+            .setVisible(false);
+        this.orderExplanation = this.add
+            .text(10, 220, this.currentOrder.explanation, {
+                fontSize: "32px",
+                color: "#ff0000",
+                fontFamily: "Arial",
+                fontStyle: "bold",
+                stroke: "#000000",
+                backgroundColor: "#000000",
+                strokeThickness: 10,
+            })
             .setOrigin(0, 0)
             .setVisible(false);
         console.log("Explanation text: " + this.orderExplanation.text);
