@@ -112,7 +112,7 @@ export class Ingredient extends Phaser.GameObjects.Image {
         // Add ingredient to scene
         scene.add.existing(this);
         this.setScale(SPRITE_SCALES[this.ingredientType]);
-        this.setDepth(100);
+        this.setDepth(10);
 
         // Enable Input & Hand Cursor
         this.setInteractive({
@@ -242,6 +242,9 @@ export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     fpsText: FpsText;
+
+    // Overlay for when popups are active
+    overlay: Phaser.GameObjects.Rectangle;
 
     // Save coordinates for center of screen
     private screenCenterX!: number;
@@ -450,9 +453,51 @@ export class Level1 extends Scene {
     }
 
     /**
+     * Toggles the overlay
+     *
+     * Side Effects: Modifies the overlay to be hidden/shown and interactive/not interactive
+     */
+    private toggleOverlay(): void {
+        // Switch the visibility and interactivity of the overlay
+        const isVisible = this.overlay.visible;
+        this.overlay.setVisible(!isVisible);
+
+        // Toggle interactivity for all items in scene
+        this.activeSprites.forEach((currentIngredient: Ingredient) => {
+            if (currentIngredient.input) {
+                // This is the direct way to turn the "switch" on or off
+                currentIngredient.input.enabled =
+                    !currentIngredient.input.enabled;
+            } else {
+                // If it was never interactive to begin with, initialize it
+                currentIngredient.setInteractive();
+            }
+        });
+
+        // Toggle interactivity for all buttons
+        if (this.confirmButton.input) {
+            this.confirmButton.input.enabled =
+                !this.confirmButton.input.enabled;
+        }
+        if (this.mainMenuButton.input) {
+            this.mainMenuButton.input.enabled =
+                !this.mainMenuButton.input.enabled;
+        }
+        if (this.clearPlateButton.input) {
+            this.clearPlateButton.input.enabled =
+                !this.clearPlateButton.input.enabled;
+        }
+        if (this.explanationButton.input) {
+            this.explanationButton.input.enabled =
+                !this.explanationButton.input.enabled;
+        }
+    }
+
+    /**
      * Display the explanation for the previous question if the player got it wrong
      */
     private displayExplanation(): void {
+        this.toggleOverlay();
         const explanationText = this.add
             .text(0, 0, this.orderExplanation.text, {
                 color: "#0",
@@ -497,6 +542,7 @@ export class Level1 extends Scene {
             .setOrigin(0.5)
             .setInteractive({ useHandCursor: true });
         closeButton.on("pointerdown", () => {
+            this.toggleOverlay();
             popupContainer.destroy();
         });
         closeButton.on("pointerover", () => {
@@ -894,6 +940,8 @@ export class Level1 extends Scene {
     }
 
     private displayTutorial(): void {
+        this.toggleOverlay();
+
         // The list of tutorial videos, and their descriptions
         const tutorialVideos = [
             {
@@ -954,6 +1002,7 @@ export class Level1 extends Scene {
             closeButton.postFX.clear();
         });
         closeButton.on("pointerdown", () => {
+            this.toggleOverlay();
             popupContainer.destroy();
         });
 
@@ -1225,7 +1274,7 @@ export class Level1 extends Scene {
                     }
 
                     // Visual cue that it's no longer part of the "Struct"
-                    gameObject.setDepth(100);
+                    //gameObject.setDepth(100);
 
                     // Re-enable the new top item so it's draggable
                     if (this.burgerStack.length > 0) {
@@ -1281,6 +1330,11 @@ export class Level1 extends Scene {
             },
         );
 
+        this.overlay = this.add
+            .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.9)
+            .setOrigin(0)
+            .setVisible(false)
+            .setDepth(100);
         this.displayTutorial();
 
         EventBus.emit("current-scene-ready", this);
