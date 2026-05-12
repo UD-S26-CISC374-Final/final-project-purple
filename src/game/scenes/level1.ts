@@ -1,6 +1,6 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
-import FpsText from "../objects/fps-text";
+//import FpsText from "../objects/fps-text";
 import { SelectorButton, type ModeInfo } from "./main-menu";
 import { type Question, QUESTION_BANK } from "../data/questions";
 
@@ -241,7 +241,7 @@ export class Order extends Phaser.GameObjects.Container {
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
-    fpsText: FpsText;
+    //fpsText: FpsText;
 
     // Overlay for when popups are active
     overlay: Phaser.GameObjects.Rectangle;
@@ -454,10 +454,11 @@ export class Level1 extends Scene {
     }
 
     /**
-     * Toggles the overlay
+     * Toggles the overlay and interactivity of all items on screen
      *
-     * Side Effects: Modifies the overlay to be hidden/shown and interactive/not interactive
-     */
+     * Side Effects: Modifies the overlay to be hidden/shown and all items' interactivity
+     *
+     * */
     private toggleOverlay(): void {
         // Switch the visibility and interactivity of the overlay
         const isVisible = this.overlay.visible;
@@ -491,6 +492,8 @@ export class Level1 extends Scene {
         if (this.explanationButton.input) {
             this.explanationButton.input.enabled =
                 !this.explanationButton.input.enabled;
+            this.explanationButton.setScale(1);
+            this.explanationButton.buttonOutline.setVisible(false);
         }
     }
 
@@ -1143,8 +1146,8 @@ export class Level1 extends Scene {
         this.createTimer();
 
         // Display the FPS and score
-        this.fpsText = new FpsText(this);
-        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
+        //this.fpsText = new FpsText(this);
+        this.scoreText = this.add.text(0, 10, `Score: ${this.score}`, {
             fontSize: "32px",
             color: "#ffffff",
             fontFamily: "Arial",
@@ -1342,8 +1345,7 @@ export class Level1 extends Scene {
     }
 
     update() {
-        this.fpsText.update();
-
+        //this.fpsText.update();
         /*this.debugGraphics.clear();
         this.debugGraphics = this.add.graphics();
         this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible

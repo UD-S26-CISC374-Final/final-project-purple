@@ -20,7 +20,7 @@ export interface ModeInfo {
 export class SelectorButton extends Phaser.GameObjects.Container {
     private buttonBackground: Phaser.GameObjects.Graphics;
     private label: Phaser.GameObjects.Text;
-    private buttonOutline: Phaser.GameObjects.Graphics;
+    public buttonOutline: Phaser.GameObjects.Graphics;
 
     constructor(
         scene: Phaser.Scene,
