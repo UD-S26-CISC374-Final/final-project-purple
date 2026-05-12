@@ -514,7 +514,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Shallow Copy",
         explanation:
-            "Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since tomato is pushed to burger2, it affects burger1, and\n added to the end of the ingredients array.",
+            " Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since tomato is pushed to burger2, it affects burger1, and\n added to the end of the ingredients array.",
     },
     {
         question:
@@ -523,7 +523,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Shallow Copy",
         explanation:
-            "Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since pop is called on burger2, it removes the last ingredient, which is\n lettuce, from the ingredients array of both burger1 and burger2.",
+            " Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since pop is called on burger2, it removes the last ingredient, which is\n lettuce, from the ingredients array of both burger1 and burger2.",
     },
     {
         question:
@@ -532,7 +532,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["lettuce", "lettuce", "tomato"],
         category: "Shallow Copy",
         explanation:
-            "Since salad2 is set equal to salad1, they reference the same object in memory,\n so changes to the ingredients array in salad1 also affect salad2.\n Since tomato is pushed to salad1, it affects salad2, and added to the end of the ingredients array.",
+            " Since salad2 is set equal to salad1, they reference the same object in memory,\n so changes to the ingredients array in salad1 also affect salad2.\n Since tomato is pushed to salad1, it affects salad2, and added to the end of the ingredients array.",
     },
     {
         question:
@@ -541,7 +541,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["lettuce", "lettuce", "tomato"],
         category: "Deep Copy",
         explanation:
-            "Since salad2 is created with a new array that is a copy of salad1's ingredients,\n they reference different objects in memory, so changes to the ingredients\n array in salad1 do not affect salad2. Since pop is called on salad1, it removes\n the last ingredient, which is lettuce, from the ingredients array\n of salad1, but does not affect salad2.",
+            " Since salad2 is created with a new array that is a copy of salad1's ingredients,\n they reference different objects in memory, so changes to the ingredients\n array in salad1 do not affect salad2. Since pop is called on salad1, it removes\n the last ingredient, which is lettuce, from the ingredients array\n of salad1, but does not affect salad2.",
     },
     {
         question:
@@ -550,7 +550,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["bottom_bun", "patty", "cheese", "top_bun"],
         category: "Deep Copy",
         explanation:
-            "Since order2 is created with a new array that is a copy of order1's ingredients,\n they reference different objects in memory, so changes to the ingredients\n array in order1 do not affect order2. Since lettuce is unshifted\n to order1, it is added to the beginning of the ingredients array of order1,\n which is right after the bottom bun, but does not affect order2.",
+            " Since order2 is created with a new array that is a copy of order1's ingredients,\n they reference different objects in memory, so changes to the ingredients\n array in order1 do not affect order2. Since lettuce is unshifted\n to order1, it is added to the beginning of the ingredients array of order1,\n which is right after the bottom bun, but does not affect order2.",
     },
     {
         question:
@@ -566,7 +566,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2. Since patty is pushed\n to burger1, it is added to the end of the ingredients array\n of burger1, which is right before the top bun, but does not affect\n burger2. Since shift is called on burger2, it removes the first ingredient,\n which is patty, from the ingredients array of burger2, but does\n not affect burger1.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2. Since patty is pushed\n to burger1, it is added to the end of the ingredients array\n of burger1, which is right before the top bun, but does not affect\n burger2. Since shift is called on burger2, it removes the first ingredient,\n which is patty, from the ingredients array of burger2, but does\n not affect burger1.",
     },
     {
         question:
@@ -584,7 +584,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients\n array in burger1 do not affect burger2. Since patty is pushed\n to burger1, it is added to the end of the ingredients array of burger1, which is\n right before the top bun, but does not affect burger2.\n Since tomato is unshifted to burger1, it is added to the beginning of the ingredients\n array of burger1, which is right after the bottom bun,\n but does not affect burger2.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients\n array in burger1 do not affect burger2. Since patty is pushed\n to burger1, it is added to the end of the ingredients array of burger1, which is\n right before the top bun, but does not affect burger2.\n Since tomato is unshifted to burger1, it is added to the beginning of the ingredients\n array of burger1, which is right after the bottom bun,\n but does not affect burger2.",
     },
     {
         question:
@@ -593,7 +593,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: [],
         category: "Deep Copy",
         explanation:
-            "Since somethingBurger is created with a new array that is a copy of nothingBurger's\n ingredients, they reference different objects in memory, so changes to the ingredients array\n and buns property in somethingBurger do not affect nothingBurger.\n Since buns is set to true in somethingBurger, it does not affect nothingBurger,\n which still has buns set to false.\n Since ingredients is set to a new array with patty and cheese in somethingBurger,\n it does not affect nothingBurger, which still has an empty ingredients array.",
+            " Since somethingBurger is created with a new array that is a copy of nothingBurger's\n ingredients, they reference different objects in memory, so changes to the ingredients array\n and buns property in somethingBurger do not affect nothingBurger.\n Since buns is set to true in somethingBurger, it does not affect nothingBurger,\n which still has buns set to false.\n Since ingredients is set to a new array with patty and cheese in somethingBurger,\n it does not affect nothingBurger, which still has an empty ingredients array.",
     },
     {
         question:
@@ -602,7 +602,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["bottom_bun", "patty", "top_bun"],
         category: "Shallow Copy",
         explanation:
-            "Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1,\n which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, it now references a\n different object in memory, so changes to the ingredients array in burger1\n do not affect burger2 anymore.",
+            " Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1,\n which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, it now references a\n different object in memory, so changes to the ingredients array in burger1\n do not affect burger2 anymore.",
     },
     {
         question:
@@ -619,7 +619,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2. Since push returns the new length\n of the array, burger2.ingredients is set to 5, which is not an array,\n so it does not affect burger1. Since burger1.ingredients is set equal to burger2.ingredients,\n which is 5, it does not affect the ingredients array of burger1,\n which still has the original ingredients.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2. Since push returns the new length\n of the array, burger2.ingredients is set to 5, which is not an array,\n so it does not affect burger1. Since burger1.ingredients is set equal to burger2.ingredients,\n which is 5, it does not affect the ingredients array of burger1,\n which still has the original ingredients.",
     },
     {
         question:
@@ -628,7 +628,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["lettuce", "tomato", "tomato"],
         category: "Deep Copy",
         explanation:
-            "Since salad2 is created with a new array that is a copy of salad1's ingredients,\n they reference different objects in memory, so changes to the ingredients array in salad1\n do not affect salad2. Since pop returns the last ingredient, which is lettuce,\n salad2.ingredients is set to lettuce, which is not an array, so it\n does not affect salad1. Since tomato is pushed to salad2.ingredients,\n which is lettuce, it does not affect salad1.\n Since salad1 is set equal to salad2, it now references the same object\n in memory as salad2, so changes to the ingredients array in salad1\n also affect salad2.",
+            " Since salad2 is created with a new array that is a copy of salad1's ingredients,\n they reference different objects in memory, so changes to the ingredients array in salad1\n do not affect salad2. Since pop returns the last ingredient, which is lettuce,\n salad2.ingredients is set to lettuce, which is not an array, so it\n does not affect salad1. Since tomato is pushed to salad2.ingredients,\n which is lettuce, it does not affect salad1.\n Since salad1 is set equal to salad2, it now references the same object\n in memory as salad2, so changes to the ingredients array in salad1\n also affect salad2.",
     },
     {
         question:
@@ -644,7 +644,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Shallow Copy",
         explanation:
-            "Since cheeseBurger2 is set equal to cheeseBurger1, they reference the same object in memory,\n so changes to the ingredients array in cheeseBurger1 also affect cheeseBurger2.\n Since extraCheese is called on cheeseBurger2, it pushes cheese to the end of the\n ingredients array of both cheeseBurger1 and cheeseBurger2.",
+            " Since cheeseBurger2 is set equal to cheeseBurger1, they reference the same object in memory,\n so changes to the ingredients array in cheeseBurger1 also affect cheeseBurger2.\n Since extraCheese is called on cheeseBurger2, it pushes cheese to the end of the\n ingredients array of both cheeseBurger1 and cheeseBurger2.",
     },
     {
         question:
@@ -661,7 +661,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to\n the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1,\n which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce,\n and tomato, it now references a different object in memory, so\n changes to the ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -670,7 +670,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["lettuce", "patty", "cheese", "tomato", "lettuce"],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since replaceBuns is called on burger1, it unshifts lettuce to the beginning of the ingredients array of burger1, which is right after the bottom bun, and pushes lettuce to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2.\n Since replaceBuns is called on burger1, it unshifts lettuce to the beginning\n of the ingredients array of burger1, which is right after the bottom\n bun, and pushes lettuce to the end of the ingredients array of burger1,\n which is right before the top bun, but does not affect burger2.",
     },
     {
         question:
@@ -687,7 +687,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array in burger1\n do not affect burger2. Since patty is pushed to burger1, it is added to the end\n of the ingredients array of burger1, which is right before the top bun,\n but does not affect burger2. Since burger2 is set equal to a new array\n with patty, cheese, lettuce, and cheese, it now references a different object\n in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.\n Since lettuce is pushed to order2, which is the new array that burger2 references,\n it does not affect burger1.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array in burger1\n do not affect burger2. Since patty is pushed to burger1, it is added to the end\n of the ingredients array of burger1, which is right before the top bun,\n but does not affect burger2. Since burger2 is set equal to a new array\n with patty, cheese, lettuce, and cheese, it now references a different object\n in memory, so changes to the ingredients array in burger1 do not affect\n burger2 anymore. Since lettuce is pushed to order2, which is the new array that burger2\n references, it does not affect burger1.",
     },
     {
         question:
@@ -704,7 +704,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients, they reference different objects in memory, so changes to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.",
+            " Since burger2 is created with a new array that is a copy of burger1's\n ingredients, they reference different objects in memory, so changes\n to the ingredients array in burger1 do not affect burger2.\n Since patty is pushed to burger1, it is added to the end of the ingredients\n array of burger1, which is right before the top bun, but does not affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and\n tomato, it now references a different object in memory, so changes\n to the ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -721,7 +721,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Shallow Copy",
         explanation:
-            "Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since cheese is pushed to burger2, it is added to the end of\n the ingredients array of both burger1 and burger2.",
+            " Since burger2 is set equal to burger1, they reference the same object in memory,\n so changes to the ingredients array in burger1 also affect burger2.\n Since cheese is pushed to burger2, it is added to the end of\n the ingredients array of both burger1 and burger2.",
     },
     {
         question:
@@ -737,7 +737,7 @@ export const HARD_QUESTIONS: Question[] = [
         ],
         category: "Deep Copy",
         explanation:
-            "Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2. Since burger2 is\n set equal to a new array with patty, cheese, lettuce, and tomato,\n it now references a different object in memory, so changes to the\n ingredients array in burger1 do not affect burger2 anymore.",
+            " Since burger2 is created with a new array that is a copy of burger1's ingredients,\n they reference different objects in memory, so changes to the ingredients array\n in burger1 do not affect burger2. Since burger2 is\n set equal to a new array with patty, cheese, lettuce, and tomato,\n it now references a different object in memory, so changes to the\n ingredients array in burger1 do not affect burger2 anymore.",
     },
     {
         question:
@@ -746,7 +746,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["patty", "cheese", "lettuce", "tomato"],
         category: "Shallow Copy",
         explanation:
-            "Since burger2 is set equal to burger1, they reference the same object in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce, and tomato, it now references a different object in memory, so changes to the ingredients array in burger1 do not affect burger2 anymore.\n Since buns is set to false in burger2, it does not affect burger1, which still has buns set to true.",
+            " Since burger2 is set equal to burger1, they reference the same object\n in memory, so changes to the ingredients array in burger1 also affect burger2.\n Since burger2 is set equal to a new array with patty, cheese, lettuce,\n and tomato, it now references a different object in memory, so changes\n to the ingredients array in burger1 do not affect burger2 anymore.\n Since buns is set to false in burger2, it does not affect burger1,\n which still has buns set to true.",
     },
     {
         question:
@@ -755,7 +755,7 @@ export const HARD_QUESTIONS: Question[] = [
         answer: ["lettuce", "tomato", "lettuce", "tomato", "tomato"],
         category: "Deep Copy",
         explanation:
-            "Since salad2 is created with a new array that is a copy of salad1's ingredients, they reference different objects in memory, so changes to the ingredients array in salad1 do not affect salad2.\n Since push returns the new length of the array, salad2.ingredients is set to 4, which is not an array, so it does not affect salad1.\n Since splice is called on salad2.ingredients, which is 4, it does not affect salad1.\n Since salad1 is set equal to salad2, it now references the same object in memory as salad2, so changes to the ingredients array in salad1 also affect salad2.",
+            " Since salad2 is created with a new array that is a copy of salad1's\n ingredients, they reference different objects in memory, so changes\n to the ingredients array in salad1 do not affect salad2.\n Since push returns the new length of the array, salad2.ingredients is set to 4,\n which is not an array, so it does not affect salad1.\n Since splice is called on salad2.ingredients, which is 4, it does not affect salad1.\n Since salad1 is set equal to salad2, it now references the same object in\n memory as salad2, so changes to the ingredients array in salad1 also affect salad2.",
     },
 ];
 

@@ -1141,7 +1141,7 @@ export class Level1 extends Scene {
         this.orderAnswer = this.add
             .text(
                 10,
-                this.scale.height - 40,
+                this.scale.height - 45,
                 "Answer is:\n[" + this.currentOrder.answer.join(", " + "]"),
                 {
                     fontSize: "20px",
