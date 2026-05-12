@@ -19,11 +19,10 @@ It is the lunch rush and you need to hurry! You are the cook, and you make all o
 ## Core Gameplay Mechanics (Brief)
 
 - Order tickets come in containing a code snippet.
-- The code snippet contains a struct that makes up the orders, with fields containing variables.
+- The code snippet contains a class that makes up the orders, with fields containing variables.
 - You drag and drop the ingredients based on the struct to make the correct order.
-- The more you get correct, the more orders that come in, giving the player less time to answer, but they are compensated with more points.
-- When the player gets a question wrong, the amount of orders slow down.
-- A Combo meter is filled for a correct answer streak, which gives the user more points.
+- They player can answer as many questions as they can before time runs out, giving them the oppurtunity to get a new high score.
+- When the player gets a question wrong, they recieve no points and an explanation blurb for why it was wrong.
 
 # Learning Aspects
 
@@ -33,7 +32,7 @@ Semi-Introductory programming, code tracing, and function scope.
 
 ## Target Audiences
 
-Introductory C students, slightly familiar with coding, but lacking fundamentals. Appropriate for any age. Best suited as a prerequisite for CISC210.
+Introductory Typescript students, slightly familiar with coding, but lacking fundamentals. Appropriate for any age. Best suited as a prerequisite for CISC181.
 
 ## Target Contexts
 
@@ -42,10 +41,10 @@ Introductory C students, slightly familiar with coding, but lacking fundamentals
 ## Learning Objectives
 
 - Identifying Variable Values: By the end of the lesson, players will be able to identify if the value in a snippet of code has changed after a variety of function calls.
-- Recognizing Pointer Updates: By the end of the lesson, players will be able to identify if a pointer has updated a specific variable’s value.
+- Recognizing Pointer Updates: By the end of the lesson, players will be able to identify if a pointer has updated a specific variable’s value from a shallow copy.
 - Monitoring Global Variables: By the end of the lesson, players will be able to correctly identify the value of a global variable after a function call.
 - Trace Sequential State: By the end of the lesson, players will be able to accurately log how a variable’s value changes over multiple assignment operations.
-- Identifying Struct and Field values: By the end of the lesson, players will be able to identify the initialization of the fields in the structs.
+- Identifying Class and Field values: By the end of the lesson, players will be able to identify the initialization of the fields in classes.
 
 ## Prerequisite Knowledge
 
@@ -53,6 +52,7 @@ Introductory C students, slightly familiar with coding, but lacking fundamentals
 - Prior to the game, players need to be able to explain the difference between a local and global variable.
 - Prior to the game, players must identify when a pointer changes the value of a variable indirectly.
 - Prior to the game, players must explain what a pointer is.
+- Prior to the game, players must explain the difference between a shallow and deep copy.
 - Prior to the game, players must explain what a memory address is.
 - Prior to the game, players must identify the “address of” operator.
 - Prior to the game, players must identify the dereference operator.
@@ -61,68 +61,79 @@ Introductory C students, slightly familiar with coding, but lacking fundamentals
 
 Question 1: Basic trace
 <br>
-Identify the value of "cheese" for the struct "cheeseBurger":
+Identify the order "burger1" after the following lines of code are executed:
 
-```C
-struct Burger {
-  boolean cheese;
-  char condiments[2][10]
-}
-
-void main(){
-  Burger cheeseBurger;
-  cheeseBurger.cheese = false;
-  cheeseBurger.condiments = {"ketchup","mayo"};
-  cheeseBurger.cheese = true;
+```Typescript
+public class Burger {
+    public ingredients: string[];
+    public buns: boolean;
+    constructor(ingredients: string[], buns: boolean){
+        this.ingredients = ingredients;
+        this.buns = buns;
+        }
+    }
+let burger1 = new Burger(["patty","cheese","lettuce"], true);
+burger1.push("tomato");
 }
 ```
 
-Grading Logic: The correct answer is true. Any other answer is incorrect.
+Grading Logic: The correct answer is "bottom_bun, patty, cheese, lettuce, tomato, top_bun". Any other answer is incorrect.
 
 <br><br>
 
-Question 2: Global vs Local trace
+Question 2: Function Calls
 <br>
-Identify the value of the variable “sauce_bottles” after the following lines of code are executed:
+Identify the order "burger1" after the following lines of code are executed:
 
-```C
-int sauce_bottles = 10;
-
-void make_spicy_tuna() {
-    int sauce_bottles = 2;
-    sauce_bottles = 5;
+```Typescript
+public class Burger {
+    public ingredients: string[];
+    public buns: boolean;
+    constructor(ingredients: string[], buns: boolean){
+        this.ingredients = ingredients;
+        this.buns = buns;
+        }
+    public extraCheese(): void {
+        ingredients.push("cheese");
+        ingredients.push("cheese");
+    }
 }
+let burger1: Burger = new Burger(["patty","lettuce"],true);
+burger1.pop();
+burger1.extraCheese();
 
-sauce_bottles = sauce_bottles - 1;
-make_spicy_tuna();
-sauce_bottles = sauce_bottles + 3;
 ```
 
-Grading Logic: The correct answer is 12. Any other answer is incorrect.
+Grading Logic: The correct order is "bottom_bun, patty, cheese, lettuce, tomato, top_bun". Any other answer is incorrect.
 
 <br><br>
 
-Question 3: Pointer Update
+Question 3: Shallow and Deep Copies
 <br>
-Identify the value of the variable “salmon_order” after the following lines of code are executed:
+Identify the order "burger1" after the following lines of code are executed:
 
-```C
-int salmon_order = 2;
-int *ticket = &salmon_order;
-
-*ticket = 5;
-int extra = 3;
-*ticket = *ticket + extra;
+```Typescript
+public class Burger {
+    public ingredients: string[];
+    public buns: boolean;
+    constructor(ingredients: string[], buns: boolean){
+        this.ingredients = ingredients;
+        this.buns = buns;
+        }
+    }
+let burger1: Burger = new Burger(["patty","lettuce"],true);
+let burger2: Burger = burger1;
+burger2.push("patty");
+burger2.shift();
 ```
 
-Grading Logic: The correct answer is 8, any other answer is incorrect.
+Grading Logic: The correct answer is "bottom_bun, lettuce, patty, top_bun", any other answer is incorrect.
 
 # What sets this project apart?
 
 - This game builds muscle memory for programming and quick debugging foundations, while abstracting away the code to make students stress less.
 - This game allows you to recognize when a value changes quickly due to the incentive of time.
 - It puts the idea of coding in a unique environment, making the gameplay loop much more enjoyable since it reminds you of other time crunch games.
-- The game offers a unique risk reward mechanic with the lunch rush boost, which allows for players to gain much more points at the cost of less time to answer the questions.
 - This game gives players a break from an IDE/coding environment, replacing errors and incorrect answers with lost points, helping to change the environment and replace a frustrated mindset.
 
 # Player Interaction Patterns and Modes
@@ -136,8 +147,8 @@ This is meant to be a single player game, but with an arcade-style leaderboard t
 - Main Menu: The main screen the game boots to, allows you to select one of the 3 different modes of the game you want to play from their associated buttons.
 - Basic Trace: A basic version of the game where you trace through a statement of code with no function calls or pointer references. You must determine what the values of the fields are to make the order.
 - Function Trace: An intermediate version of the game where you trace through a code snippet with a function call, global, and local variables. You must determine what the values of the fields are to make the order.
-- Pointer Trace: The most difficult version of the game where you trace through a code snippet involving variables and pointers holding the addresses of the variables which may update those other variables. You must determine what the values of the fields are to make the order.
-- Game Over: A game over screen played after you have advanced through many questions and have not reached the correct amount of points. Allows you to go back to the home screen.
+- Shallow and Deep Copies: The most difficult version of the game where you trace through a code snippet involving multiple variables and shallow or deep copies of the variables which may update those other variables. You must determine what the values of the fields are to make the order.
+- Game Over: A game over screen played after you time is up. Allows you to go back to the home screen.
 
 # Gameplay Objectives
 
@@ -151,11 +162,6 @@ This is meant to be a single player game, but with an arcade-style leaderboard t
 - Description: Your main goal is to rack up as many points over a certain time period. This will allow you to get a high score.
 - Alignment: You are able to get points by getting orders right, and you can get more points by getting many orders right in a row to speed up the orders, which by getting a question correct you prove understanding of the 3 learning objectives.
 
-**Combo Counter**:
-
-- Description: When you get a certain amount of orders right in a row, you activate Lunch Rush, where the amount of orders speed up and you can collect a large amount of points, this gives skilled players a decent challenge.
-- Alignment: You are able to activate lunch rush by getting the correct orders, and allows you to rack up points for a high score, showing that you are getting faster at tracing code, thus satisfying the learning objectives laid out earlier.
-
 # Procedures/Actions
 
 - Click mode select to play the selected mode.
@@ -167,25 +173,23 @@ The player has points they can use to buy powerups to slow the progression of th
 
 # Objects/Entities
 
-- A stove entity
 - A kitchen table top entity
 - Plates to represent orders
-- A ticket to represent the current code snippet
+- A ticket to represent the code snippet
 - Various ingredients
 - Background screen
 - Main game screen
-- Pause menus
 - Clock timer
 
 ## Core Gameplay Mechanics (Detailed)
 
 **The "Code Tickets"**:
 <br>
-This is the code snippet on the tickets that the player has to currently trace through. It displays the snippet the player must parse. As the level progresses, the code may change to reflect a different question, but the style is the same for each question of the same “mode”. After figuring out the different field variables, the player must drag and drop the correct ingredients. Early levels will show less lines of code; later levels will show more lines of code including more complex control structures such as loops, if statements, and function calls.
+This is the code snippet on the tickets that the player has to currently trace through. It displays the snippet the player must parse. Each question may vary in difficulty, but the style is the same for each question of the same “mode”. After figuring out the different field variables, the player must drag and drop the correct ingredients. 
 
 **The "Shift Timer"**:
 <br>
-This timer adds an element of pressure and rush to the game, as the game is trying to teach students to correctly identify field variable values and decrease the time it takes to do so. When the player gets a question right, more orders come in. If the player gets the order wrong, they gain no points and their streak is reset. At higher difficulties, orders come in more frequently, forcing faster reactions to correctly answer the question.
+This timer adds an element of pressure and rush to the game, as the game is trying to teach students to correctly identify field variable values and decrease the time it takes to do so. The player's goal is to rack up as many points as possible within the given time frame.
 
 **Sending Out Orders**:
 <br>
@@ -194,7 +198,7 @@ If the player makes the correct order, the score increases, a correct sound play
 
 ## Feedback
 
-The player will accumulate points towards their total score after answering questions correctly. When a question is answered correctly there will be a green flash of light at the end of the screen as the order leaves. If the question is answered incorrectly there will be a red flash of light when the order leaves the screen, and they will gain no points. Additionally there will be separate audio tracks for when the player answers the question correctly vs. incorrectly. The more questions the player gets correct, the closer they are to achieving the learning objective for that level of questions.
+The player will accumulate points towards their total score after answering questions correctly. When a question is answered correctly there will be a green flash of light at the end of the screen as the order leaves. If the question is answered incorrectly there will be a red flash of light when the order leaves the screen, and they will gain no points. There will also be an "error" message that pops up that gives them the correct answer and how to properly answer the question next time. Additionally there will be separate audio tracks for when the player answers the question correctly vs. incorrectly. The more questions the player gets correct, the closer they are to achieving the learning objective for that level of questions.
 
 # Longer Term Feedback
 
@@ -204,15 +208,14 @@ We collect the player’s score, as well as the total number of questions answer
 
 ## Presentation of Rules
 
-There will be a short instruction blurb when loading the game mode, telling the player to assess the correct ingredients looking at the code ticket. Drag and drop the associated ingredients for your answer. The ingredients will also have a glowing animation around them at first to guide the player’s eyes to them.
+There will be a tutorial option present within the game, telling the player to assess the correct ingredients looking at the code ticket. Drag and drop the associated ingredients for your answer. The ingredients will also have a glowing animation around them at first to guide the player’s eyes to them.
 
 ## Presentation of Content
 
-The game will start slowly with a few lines of code, and the player will not be able to progress to different questions until they have answered a certain amount of questions correctly for that category. After they have answered those questions correctly it is assumed that they have the necessary knowledge to progress to a more difficult topic/level, as well as an increased pace in answering questions.
-
+The player is allowed to choose which ever level of questions that they please. The player can answer as many questions as they want before the time runs out.
 ## Story (Brief)
 
-This game will have you be a server in a kitchen and you must construct the correct dishes by correctly assessing the content of the variables that make up the order.
+This game will have you be a cook in a kitchen and you must construct the correct dishes by correctly assessing the content of the variables that make up the order.
 
 ## Storyboarding
 
@@ -232,24 +235,17 @@ This game will have you be a server in a kitchen and you must construct the corr
 
 ## Aethestics
 
-That's Not My Programmer blends the gameplay of Papers, Please with the rhythm of classic 80s arcade games such as Galaga.
-An industrial metal belt carries white plates to construct the order and the ticket corresponding to the order is shown on the screen.
+That's Not My Programmer blends the gameplay of Papers, Please with the rhythm of Papa's Burgeria.
+The player is given 8-bit ingredients to construct the order and the ticket corresponding to the order is shown on the screen.
 Rhythmic music keeps pace with the speed of the level, and satisfying sounds play when the correct decision is made and a frustrating sound is played for incorrect answers.
-When you answer a question at the last second, the game rewards you with a sense of relief. You leave each level feeling more confident in your programming abilities as you have just practiced your craft.
+When you answer a question at the last second, the game gives you a sense of relief. You leave each level feeling more confident in your programming abilities as you have just practiced your craft.
 
 ## Graphical
 
 - Characters List
-    - Cook: This is the main character, they are the character you control and is the one that makes the orders. They make sure they are the star employee at the workplace, making sure the food goes out on time.
-    - Manager: This is the character that you meet at the end of the game, especially if you do a bad job. They serve as a game over screen.
+    - Cook: This is the main character, they are the character you control and is the one that makes the orders. They make sure they are the star employee at the workplace, making sure the food goes out on time, and that they are all correct.
 
 **Textures**:
-
-- Pizza Sprite:
-
-<br>
-
-![The Pizza Sprite](../public/assets/Pizza_Sprite.png)
 
 - Patty Sprite:
 
