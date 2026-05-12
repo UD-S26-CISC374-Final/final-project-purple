@@ -619,7 +619,7 @@ export class Level1 extends Scene {
                 });
                 this.orderExplanation.setText(this.currentOrder.explanation);
                 this.orderAnswer.setText(
-                    "Answer is: [" + this.currentOrder.answer.join(", ") + "]",
+                    "Answer is:\n[" + this.currentOrder.answer.join(", ") + "]",
                 );
                 scaleText(70, 475, 400, this.orderExplanation);
                 this.explanationButton.setVisible(true);
@@ -657,7 +657,7 @@ export class Level1 extends Scene {
         this.explanationButton = new SelectorButton(
             this,
             80,
-            250,
+            this.scale.height - 80,
             "Explanation",
             140,
             40,
@@ -1141,18 +1141,20 @@ export class Level1 extends Scene {
         this.orderAnswer = this.add
             .text(
                 10,
-                220,
-                "Answer is [" + this.currentOrder.answer.join(", " + "]"),
+                this.scale.height - 40,
+                "Answer is:\n[" + this.currentOrder.answer.join(", " + "]"),
                 {
-                    fontSize: "32px",
+                    fontSize: "20px",
                     color: "#ff0000",
                     fontFamily: "Arial",
                     fontStyle: "bold",
                     stroke: "#000000",
                     backgroundColor: "#000000",
-                    strokeThickness: 10,
+                    padding: { x: 10, y: 5 },
                 },
             )
+            .setOrigin(0, 0)
+            .setScale(0.8)
             .setVisible(false);
         this.orderExplanation = this.add
             .text(10, 220, this.currentOrder.explanation, {
@@ -1166,7 +1168,6 @@ export class Level1 extends Scene {
             })
             .setOrigin(0, 0)
             .setVisible(false);
-        console.log("Explanation text: " + this.orderExplanation.text);
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
