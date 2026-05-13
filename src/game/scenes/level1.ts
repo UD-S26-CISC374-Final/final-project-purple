@@ -564,7 +564,10 @@ export class Level1 extends Scene {
                 color: "#ff0000",
                 fontStyle: "bold",
             })
-            .setOrigin(0.5);
+            .setOrigin(0.5)
+            .setInteractive({
+                useHandCursor: true,
+            });
         closeButton.on("pointerdown", () => {
             this.toggleOverlay();
             popupContainer.destroy();
