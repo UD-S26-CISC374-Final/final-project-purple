@@ -56,7 +56,12 @@ export class Preloader extends Scene {
         this.load.audio("incorrect", "wrong-lie-incorrect-buzzer.mp3");
 
         // Load tutorial videos
-        this.load.video("step1_video", "test1.mp4");
+        this.load.video("clear_plate_tutorial", "clear_plate_tutorial.mp4");
+        this.load.video("confirm_order_tutorial", "confirm_order_tutorial.mp4");
+        this.load.video("drag_and_drop_tutorial", "drag_and_drop_tutorial.mp4");
+        this.load.video("explanation_tutorial", "explanation_tutorial.mp4");
+        this.load.video("snippet_tutorial", "snippet_tutorial.mp4");
+        this.load.video("timer_tutorial", "timer_tutorial.mp4");
     }
 
     create() {

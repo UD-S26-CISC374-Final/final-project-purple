@@ -115,7 +115,7 @@ export class MainMenu extends Scene implements ChangeableScene {
         const centerX: number = this.cameras.main.width / 2;
 
         // Add title to the top center of the screen
-        this.title = this.add.text(centerX, 80, "That's Not My Programmer", {
+        this.title = this.add.text(centerX, 80, "Stack Tracer", {
             fontSize: "64px",
             color: "#000000",
             stroke: "#000000",

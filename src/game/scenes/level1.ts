@@ -966,35 +966,35 @@ export class Level1 extends Scene {
         // The list of tutorial videos, and their descriptions
         const tutorialVideos = [
             {
-                key: "step1_video",
-                text: "Read the code snippet in the top right to determine the value of the given order. Then build the order with buns on the outside (if applicable) and place ingredients in the order they appear.",
+                key: "snippet_tutorial",
+                text: "Read the code snippet in the top right to determine the value of the given order.",
             },
             {
-                key: "step1_video",
-                text: "Drag and drop the ingredients onto the plate in the order they appear in the final order.",
+                key: "drag_and_drop_tutorial",
+                text: "Drag and drop the ingredients onto the plate in the order they appear in the final order with buns on the outside (if applicable).",
             },
             {
-                key: "step1_video",
+                key: "clear_plate_tutorial",
                 text: "Click the 'Clear Plate' button to empty the plate and restart.",
             },
             {
-                key: "step1_video",
+                key: "confirm_order_tutorial",
                 text: "Click the 'Confirm' button to submit your order.",
             },
             {
-                key: "step1_video",
+                key: "timer_tutorial",
                 text: "Keep watch for the timer in the top left and the score of how many points you have earned.",
             },
             {
-                key: "step1_video",
+                key: "explanation_tutorial",
                 text: "If you got a question incorrect, select the 'Explanation' button to understand how to get the correct answer.",
             },
         ];
         let currentVideoIndex = 0;
 
         // Create the popup container in the middle of the screen
-        const popupWidth: number = this.screenCenterX * 1.2;
-        const popupHeight: number = this.screenCenterY * 1.7;
+        const popupWidth: number = this.screenCenterX * 1.5;
+        const popupHeight: number = this.screenCenterY * 1.8;
         const headerY: number = -(popupHeight / 2) + 25;
         const popupContainer = this.add.container(
             this.screenCenterX,
@@ -1019,7 +1019,7 @@ export class Level1 extends Scene {
                 color: "#5c5c5c",
                 fontStyle: "bold",
             })
-            .setOrigin(0.5);
+            .setOrigin(0.7);
         closeButton.on("pointerover", () => {
             closeButton.postFX.addGlow(0xffbf00, 5, 0, false);
         });
@@ -1042,8 +1042,8 @@ export class Level1 extends Scene {
 
         // Set the first tutorial to play
         const currentTutorialVideo = this.add
-            .video(0, 0, tutorialVideos[currentVideoIndex].key)
-            .setScale(0.35)
+            .video(0, -50, tutorialVideos[currentVideoIndex].key)
+            .setScale(0.5)
             .play(true);
 
         // The current tutorial description being displayed
@@ -1072,6 +1072,7 @@ export class Level1 extends Scene {
                 tutorialVideos[currentVideoIndex].key,
             );
             currentTutorialVideo.play(true);
+            currentTutorialVideo.setLoop(true);
 
             // Update Text
             tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
@@ -1105,6 +1106,7 @@ export class Level1 extends Scene {
                 tutorialVideos[currentVideoIndex].key,
             );
             currentTutorialVideo.play(true);
+            currentTutorialVideo.setLoop(true);
 
             // Update Text
             tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
