@@ -33,10 +33,10 @@ TEXT GOES HERE
 
 # Credits
 
-Correct Guess Sound Effect: MyInstants - https://www.myinstants.com/en/instant/correct-answer-gameshow/
-Incorrect Guess Sound Effect: MyInstants - https://www.myinstants.com/en/instant/wrong-lie-incorrect-buzzer-4726/
-Patty: Pixabay - https://pixabay.com/sound-effects/nature-cow-mooing-type-03-293302/
-Cheese: Ralsei Squash - Deltarune
-Lettuce: https://freesound.org/people/Hawkeye_Sprout/sounds/469155/
-Tomato: FreeSound - https://freesound.org/people/HonorHunter/sounds/271666/
-Bun: https://pixabay.com/sound-effects/film-special-effects-poof-of-smoke-87381/
+- Correct Guess Sound Effect: MyInstants - https://www.myinstants.com/en/instant/correct-answer-gameshow/
+- Incorrect Guess Sound Effect: MyInstants - https://www.myinstants.com/en/instant/wrong-lie-incorrect-buzzer-4726/
+- Patty: Pixabay - https://pixabay.com/sound-effects/nature-cow-mooing-type-03-293302/
+- Cheese: Ralsei Squash - Deltarune
+- Lettuce: https://freesound.org/people/Hawkeye_Sprout/sounds/469155/
+- Tomato: FreeSound - https://freesound.org/people/HonorHunter/sounds/271666/
+- Bun: https://pixabay.com/sound-effects/film-special-effects-poof-of-smoke-87381/
