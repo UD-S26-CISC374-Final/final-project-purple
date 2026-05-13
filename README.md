@@ -21,7 +21,7 @@ Read the code snippet found on the ticket to determine the contents of the burge
 
 # Screenshot
 
-It is the lunch rush and you need to hurry! You are the cook, and you make all of the orders fast; however, the ticket machine malfunctioned and is now only code snippets! You have to be quick and decipher the class objects and main code to make the correct order; if not, you will have a couple of angry cutomers, and maybe an angry manager on top of that.
+SCREENSHOT GOES HERE
 
 # Gameplay Video
 
@@ -37,4 +37,6 @@ Correct Guess Sound Effect: MyInstants - https://www.myinstants.com/en/instant/c
 Incorrect Guess Sound Effect: MyInstants - https://www.myinstants.com/en/instant/wrong-lie-incorrect-buzzer-4726/
 Patty: Pixabay - https://pixabay.com/sound-effects/nature-cow-mooing-type-03-293302/
 Cheese: Ralsei Squash - Deltarune
-Lettuce: 
+Lettuce: https://freesound.org/people/Hawkeye_Sprout/sounds/469155/
+Tomato: FreeSound - https://freesound.org/people/HonorHunter/sounds/271666/
+Bun: https://pixabay.com/sound-effects/film-special-effects-poof-of-smoke-87381/
