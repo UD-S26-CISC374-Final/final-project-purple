@@ -310,6 +310,9 @@ export class Level1 extends Scene {
     // Music
     private mainMusic: Phaser.Sound.BaseSound;
 
+    // Timer Check
+    private timerCheck: boolean;
+
     constructor() {
         super("Level1");
     }
@@ -481,6 +484,11 @@ export class Level1 extends Scene {
         });
 
         // Toggle interactivity for all buttons
+        if (this.mainMusic.isPlaying) {
+            this.mainMusic.pause();
+        } else {
+            this.mainMusic.play();
+        }
         if (this.confirmButton.input) {
             this.confirmButton.input.enabled =
                 !this.confirmButton.input.enabled;
@@ -498,6 +506,10 @@ export class Level1 extends Scene {
                 !this.explanationButton.input.enabled;
             this.explanationButton.setScale(1);
             this.explanationButton.buttonOutline.setVisible(false);
+        }
+        this.timerCheck = !this.timerCheck;
+        if (this.timerCheck) {
+            this.startTimer({ color: 0x00ff00 }, this.add.graphics());
         }
     }
 
@@ -554,7 +566,6 @@ export class Level1 extends Scene {
             })
             .setOrigin(0.5);
         closeButton.on("pointerdown", () => {
-            console.log("Music Started");
             this.toggleOverlay();
             popupContainer.destroy();
         });
@@ -573,6 +584,41 @@ export class Level1 extends Scene {
             closeButton,
         ]);
         popupContainer.setDepth(1000);
+    }
+    private startTimer(
+        currentColor: { color: number },
+        timerBar: Phaser.GameObjects.Graphics,
+    ): void {
+        // Decrease timer in timer bar and switch to Game Over screen when time is up
+        let progress = 1.0;
+        this.time.addEvent({
+            delay: 20,
+            callback: () => {
+                if (progress - 0.1 > 0) {
+                    progress -= 0.0001;
+                    timerBar.clear();
+                    timerBar.fillStyle(currentColor.color, 1);
+                    timerBar.fillRoundedRect(
+                        this.timerX,
+                        this.timerY,
+                        this.timerWidth * progress,
+                        this.timerHeight,
+                        this.timerRadius,
+                    );
+                } else {
+                    // Switches to gameover screen
+                    const finalStats: FinalStats = {
+                        final_score: this.score,
+                        totalCategoriesAnswered: this.totalCategoriesAnswered,
+                        incorrectCategoriesAnswered:
+                            this.incorrectCategoriesAnswered,
+                        gameMode: this.gameMode,
+                    };
+                    this.changeScene(finalStats);
+                }
+            },
+            loop: true,
+        });
     }
 
     /**
@@ -906,7 +952,7 @@ export class Level1 extends Scene {
             this.timerRadius + this.timerOffset,
         );
 
-        const currentColor = { color: 0x00ff00 };
+        const currentColor: { color: number } = { color: 0x00ff00 };
 
         this.tweens.addCounter({
             from: 0,
@@ -931,39 +977,10 @@ export class Level1 extends Scene {
             },
         });
 
-        const timerBar = this.add.graphics();
+        const timerBar: Phaser.GameObjects.Graphics = this.add.graphics();
         timerBar.fillStyle(0x00ff00, 1);
 
-        // Decrease timer in timer bar and switch to Game Over screen when time is up
-        let progress = 1.0;
-        this.time.addEvent({
-            delay: 20,
-            callback: () => {
-                if (progress - 0.1 > 0) {
-                    progress -= 0.0001;
-                    timerBar.clear();
-                    timerBar.fillStyle(currentColor.color, 1);
-                    timerBar.fillRoundedRect(
-                        this.timerX,
-                        this.timerY,
-                        this.timerWidth * progress,
-                        this.timerHeight,
-                        this.timerRadius,
-                    );
-                } else {
-                    // Switches to gameover screen
-                    const finalStats: FinalStats = {
-                        final_score: this.score,
-                        totalCategoriesAnswered: this.totalCategoriesAnswered,
-                        incorrectCategoriesAnswered:
-                            this.incorrectCategoriesAnswered,
-                        gameMode: this.gameMode,
-                    };
-                    this.changeScene(finalStats);
-                }
-            },
-            loop: true,
-        });
+        //this.startTimer();
     }
 
     private displayTutorial(): void {
@@ -1230,7 +1247,8 @@ export class Level1 extends Scene {
 
         // Create music
         this.mainMusic = this.sound.add("Main Music", { loop: true });
-        this.mainMusic.play();
+
+        this.timerCheck = true;
 
         // Creates explanation text;
         this.orderAnswer = this.add
@@ -1374,6 +1392,7 @@ export class Level1 extends Scene {
             .setOrigin(0)
             .setVisible(false)
             .setDepth(100);
+        this.mainMusic.play();
         this.displayTutorial();
 
         EventBus.emit("current-scene-ready", this);
