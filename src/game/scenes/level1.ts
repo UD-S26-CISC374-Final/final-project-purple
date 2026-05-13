@@ -311,9 +311,6 @@ export class Level1 extends Scene {
     // Music
     private mainMusic: Phaser.Sound.BaseSound;
 
-    // Timer Check
-    private timerCheck: boolean;
-
     constructor() {
         super("Level1");
     }
@@ -1249,8 +1246,6 @@ export class Level1 extends Scene {
         this.mainMusic = this.sound
             .add("Main Music", { loop: true })
             .setVolume(0.5);
-
-        this.timerCheck = true;
 
         // Creates explanation text;
         this.orderAnswer = this.add
