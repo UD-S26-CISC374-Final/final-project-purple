@@ -2,7 +2,7 @@
 
 ## Elevator Pitch
 
-It is the lunch rush and you need to hurry! You are the cook, and you make all of the orders fast; however, the ticket machine malfunctioned and is now only code snippets! You have to be quick and decipher the structs and main code to make the correct order; if not, you will have a couple of angry cutomers, and maybe an angry manager on top of that.
+It is the lunch rush, and you need to hurry! You are the cook, and you have to make all of the orders fast; however, the ticket machine malfunctioned and is now only code snippets! You have to be quick and decipher the classes and their fields to make the correct order! Once you have the order figured out, you have to drag and drop the correct ingredients onto the main plate. Be sure to be accurate; if not, you will have a couple of angry customers and maybe an angry manager on top of that.
 
 ## Influences (Brief)
 
