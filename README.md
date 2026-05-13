@@ -25,7 +25,7 @@ Read the code snippet found on the ticket to determine the contents of the burge
 
 # Gameplay Video
 
-[![Watch the video](https://img.youtube.com/vi/vs2FCTIGPBA/maxresdefault.jpg)](https://www.youtube.com/watch?v=vs2FCTIGPBA)
+[![Watch the video of the player building burgers and viewing answer explanations](https://img.youtube.com/vi/vs2FCTIGPBA/maxresdefault.jpg)](https://www.youtube.com/watch?v=vs2FCTIGPBA)
 
 # Educational Game Design Document
 
