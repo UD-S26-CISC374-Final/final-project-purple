@@ -1,6 +1,6 @@
 import { EventBus } from "../event-bus";
 import { Scene } from "phaser";
-import FpsText from "../objects/fps-text";
+//import FpsText from "../objects/fps-text";
 import { SelectorButton, type ModeInfo } from "./main-menu";
 import { type Question, QUESTION_BANK } from "../data/questions";
 
@@ -112,7 +112,7 @@ export class Ingredient extends Phaser.GameObjects.Image {
         // Add ingredient to scene
         scene.add.existing(this);
         this.setScale(SPRITE_SCALES[this.ingredientType]);
-        this.setDepth(100);
+        this.setDepth(10);
 
         // Enable Input & Hand Cursor
         this.setInteractive({
@@ -181,7 +181,6 @@ export class Order extends Phaser.GameObjects.Container {
         this.category = category;
         this.answer = answer;
         this.explanation = explanation;
-        // Update target
 
         // Update code snippet and its size
         this.text = scene.add
@@ -193,11 +192,14 @@ export class Order extends Phaser.GameObjects.Container {
             this.orderScreen.displayHeight - 280,
             this.text,
         );
+
+        // Update current order to make
         this.target = scene.add
-            .text(10, 150, "Target: " + targetType, {
-                fontSize: "35px",
+            .text(10, 150, "Current Order:\n'" + targetType + "'", {
+                fontSize: "30px",
                 color: "white",
                 backgroundColor: "black",
+                padding: { x: 5, y: 5 },
             })
             .setOrigin(0);
 
@@ -239,7 +241,10 @@ export class Order extends Phaser.GameObjects.Container {
 export class Level1 extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
-    fpsText: FpsText;
+    //fpsText: FpsText;
+
+    // Overlay for when popups are active
+    overlay: Phaser.GameObjects.Rectangle;
 
     // Save coordinates for center of screen
     private screenCenterX!: number;
@@ -256,11 +261,10 @@ export class Level1 extends Scene {
     private plateHitBox: Phaser.Geom.Rectangle;
     //private debugGraphics: Phaser.GameObjects.Graphics;
 
-    private instructionGroup: Phaser.GameObjects.Container;
-
     // Buttons on screen
     private confirmButton: SelectorButton;
     private clearPlateButton: SelectorButton;
+    private explanationButton: SelectorButton;
     private mainMenuButton: SelectorButton;
 
     private currentOrder: Order;
@@ -280,6 +284,7 @@ export class Level1 extends Scene {
     private scoreText!: Phaser.GameObjects.Text;
 
     // Create the timer
+    private timerText: Phaser.GameObjects.Text;
     private timerX = 5;
     private timerY = 100;
     private timerWidth = 300;
@@ -287,8 +292,9 @@ export class Level1 extends Scene {
     private timerRadius = this.timerHeight / 2;
     private timerOffset = 5;
 
-    //Creates Explanation
+    // Creates Explanation
     private orderExplanation: Phaser.GameObjects.Text;
+    private orderAnswer: Phaser.GameObjects.Text;
 
     // Sound effects
     private popSound: Phaser.Sound.BaseSound;
@@ -297,6 +303,7 @@ export class Level1 extends Scene {
     private tomatoSquishSound: Phaser.Sound.BaseSound;
     private bunThudSound: Phaser.Sound.BaseSound;
     private pattyMooSound: Phaser.Sound.BaseSound;
+
     // Correct and incorrect answer sounds
     private correctSound: Phaser.Sound.BaseSound;
     private incorrectSound: Phaser.Sound.BaseSound;
@@ -329,6 +336,7 @@ export class Level1 extends Scene {
         if (this.burgerStack.length > 0) {
             const previousTop = this.burgerStack[this.burgerStack.length - 1];
             previousTop.disableInteractive();
+            previousTop.postFX.clear();
         }
 
         const stackHeight: number = this.getBurgerHeight();
@@ -447,93 +455,128 @@ export class Level1 extends Scene {
     }
 
     /**
-     * Create and display the instructions to the player
+     * Toggles the overlay and interactivity of all items on screen
+     *
+     * Side Effects: Modifies the overlay to be hidden/shown and all items' interactivity
+     *
+     * */
+    private toggleOverlay(): void {
+        // Switch the visibility and interactivity of the overlay
+        const isVisible = this.overlay.visible;
+        this.overlay.setVisible(!isVisible);
+
+        // Toggle interactivity for all items in scene
+        this.activeSprites.forEach((currentIngredient: Ingredient) => {
+            if (currentIngredient.input) {
+                // This is the direct way to turn the "switch" on or off
+                currentIngredient.input.enabled =
+                    !currentIngredient.input.enabled;
+            } else {
+                // If it was never interactive to begin with, initialize it
+                currentIngredient.setInteractive();
+            }
+        });
+
+        // Toggle interactivity for all buttons
+        if (this.confirmButton.input) {
+            this.confirmButton.input.enabled =
+                !this.confirmButton.input.enabled;
+        }
+        if (this.mainMenuButton.input) {
+            this.mainMenuButton.input.enabled =
+                !this.mainMenuButton.input.enabled;
+        }
+        if (this.clearPlateButton.input) {
+            this.clearPlateButton.input.enabled =
+                !this.clearPlateButton.input.enabled;
+        }
+        if (this.explanationButton.input) {
+            this.explanationButton.input.enabled =
+                !this.explanationButton.input.enabled;
+            this.explanationButton.setScale(1);
+            this.explanationButton.buttonOutline.setVisible(false);
+        }
+    }
+
+    /**
+     * Display the explanation for the previous question if the player got it wrong
      */
-    private displayInstructions(): void {
-        // Create a darkened background overlay
-        const overlay = this.add
-            .rectangle(
-                0,
-                0,
-                this.cameras.main.width,
-                this.cameras.main.height,
-                0x000000,
-                0.7,
-            )
-            .setOrigin(0);
+    private displayExplanation(): void {
+        // Make the overlay appear
+        this.toggleOverlay();
 
-        // Create the rounded box
-        const helpBox = this.add.graphics();
-        helpBox.fillStyle(0xffffff, 1);
-        helpBox.lineStyle(4, 0x000000, 1);
-        helpBox.fillRoundedRect(
-            this.screenCenterX - 250,
-            this.screenCenterY - 220,
-            500,
-            350,
-            15,
-        );
-        helpBox.strokeRoundedRect(
-            this.screenCenterX - 250,
-            this.screenCenterY - 220,
-            500,
-            350,
-            15,
+        // Create the popup container in the middle of the screen
+        const popupWidth: number = this.screenCenterX * 1.4;
+        const popupHeight: number = this.screenCenterY * 1.7;
+        const headerY: number = -(popupHeight / 2) + 25;
+        const popupContainer = this.add.container(
+            this.screenCenterX,
+            this.screenCenterY,
         );
 
-        // Instruction text to be shown in the popup
-        const instructionText = `Welcome to That's Not my Programmer!\n
-            Build the burger by stacking the correct 
-            ingredients in the order they appear in the code
-            snippet by dragging and dropping the ingredients
-            onto the plate, based on the value for that 
-            burger object. When you have finished building
-            the burger, click the confirm button. Click the
-            clear plate button to reset.
-            Remember that buns always go on the outside!\n
-            Press the 'X' to start!`;
-
-        // Add the instruction text
-        const blurb = this.add
-            .text(
-                this.screenCenterX,
-                this.screenCenterY - 20,
-                instructionText,
-                {
-                    fontSize: "20px",
-                    color: "#000000",
-                    align: "center",
-                    fontFamily: "Arial",
-                },
-            )
+        const explanationText = this.add
+            .text(0, 0, this.orderExplanation.text, {
+                color: "#0",
+                fontSize: "20px",
+                align: "center", // 1. Centers lines relative to each other
+                wordWrap: { width: popupWidth - 40 },
+            })
             .setOrigin(0.5, 0.5);
 
+        const headerText = this.add
+            .text(0, -popupHeight / 2 + 20, "Explanation", {
+                color: "0x0",
+                fontStyle: "bold",
+                fontSize: "30px",
+            })
+            .setOrigin(0.5);
+
+        // Configure the background for the popup to be a beige rounded rectangle
+        const background = this.add.graphics();
+        background.fillStyle(0xede8d0, 1);
+        background.fillRoundedRect(
+            -(popupWidth / 2),
+            -(popupHeight / 2),
+            popupWidth,
+            popupHeight,
+            20,
+        );
+
         // Create the "X" Close Button
-        const closeBtn = this.add
-            .text(this.screenCenterX + 220, this.screenCenterY - 200, "X", {
+        const closeButton = this.add
+            .text(popupWidth / 2 - 20, headerY, "X", {
                 fontSize: "32px",
                 color: "#ff0000",
                 fontStyle: "bold",
             })
             .setOrigin(0.5)
             .setInteractive({ useHandCursor: true });
-
-        // Group everything into a Container
-        this.instructionGroup = this.add
-            .container(0, 0, [overlay, helpBox, blurb, closeBtn])
-            .setDepth(1000);
-
-        // Close the popup if the X button is clicked
-        closeBtn.on("pointerdown", () => {
-            this.instructionGroup.setVisible(false);
-            // You could also trigger your game timer or spawning logic here!
+        closeButton.on("pointerdown", () => {
+            this.toggleOverlay();
+            popupContainer.destroy();
         });
+        closeButton.on("pointerover", () => {
+            closeButton.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        closeButton.on("pointerout", () => {
+            closeButton.postFX.clear();
+        });
+
+        // Add background, title, arrows, description, video, and close button to the popup container
+        popupContainer.add([
+            background,
+            headerText,
+            explanationText,
+            closeButton,
+        ]);
+        popupContainer.setDepth(1000);
     }
 
     /**
      * Display and set up:
      *  - Confirm button
      *  - Clear plate button
+     *  - Explanation button
      *  - Main menu button
      */
     private displayButtons(): void {
@@ -600,7 +643,8 @@ export class Level1 extends Scene {
                         this.scoreText.setTint(color);
                     },
                 });
-                this.orderExplanation.setVisible(false);
+                this.explanationButton.setVisible(false);
+                this.orderAnswer.setVisible(false);
             } else {
                 // Increment the count of incorrect questions for that category of question
                 this.incorrectCategoriesAnswered[
@@ -636,14 +680,13 @@ export class Level1 extends Scene {
                         this.scoreText.setTint(color);
                     },
                 });
-                this.orderExplanation.setText(
-                    "ERROR:Answer is: [" +
-                        this.currentOrder.answer.join(", ") +
-                        "]\n" +
-                        this.currentOrder.explanation,
+                this.orderExplanation.setText(this.currentOrder.explanation);
+                this.orderAnswer.setText(
+                    "Answer is:\n[" + this.currentOrder.answer.join(", ") + "]",
                 );
                 scaleText(70, 475, 400, this.orderExplanation);
-                this.orderExplanation.setVisible(true);
+                this.explanationButton.setVisible(true);
+                this.orderAnswer.setVisible(true);
             }
 
             // Clear the plate and display the next question
@@ -664,24 +707,26 @@ export class Level1 extends Scene {
             this.currentOrder.updateOrder(
                 this.questions[this.questionIndex].question,
                 this.questions[this.questionIndex].answer,
-                "Target: " + this.questions[this.questionIndex].target,
+                "Current Order:\n'" +
+                    this.questions[this.questionIndex].target +
+                    "'",
                 this.questions[this.questionIndex].category,
                 this.questions[this.questionIndex].explanation,
             );
 
             this.numQuestionsAnswered++;
+        });
 
-            // Switch to Game Over Screen after 10 questions
-            /*if (this.numQuestionsAnswered >= 10) {
-                // Send stats to Game Over Screen
-                const finalStats: FinalStats = {
-                    final_score: this.score,
-                    totalCategoriesAnswered: this.totalCategoriesAnswered,
-                    incorrectCategoriesAnswered:
-                        this.incorrectCategoriesAnswered,
-                };
-                this.changeScene(finalStats);
-            }*/
+        this.explanationButton = new SelectorButton(
+            this,
+            80,
+            this.scale.height - 80,
+            "Explanation",
+            140,
+            40,
+        ).setVisible(false);
+        this.explanationButton.on("pointerdown", () => {
+            this.displayExplanation();
         });
 
         // Add clear plate button to the screen and have it clear the plate when clicked
@@ -832,7 +877,18 @@ export class Level1 extends Scene {
     /**
      * Creates the timer and timer countdown
      */
-    private createTimer() {
+    private createTimer(): void {
+        // Add the "Timer: " text to screen
+        this.timerText = this.add.text(0, 65, "Timer: ", {
+            fontSize: "24px",
+            color: "#ffffff",
+            fontFamily: "Arial",
+            fontStyle: "bold",
+            stroke: "#000000",
+            strokeThickness: 6,
+        });
+        console.log(this.timerText);
+
         // Create timer bar
         const timerBackground = this.add.graphics();
         timerBackground.fillStyle(0xd4d4d4, 1);
@@ -904,6 +960,185 @@ export class Level1 extends Scene {
         });
     }
 
+    private displayTutorial(): void {
+        this.toggleOverlay();
+
+        // The list of tutorial videos, and their descriptions
+        const tutorialVideos = [
+            {
+                key: "snippet_tutorial",
+                text: "Read the code snippet in the top right to determine the value of the given order.",
+            },
+            {
+                key: "drag_and_drop_tutorial",
+                text: "Drag and drop the ingredients onto the plate in the order they appear in the final order with buns on the outside (if applicable).",
+            },
+            {
+                key: "clear_plate_tutorial",
+                text: "Click the 'Clear Plate' button to empty the plate and restart.",
+            },
+            {
+                key: "confirm_order_tutorial",
+                text: "Click the 'Confirm' button to submit your order.",
+            },
+            {
+                key: "timer_tutorial",
+                text: "Keep watch for the timer in the top left and the score of how many points you have earned.",
+            },
+            {
+                key: "explanation_tutorial",
+                text: "If you got a question incorrect, select the 'Explanation' button to understand how to get the correct answer.",
+            },
+        ];
+        let currentVideoIndex = 0;
+
+        // Create the popup container in the middle of the screen
+        const popupWidth: number = this.screenCenterX * 1.5;
+        const popupHeight: number = this.screenCenterY * 1.8;
+        const headerY: number = -(popupHeight / 2) + 25;
+        const popupContainer = this.add.container(
+            this.screenCenterX,
+            this.screenCenterY,
+        );
+
+        // Configure the background for the popup to be a beige rounded rectangle
+        const background = this.add.graphics();
+        background.fillStyle(0xede8d0, 1);
+        background.fillRoundedRect(
+            -(popupWidth / 2),
+            -(popupHeight / 2),
+            popupWidth,
+            popupHeight,
+            20,
+        );
+
+        // Create the "X" Close Button
+        const closeButton = this.add
+            .text(popupWidth / 2 - 20, headerY, "X", {
+                fontSize: "32px",
+                color: "#5c5c5c",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.7);
+        closeButton.on("pointerover", () => {
+            closeButton.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        closeButton.on("pointerout", () => {
+            closeButton.postFX.clear();
+        });
+        closeButton.on("pointerdown", () => {
+            this.toggleOverlay();
+            popupContainer.destroy();
+        });
+
+        // Set the title to be "Tutorial" at the top of the popup
+        const title = this.add
+            .text(0, headerY, "Tutorial", {
+                fontSize: "30px",
+                color: "0x0",
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5);
+
+        // Set the first tutorial to play
+        const currentTutorialVideo = this.add
+            .video(0, -50, tutorialVideos[currentVideoIndex].key)
+            .setScale(0.5)
+            .play(true);
+
+        // The current tutorial description being displayed
+        const bottomY = popupContainer.y + popupContainer.displayHeight / 2;
+        const textY = bottomY - 170;
+        const tutorialDescription = this.add
+            .text(0, textY, tutorialVideos[0].text, {
+                fontSize: "18px",
+                color: "0x0",
+                align: "center",
+                wordWrap: { width: popupWidth - 40 },
+            })
+            .setOrigin(0.5);
+
+        // When the "next" arrow is clicked, switch the tutorial video being displayed
+        const nextArrowX = popupWidth / 2 - 50;
+        const arrowY = popupHeight / 2 - 50;
+        const nextArrow = this.add
+            .sprite(nextArrowX, arrowY, "right_arrow")
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.08);
+        nextArrow.on("pointerdown", () => {
+            // Change the video to the next tutorial
+            currentVideoIndex = (currentVideoIndex + 1) % tutorialVideos.length;
+            currentTutorialVideo.changeSource(
+                tutorialVideos[currentVideoIndex].key,
+            );
+            currentTutorialVideo.play(true);
+            currentTutorialVideo.setLoop(true);
+
+            // Update Text
+            tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
+
+            // Make the X button clickable if all slides have been viewed
+            if (currentVideoIndex === tutorialVideos.length - 1) {
+                closeButton.setColor("#ff0000");
+                closeButton.setInteractive({ useHandCursor: true });
+            }
+        });
+        // Highlight "next" arrow when the mouse hovers over it
+        nextArrow.on("pointerover", () => {
+            nextArrow.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        nextArrow.on("pointerout", () => {
+            nextArrow.postFX.clear();
+        });
+
+        // When the "previous" arrow is clicked, switch the tutorial video being displayed
+        const prevArrowX = -(popupWidth / 2 - 50);
+        const prevArrow = this.add
+            .sprite(prevArrowX, arrowY, "left_arrow")
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.08);
+        prevArrow.on("pointerdown", () => {
+            // Change the current tutorial slide being shown
+            currentVideoIndex =
+                (currentVideoIndex - 1 + tutorialVideos.length) %
+                tutorialVideos.length;
+            currentTutorialVideo.changeSource(
+                tutorialVideos[currentVideoIndex].key,
+            );
+            currentTutorialVideo.play(true);
+            currentTutorialVideo.setLoop(true);
+
+            // Update Text
+            tutorialDescription.setText(tutorialVideos[currentVideoIndex].text);
+
+            // Make the X button clickable if all slides have been viewed
+            if (currentVideoIndex === tutorialVideos.length - 1) {
+                closeButton.setColor("#ff0000");
+                closeButton.setInteractive({ useHandCursor: true });
+            }
+        });
+
+        // Highlight "previous" arrow when the mouse hovers over it
+        prevArrow.on("pointerover", () => {
+            prevArrow.postFX.addGlow(0xffbf00, 5, 0, false);
+        });
+        prevArrow.on("pointerout", () => {
+            prevArrow.postFX.clear();
+        });
+
+        // Add background, title, arrows, description, video, and close button to the popup container
+        popupContainer.add([
+            background,
+            title,
+            nextArrow,
+            prevArrow,
+            tutorialDescription,
+            currentTutorialVideo,
+            closeButton,
+        ]);
+        popupContainer.setDepth(1000);
+    }
+
     init(gameInfo: ModeInfo) {
         // Save x and y coordinates for center of screen
         this.screenCenterX =
@@ -936,8 +1171,8 @@ export class Level1 extends Scene {
         this.createTimer();
 
         // Display the FPS and score
-        this.fpsText = new FpsText(this);
-        this.scoreText = this.add.text(0, 50, `Score: ${this.score}`, {
+        //this.fpsText = new FpsText(this);
+        this.scoreText = this.add.text(0, 10, `Score: ${this.score}`, {
             fontSize: "32px",
             color: "#ffffff",
             fontFamily: "Arial",
@@ -988,27 +1223,36 @@ export class Level1 extends Scene {
         this.incorrectSound = this.sound.add("incorrect");
 
         // Creates explanation text;
-        this.orderExplanation = this.add
+        this.orderAnswer = this.add
             .text(
                 10,
-                200,
-                "ERROR:\nAnswer is: [" +
-                    this.currentOrder.answer.join(", ") +
-                    "]\n" +
-                    this.currentOrder.explanation,
+                this.scale.height - 45,
+                "Answer is:\n[" + this.currentOrder.answer.join(", " + "]"),
                 {
-                    fontSize: "32px",
+                    fontSize: "20px",
                     color: "#ff0000",
                     fontFamily: "Arial",
                     fontStyle: "bold",
                     stroke: "#000000",
                     backgroundColor: "#000000",
-                    strokeThickness: 10,
+                    padding: { x: 10, y: 5 },
                 },
             )
             .setOrigin(0, 0)
+            .setScale(0.8)
             .setVisible(false);
-        console.log("Explanation text: " + this.orderExplanation.text);
+        this.orderExplanation = this.add
+            .text(10, 220, this.currentOrder.explanation, {
+                fontSize: "32px",
+                color: "#ff0000",
+                fontFamily: "Arial",
+                fontStyle: "bold",
+                stroke: "#000000",
+                backgroundColor: "#000000",
+                strokeThickness: 10,
+            })
+            .setOrigin(0, 0)
+            .setVisible(false);
 
         // Set up an event listener to watch for when dragging occurs, and update the object's location
         this.input.on(
@@ -1059,7 +1303,7 @@ export class Level1 extends Scene {
                     }
 
                     // Visual cue that it's no longer part of the "Struct"
-                    gameObject.setDepth(100);
+                    //gameObject.setDepth(100);
 
                     // Re-enable the new top item so it's draggable
                     if (this.burgerStack.length > 0) {
@@ -1115,14 +1359,18 @@ export class Level1 extends Scene {
             },
         );
 
-        this.displayInstructions();
+        this.overlay = this.add
+            .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.9)
+            .setOrigin(0)
+            .setVisible(false)
+            .setDepth(100);
+        this.displayTutorial();
 
         EventBus.emit("current-scene-ready", this);
     }
 
     update() {
-        this.fpsText.update();
-
+        //this.fpsText.update();
         /*this.debugGraphics.clear();
         this.debugGraphics = this.add.graphics();
         this.debugGraphics.lineStyle(2, 0x0, 1); // 2px thick, Green, 100% visible
