@@ -297,7 +297,6 @@ export class Level1 extends Scene {
     private orderAnswer: Phaser.GameObjects.Text;
 
     // Sound effects
-    private popSound: Phaser.Sound.BaseSound;
     private cheeseSplatSound: Phaser.Sound.BaseSound;
     private lettuceCrunchSound: Phaser.Sound.BaseSound;
     private tomatoSquishSound: Phaser.Sound.BaseSound;
@@ -307,6 +306,9 @@ export class Level1 extends Scene {
     // Correct and incorrect answer sounds
     private correctSound: Phaser.Sound.BaseSound;
     private incorrectSound: Phaser.Sound.BaseSound;
+
+    // Music
+    private mainMusic: Phaser.Sound.BaseSound;
 
     constructor() {
         super("Level1");
@@ -358,10 +360,7 @@ export class Level1 extends Scene {
             this.bunThudSound.play();
         } else if (ingredient.ingredientType === "patty") {
             this.pattyMooSound.play();
-        } else {
-            this.popSound.play();
         }
-
         // Move the top bun up
         if (ingredient.ingredientType === "top_bun") {
             ingredient.y -= 25;
@@ -453,6 +452,10 @@ export class Level1 extends Scene {
 
         return true;
     }
+    /**
+     * Turns on the music on command
+     *
+     * **/
 
     /**
      * Toggles the overlay and interactivity of all items on screen
@@ -549,9 +552,9 @@ export class Level1 extends Scene {
                 color: "#ff0000",
                 fontStyle: "bold",
             })
-            .setOrigin(0.5)
-            .setInteractive({ useHandCursor: true });
+            .setOrigin(0.5);
         closeButton.on("pointerdown", () => {
+            console.log("Music Started");
             this.toggleOverlay();
             popupContainer.destroy();
         });
@@ -747,7 +750,10 @@ export class Level1 extends Scene {
             "Main Menu",
             140,
             40,
-        ).on("pointerdown", () => this.scene.start("MainMenu"));
+        ).on("pointerdown", () => {
+            this.mainMusic.stop();
+            this.scene.start("MainMenu");
+        });
         console.log(this.mainMenuButton);
     }
 
@@ -1019,6 +1025,7 @@ export class Level1 extends Scene {
                 color: "#5c5c5c",
                 fontStyle: "bold",
             })
+
             .setOrigin(0.7);
         closeButton.on("pointerover", () => {
             closeButton.postFX.addGlow(0xffbf00, 5, 0, false);
@@ -1213,7 +1220,6 @@ export class Level1 extends Scene {
         this.displayButtons();
 
         // Create sound effect
-        this.popSound = this.sound.add("pop");
         this.cheeseSplatSound = this.sound.add("cheese_splat");
         this.lettuceCrunchSound = this.sound.add("lettuce_crunch");
         this.tomatoSquishSound = this.sound.add("tomato_squish");
@@ -1221,6 +1227,10 @@ export class Level1 extends Scene {
         this.pattyMooSound = this.sound.add("patty_moo");
         this.correctSound = this.sound.add("correct");
         this.incorrectSound = this.sound.add("incorrect");
+
+        // Create music
+        this.mainMusic = this.sound.add("Main Music", { loop: true });
+        this.mainMusic.play();
 
         // Creates explanation text;
         this.orderAnswer = this.add
@@ -1382,6 +1392,7 @@ export class Level1 extends Scene {
     }
 
     changeScene(finalStats: FinalStats) {
+        this.mainMusic.stop();
         this.scene.start("GameOver", finalStats);
     }
 }

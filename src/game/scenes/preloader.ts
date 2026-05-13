@@ -46,7 +46,6 @@ export class Preloader extends Scene {
         this.load.image("Background", "Background.png");
 
         // Load sound effects
-        this.load.audio("pop", "Pop Sound.mp3");
         this.load.audio("cheese_splat", "ralsei-splat.mp3");
         this.load.audio("lettuce_crunch", "Lettuce Sound.mp3");
         this.load.audio("tomato_squish", "Tomato Sound.mp3");
@@ -62,6 +61,9 @@ export class Preloader extends Scene {
         this.load.video("explanation_tutorial", "explanation_tutorial.mp4");
         this.load.video("snippet_tutorial", "snippet_tutorial.mp4");
         this.load.video("timer_tutorial", "timer_tutorial.mp4");
+
+        // Load Music
+        this.load.audio("Main Music", "Main_Theme.wav");
     }
 
     create() {
