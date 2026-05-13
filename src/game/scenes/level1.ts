@@ -291,6 +291,7 @@ export class Level1 extends Scene {
     private timerHeight = 30;
     private timerRadius = this.timerHeight / 2;
     private timerOffset = 5;
+    private timerState: Phaser.Time.TimerEvent;
 
     // Creates Explanation
     private orderExplanation: Phaser.GameObjects.Text;
@@ -507,10 +508,7 @@ export class Level1 extends Scene {
             this.explanationButton.setScale(1);
             this.explanationButton.buttonOutline.setVisible(false);
         }
-        this.timerCheck = !this.timerCheck;
-        if (this.timerCheck) {
-            this.startTimer({ color: 0x00ff00 }, this.add.graphics());
-        }
+        this.timerState.paused = !this.timerState.paused;
     }
 
     /**
@@ -594,7 +592,7 @@ export class Level1 extends Scene {
     ): void {
         // Decrease timer in timer bar and switch to Game Over screen when time is up
         let progress = 1.0;
-        this.time.addEvent({
+        this.timerState = this.time.addEvent({
             delay: 20,
             callback: () => {
                 if (progress - 0.1 > 0) {
@@ -623,7 +621,6 @@ export class Level1 extends Scene {
             loop: true,
         });
     }
-
     /**
      * Display and set up:
      *  - Confirm button
@@ -983,7 +980,7 @@ export class Level1 extends Scene {
         const timerBar: Phaser.GameObjects.Graphics = this.add.graphics();
         timerBar.fillStyle(0x00ff00, 1);
 
-        //this.startTimer();
+        this.startTimer({ color: currentColor.color }, timerBar);
     }
 
     private displayTutorial(): void {
@@ -1246,10 +1243,12 @@ export class Level1 extends Scene {
         this.bunThudSound = this.sound.add("bun_thud");
         this.pattyMooSound = this.sound.add("patty_moo");
         this.correctSound = this.sound.add("correct");
-        this.incorrectSound = this.sound.add("incorrect");
+        this.incorrectSound = this.sound.add("incorrect").setVolume(0.75);
 
         // Create music
-        this.mainMusic = this.sound.add("Main Music", { loop: true });
+        this.mainMusic = this.sound
+            .add("Main Music", { loop: true })
+            .setVolume(0.5);
 
         this.timerCheck = true;
 
