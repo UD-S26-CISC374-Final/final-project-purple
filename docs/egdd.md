@@ -281,7 +281,7 @@ When you answer a question at the last second, the game gives you a sense of rel
 
 <br>
 
-![The Burger Sprite](../public/assets/Burger.png)
+![The Burger Sprite](../public/assets/patty.png)
 
 - Plate Texture:
 
