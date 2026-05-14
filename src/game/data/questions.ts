@@ -82,10 +82,17 @@ export const EASY_QUESTIONS: Question[] = [
         question:
             'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburgerWithCheese: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\ttrue,\n);\nfunction addCheese(burger: Burger): void {\n\tburger.ingredients.splice(1, 0, "cheese");\n}\naddCheese(burgerWithCheese);',
         target: "burgerWithCheese",
-        answer: ["bottom_bun", "patty", "cheese", "lettuce", "top_bun"],
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "cheese",
+            "lettuce",
+            "top_bun",
+        ],
         category: "Intermediate Methods",
         explanation:
-            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Since the burger is a local variable, it is not affecting the main array.",
+            "Since buns is true, they are added to the bottom and top of the burger.\n The ingredients are added in the order they are listed in the array.\n Burger is passed by reference in extraCheese, so cheese is added to the original array.",
     },
     {
         question:
@@ -280,16 +287,9 @@ export const MEDIUM_QUESTIONS: Question[] = [
     },
     {
         question:
-            'class Burger {\n\tpublic ingredients: string[]; \n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n\n\tpublic LettuceBuns(): void {\n\t\tthis.ingredients[0] = "lettuce";\n\t\tthis.ingredients[this.ingredients.length - 1] = "lettuce";\n\t}\n}\n\nlet burger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nburger.ingredients.splice(1, 0, "lettuce");\nburger.ingredients.splice(1, 0, "tomato");\nburger.LettuceBuns();',
+            'class Burger {\n\tpublic ingredients: string[]; \n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n\n\tpublic LettuceBuns(): void {\n\t\tthis.buns = false;\n\t\tthis.ingredients[0] = "lettuce";\n\t\tthis.ingredients[this.ingredients.length - 1] = "lettuce";\n\t}\n}\n\nlet burger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nburger.ingredients.splice(1, 0, "lettuce");\nburger.ingredients.splice(1, 0, "tomato");\nburger.LettuceBuns();',
         target: "burger",
-        answer: [
-            "bottom_bun",
-            "lettuce",
-            "lettuce",
-            "tomato",
-            "cheese",
-            "lettuce",
-        ],
+        answer: ["lettuce", "lettuce", "tomato", "cheese", "lettuce"],
         category: "Intermediate Methods",
         explanation:
             "Since lettuce is spliced in location 1, it is the second ingredient added, after \n the patty and before the original cheese and lettuce.\n Since tomato is spliced in location 1, it is the third ingredient added, after the\n patty and before the original cheese and lettuce and the spliced lettuce.\n Since LettuceBuns is called, the first and last ingredients are changed to lettuce.",
@@ -330,7 +330,7 @@ export const MEDIUM_QUESTIONS: Question[] = [
     },
     {
         question:
-            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction removeBuns(burger: Burger) {\n\tburger.buns = false;\n}\nremoveBuns(burger);',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction removeBuns() {\n\tburger.buns = false;\n}\nremoveBuns();',
         target: "burger",
         answer: ["patty", "cheese", "lettuce"],
         category: "Procedural Logic",
@@ -339,9 +339,16 @@ export const MEDIUM_QUESTIONS: Question[] = [
     },
     {
         question:
-            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction extraPatties(burger: Burger) {\n\tburger.ingredients.push("patty");\n}\nextraPatties(burger);',
+            'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction extraPatties() {\n\tburger.ingredients.push("patty");\n}\nextraPatties();',
         target: "burger",
-        answer: ["patty", "cheese", "lettuce"],
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "lettuce",
+            "patty",
+            "top_bun",
+        ],
         category: "Procedural Logic",
         explanation:
             "Since extraPatties is called, patty is added to the end of\n the ingredients array, which is right before the top bun.\n The ingredients are added in the order they are listed in the array.",
@@ -350,7 +357,14 @@ export const MEDIUM_QUESTIONS: Question[] = [
         question:
             'class Burger {\n\tpublic ingredients: string[];\n\tpublic buns: boolean;\n\tconstructor(\n\t\tingredients: string[], \n\t\tbuns: boolean) {\n\t\tthis.ingredients = ingredients;\n\t\tthis.buns = buns;\n\t}\n}\n\nburger: Burger = new Burger(\n\t\t["patty", \n\t\t"cheese", \n\t\t"lettuce"],\n\t\ttrue,\n);\nfunction extraTomatos(burger: Burger) {\n\tburger.ingredients.push("tomato");\n}\nextraTomatos(burger);',
         target: "burger",
-        answer: ["bottom_bun", "tomato", "lettuce", "top_bun"],
+        answer: [
+            "bottom_bun",
+            "patty",
+            "cheese",
+            "lettuce",
+            "tomato",
+            "top_bun",
+        ],
         category: "Intermediate Methods",
         explanation:
             "Since extraTomatos is called, tomato is added to the end of the\n ingredients array, which is right before the top bun.",
